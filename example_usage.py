@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     env = CartPoleEnvironment()
 
-    config = neuroevolution.Config(neuroevolution.algorithms.YANA, 'Path/to/config')
+    config = neuroevolution.Config(neuroevolution.algorithms.YANA, './yana_example_config.cfg')
 
     pop = neuroevolution.Population(config)
 
