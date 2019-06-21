@@ -1,6 +1,6 @@
 """
-Base class for potential environments to subclass. This ensures that environments used in Tensorflow-Neuroevolution
-implement the required functions in the intended way.
+Base class for potential environments to subclass. This ensures that environments used in the Tensorflow-Neuroevolution
+framework implement the required functions in the intended way.
 """
 
 from abc import ABCMeta, abstractmethod

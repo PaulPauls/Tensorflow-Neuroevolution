@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 import neuroevolution
-from neuroevolution.environments.opengym.cartpole_environment import CartPoleEnvironment
+from neuroevolution.environments import CartPoleEnvironment
 
 
 def main():

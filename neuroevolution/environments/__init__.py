@@ -1,1 +1,3 @@
+# Import modules
 from neuroevolution.environments.base_environment import BaseEnvironment
+from neuroevolution.environments.opengym.cartpole_environment import CartPoleEnvironment
