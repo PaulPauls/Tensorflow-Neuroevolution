@@ -1,3 +1,6 @@
+import tensorflow as tf
+
+
 class EvolutionEngine:
     """
     ToDo
@@ -10,6 +13,8 @@ class EvolutionEngine:
         :param eval_genome_fitness_function:
         :param batch_size: If parameter not specified attempt training process to the maximum parallel degree.
         """
+        self.logger = tf.get_logger()
+
         pass
 
     def train(self, max_generations):

@@ -1,4 +1,5 @@
 import gym
+import tensorflow as tf
 
 from neuroevolution.environments import BaseEnvironment
 
@@ -13,7 +14,9 @@ class CartPoleEnvironment(BaseEnvironment):
         """
         ToDo
         """
-        self.env = gym.make('CartPole-v1')
+        self.logger = tf.get_logger()
+
+        self.env = gym.make('CartPole-v0')
 
     def eval_genome_fitness(self, genome):
         """

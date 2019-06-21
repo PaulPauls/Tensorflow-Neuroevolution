@@ -1,3 +1,5 @@
+import tensorflow as tf
+
 from neuroevolution.algorithms.base_algorithm import BaseNeuroevolutionAlgorithm
 
 
@@ -12,6 +14,8 @@ class Config:
         :param ne_algorithm:
         :param config_path:
         """
+        self.logger = tf.get_logger()
+
         assert issubclass(ne_algorithm, BaseNeuroevolutionAlgorithm)
         self.ne_algorithm = ne_algorithm()
 

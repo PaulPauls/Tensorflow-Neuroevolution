@@ -1,3 +1,6 @@
+import tensorflow as tf
+
+
 class Population:
     """
     ToDo
@@ -8,6 +11,8 @@ class Population:
         :param config:
         :param existing_population:
         """
+        self.logger = tf.get_logger()
+
         self.ne_algorithm = config.ne_algorithm
 
         if existing_population is None:
