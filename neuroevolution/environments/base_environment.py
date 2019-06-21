@@ -16,7 +16,6 @@ class BaseEnvironment(object):
     @abstractmethod
     def eval_genome_fitness(self, genome):
         """
-        ToDo: Require subclasses to return a float/int as fitness value from this function
         ToDo: Input genome; apply the genome to the test environments; Return its calculated resulting fitness value
         :param genome:
         :return:

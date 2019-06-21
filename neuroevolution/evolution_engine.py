@@ -5,41 +5,61 @@ class EvolutionEngine:
     """
     ToDo
     """
-    def __init__(self, config, population, eval_genome_fitness_function, batch_size=None):
+    def __init__(self, ne_algorithm, config, environment, batch_size=None):
         """
         ToDo
+        :param ne_algorithm:
         :param config:
-        :param population:
-        :param eval_genome_fitness_function:
+        :param environment:
         :param batch_size: If parameter not specified attempt training process to the maximum parallel degree.
         """
         self.logger = tf.get_logger()
 
+        self.ne_algorithm = ne_algorithm
+        self.config = config
+        self.environment = environment
+
+        if batch_size is None:
+            # Determine self.batch_size
+            pass
+        else:
+            self.batch_size = batch_size
+
         pass
 
-    def train(self, max_generations):
+    def train(self, max_generations=None, fitness_threshold=None):
         """
         ToDo
         :param max_generations:
+        :param fitness_threshold:
         :return:
         """
-        for _ in range(max_generations):
-            # Print info about generation start
 
-            # Apply eval_genome_fitness_function to the parallel degree specified in batch_size to the whole population
+        if self.ne_algorithm.population.initialized_flag is False:
+            self.ne_algorithm.create_initial_population()
 
-            # Print info about trained generation
+        while True:  # Each loop represents one complete generation in the evolution process
 
-            # Do housework (determine best_genome, determine if fitness_threshold met, determine if max_generations,
-            # determine if population extinct)
-            pass
+            # Print/Log information about current generation
+
+            self._evaluate_population(self.ne_algorithm.population)
+
+            # Select, Recombine and Mutate Population
+            self.ne_algorithm.select_genomes()
+            self.ne_algorithm.recombine_genomes()
+            self.ne_algorithm.mutate_genomes()
+
+            # Break if: max_generations reached, fitness_threshold reached or population extinct.
+            # Otherwise loop indefinitely
+
+            break
+
         pass
 
-    def set_verbosity(self, verbosity):
+    def _evaluate_population(self, population):
         """
         ToDo
-        ToDo: Alternatively replace this verbosity setting with the addition of Progress Reporters
-        :param verbosity:
         :return:
         """
+        # Apply self.environment.eval_genome_fitness to whole population
         pass

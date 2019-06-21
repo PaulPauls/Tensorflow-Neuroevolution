@@ -1,6 +1,6 @@
 """
-Base class for potential neuroevolution algorithms to subclass. This ensures that the ne-algorithms used in
-Tensorflow-Neuroevolution implement the required functions in the intended way.
+Base class for potential neuroevolution algorithms to subclass. This ensures that the ne-algorithms used in the
+Tensorflow-Neuroevolution framework implements the required functions in the intended way.
 """
 
 from abc import ABCMeta, abstractmethod
@@ -14,12 +14,12 @@ class BaseNeuroevolutionAlgorithm(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def create_genomes(self):
+    def create_initial_population(self):
         """
         ToDo
         :return:
         """
-        raise NotImplementedError("Should implement mutate_population()")
+        raise NotImplementedError("Should implement create_initial_population()")
 
     @abstractmethod
     def select_genomes(self):
@@ -27,18 +27,18 @@ class BaseNeuroevolutionAlgorithm(object):
         ToDo
         :return:
         """
-        raise NotImplementedError("Should implement mutate_population()")
+        raise NotImplementedError("Should implement select_genomes()")
 
     @abstractmethod
-    def mutate_genomes(self):
+    def recombine_genomes(self):
         """
         ToDo
         :return:
         """
-        raise NotImplementedError("Should implement mutate_population()")
+        raise NotImplementedError("Should implement recombine_genomes()")
 
     @abstractmethod
-    def speciate_genomes(self):
+    def mutate_genomes(self):
         """
         ToDo
         :return:

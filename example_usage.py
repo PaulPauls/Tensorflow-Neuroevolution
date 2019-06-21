@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-import neuroevolution
+import neuroevolution as ne
 from neuroevolution.environments import CartPoleEnvironment
 
 
@@ -11,12 +11,13 @@ def main():
     logger.debug(tf.__version__)
 
     env = CartPoleEnvironment()
-    config = neuroevolution.Config(neuroevolution.algorithms.YANA, './yana_example_config.cfg')
-    pop = neuroevolution.Population(config)
+    config = ne.Config('./yana_example_config.cfg')
+    pop = ne.Population()
+    ne_algorithm = ne.algorithms.YANA(config, pop)
 
-    engine = neuroevolution.EvolutionEngine(config, pop, env)
+    engine = ne.EvolutionEngine(ne_algorithm, config, env)
 
-    best_genome = engine.train(max_generations=100)
+    best_genome = engine.train()
     env.replay_genome(best_genome)
 
 
