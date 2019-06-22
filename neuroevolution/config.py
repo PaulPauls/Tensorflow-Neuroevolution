@@ -32,8 +32,6 @@ class Config:
         with open(config_path) as config_file:
             parameters.read_file(config_file)
 
-        print(parameters.sections())
-
         algorithm_parameters = {}
         for section in parameters.sections():
             algorithm_parameters[section] = parameters.items(section)
