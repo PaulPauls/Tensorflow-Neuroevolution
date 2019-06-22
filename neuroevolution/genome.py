@@ -6,4 +6,5 @@ class Genome:
         """
         ToDo
         """
-        pass
+        self.fitness = 0
+        self.genotype = None

@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+from neuroevolution.genome import Genome
 from neuroevolution.algorithms.base_algorithm import BaseNeuroevolutionAlgorithm
 
 
@@ -24,7 +25,16 @@ class YANA(BaseNeuroevolutionAlgorithm):
         ToDo
         :return:
         """
-        pass
+        pop_size = int(self.config.algorithm_parameters['YANA']['pop_size'])
+        self.population.create_initial_population(pop_size, self.create_genome)
+
+    @staticmethod
+    def create_genome():
+        """
+        ToDo
+        :return:
+        """
+        return Genome()
 
     def select_genomes(self):
         """
