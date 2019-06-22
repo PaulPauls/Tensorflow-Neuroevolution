@@ -25,8 +25,6 @@ class EvolutionEngine:
         else:
             self.batch_size = batch_size
 
-        pass
-
     def train(self, max_generations=None, fitness_threshold=None):
         """
         ToDo
