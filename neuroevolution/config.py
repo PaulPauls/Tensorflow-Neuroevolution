@@ -34,6 +34,6 @@ class Config:
 
         algorithm_parameters = {}
         for section in parameters.sections():
-            algorithm_parameters[section] = parameters.items(section)
+            algorithm_parameters[section] = dict(parameters.items(section))
 
         return algorithm_parameters
