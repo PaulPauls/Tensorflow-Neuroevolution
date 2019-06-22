@@ -19,8 +19,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.config = config
         self.population = population
 
-        pass
-
     def create_initial_population(self):
         """
         ToDo

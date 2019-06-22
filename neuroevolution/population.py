@@ -13,8 +13,6 @@ class Population:
 
         self.initialized_flag = False
 
-        pass
-
     def get_best_genome(self):
         """
         ToDo
@@ -27,11 +25,11 @@ class Population:
         ToDo
         :return:
         """
-        pass
+        raise NotImplementedError("save_population() not yet implemented")
 
     def load_population(self):
         """
         ToDo
         :return:
         """
-        pass
+        raise NotImplementedError("load_population() not yet implemented")
