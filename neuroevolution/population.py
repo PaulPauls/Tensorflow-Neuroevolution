@@ -34,7 +34,7 @@ class Population:
         ToDo
         :return:
         """
-        pass
+        return max(self.genome_list, key=lambda x: x.fitness)
 
     def save_population(self):
         """
