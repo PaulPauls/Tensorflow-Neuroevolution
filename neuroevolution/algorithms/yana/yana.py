@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from neuroevolution.genome import Genome
+from neuroevolution.encodings import BinaryEncodingGenome
 from neuroevolution.algorithms.base_algorithm import BaseNeuroevolutionAlgorithm
 
 
@@ -34,7 +34,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
         ToDo
         :return:
         """
-        return Genome()
+        return BinaryEncodingGenome()
 
     def select_genomes(self):
         """
