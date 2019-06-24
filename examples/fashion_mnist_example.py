@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 import neuroevolution as ne
-from neuroevolution.environments import CartPoleEnvironment
+from neuroevolution.environments import FashionMNISTEnvironment
 
 
 def main():
@@ -10,7 +10,7 @@ def main():
 
     logger.debug(tf.__version__)
 
-    env = CartPoleEnvironment()
+    env = FashionMNISTEnvironment()
     config = ne.Config('./yana_example_config.cfg')
     pop = ne.Population()
     ne_algorithm = ne.algorithms.YANA(config, pop)
