@@ -27,7 +27,7 @@ class FashionMNISTEnvironment(BaseEnvironment):
         :return:
         """
         model = genome.translate_to_phenotype()
-        model.fit(self.train_images, self.train_labels, epochs=5)
+        model.fit(self.train_images, self.train_labels, epochs=1)
         _, test_acc = model.evaluate(self.test_images, self.test_labels)
         self.logger.debug("Genome {} scored test_accuracy: {}".format(genome, test_acc))
         return test_acc

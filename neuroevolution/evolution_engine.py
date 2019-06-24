@@ -60,4 +60,5 @@ class EvolutionEngine:
         :return:
         """
         # Apply self.environment.eval_genome_fitness to whole population
-        pass
+        for genome in population.genome_list:
+            genome.fitness = self.environment.eval_genome_fitness(genome)

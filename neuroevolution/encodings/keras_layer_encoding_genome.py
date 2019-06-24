@@ -30,6 +30,10 @@ class KerasLayerEncodingGenome(BaseGenome):
         self.phenotype = KerasLayerEncodingModel(input_shape, num_output)
         self.genotype = self.phenotype
 
+        self.phenotype.compile(optimizer='adam',
+                      loss='sparse_categorical_crossentropy',
+                      metrics=['accuracy'])
+
     def translate_to_phenotype(self):
         """
         ToDo
