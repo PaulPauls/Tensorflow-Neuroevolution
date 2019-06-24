@@ -21,8 +21,9 @@ class Population:
         :param create_genome_function
         :return:
         """
-        for _ in range(pop_size):
+        for i in range(pop_size):
             genome = create_genome_function()
+            genome.set_id(i)
             self.genome_list.append(genome)
 
         self.logger.debug("Created genomes: {}\tExample Genome: {}".format(len(self.genome_list), self.genome_list[0]))

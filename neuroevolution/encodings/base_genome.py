@@ -20,3 +20,12 @@ class BaseGenome(object):
         :return:
         """
         raise NotImplementedError("Should implement translate_to_phenotype()")
+
+    @abstractmethod
+    def set_id(self, id):
+        """
+        ToDo
+        :param: id
+        :return:
+        """
+        raise NotImplementedError("Should implement set_id()")

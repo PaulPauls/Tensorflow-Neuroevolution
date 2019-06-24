@@ -27,6 +27,7 @@ class KerasLayerEncodingGenome(BaseGenome):
         ToDo
         """
         self.fitness = 0
+        self.id = None
         self.phenotype = KerasLayerEncodingModel(input_shape, num_output)
         self.genotype = self.phenotype
 
@@ -40,3 +41,11 @@ class KerasLayerEncodingGenome(BaseGenome):
         :return:
         """
         return self.phenotype
+
+    def set_id(self, id):
+        """
+        ToDo
+        :param: id
+        :return:
+        """
+        self.id = id
