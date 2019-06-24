@@ -44,7 +44,13 @@ class YANA(BaseNeuroevolutionAlgorithm):
         ToDo
         :return:
         """
-        pass
+        # for now, delete the 20% of the population that is performing the lowest
+        pop_size = int(self.config.algorithm_parameters['YANA']['pop_size'])
+        for _ in range(int(pop_size * 0.2)):
+            worst_genome = min(self.population.genome_list, key=lambda x: x.fitness)
+            self.logger.debug("Genome with fitness {} deleted".format(worst_genome.fitness))
+            self.population.genome_list.remove(worst_genome)
+
 
     def recombine_genomes(self):
         """
