@@ -42,10 +42,8 @@ class EvolutionEngine:
 
             self._evaluate_population(self.ne_algorithm.population)
 
-            # Select, Recombine and Mutate Population
-            self.ne_algorithm.select_genomes()
-            self.ne_algorithm.recombine_genomes()
-            self.ne_algorithm.mutate_genomes()
+            # Apply neuroevolution methods to change up population and create new generation
+            self.ne_algorithm.create_new_generation()
 
             # Break if: max_generations reached, fitness_threshold reached or population extinct.
             # Otherwise loop indefinitely

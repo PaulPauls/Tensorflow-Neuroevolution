@@ -39,29 +39,47 @@ class YANA(BaseNeuroevolutionAlgorithm):
         num_output = 10
         return KerasLayerEncodingGenome(input_shape, num_output)
 
-    def select_genomes(self):
+    def create_new_generation(self):
         """
         ToDo
         :return:
         """
-        # for now, delete the 20% of the population that is performing the lowest
+        # Determine number of genomes to remove and how many to add through recombination and mutation
         pop_size = int(self.config.algorithm_parameters['YANA']['pop_size'])
-        for _ in range(int(pop_size * 0.2)):
+        num_genomes_to_remove = int(pop_size * 0.2)
+        num_genomes_to_add_in_mutation = int(pop_size - num_genomes_to_remove/2)
+        num_genomes_to_add_in_recombination = pop_size - num_genomes_to_remove - num_genomes_to_add_in_mutation
+
+        # Select, Recombine and Mutate Population
+        self._select_genomes(num_genomes_to_remove)
+        self._mutate_genomes(num_genomes_to_add_in_mutation)
+        self._recombine_genomes(num_genomes_to_add_in_recombination)
+
+    def _select_genomes(self, num_genomes_to_remove):
+        """
+        ToDo
+        :param: num_genomes_to_remove
+        :return:
+        """
+        # for now, delete the 20% of the population that is performing the lowest
+        for _ in range(num_genomes_to_remove):
             worst_genome = min(self.population.genome_list, key=lambda x: x.fitness)
             self.logger.debug("Genome with fitness {} deleted".format(worst_genome.fitness))
             self.population.genome_list.remove(worst_genome)
 
-
-    def recombine_genomes(self):
+    def _mutate_genomes(self, num_genomes_to_add_in_mutation):
         """
         ToDo
+        :param: num_genomes_to_add_in_mutation
         :return:
         """
+
         pass
 
-    def mutate_genomes(self):
+    def _recombine_genomes(self, num_genomes_to_add_in_recombination):
         """
         ToDo
+        :param: num_genomes_to_add_in_recombination
         :return:
         """
         pass

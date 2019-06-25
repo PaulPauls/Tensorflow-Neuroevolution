@@ -22,25 +22,9 @@ class BaseNeuroevolutionAlgorithm(object):
         raise NotImplementedError("Should implement create_initial_population()")
 
     @abstractmethod
-    def select_genomes(self):
+    def create_new_generation(self):
         """
         ToDo
         :return:
         """
-        raise NotImplementedError("Should implement select_genomes()")
-
-    @abstractmethod
-    def recombine_genomes(self):
-        """
-        ToDo
-        :return:
-        """
-        raise NotImplementedError("Should implement recombine_genomes()")
-
-    @abstractmethod
-    def mutate_genomes(self):
-        """
-        ToDo
-        :return:
-        """
-        raise NotImplementedError("Should implement mutate_population()")
+        raise NotImplementedError("Should implement create_new_generation()")
