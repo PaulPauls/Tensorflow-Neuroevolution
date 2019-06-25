@@ -28,3 +28,11 @@ class BaseNeuroevolutionAlgorithm(object):
         :return:
         """
         raise NotImplementedError("Should implement create_new_generation()")
+
+    @abstractmethod
+    def check_population_extinction(self):
+        """
+        ToDo
+        :return:
+        """
+        raise NotImplementedError("Should implement check_population_extinction()")

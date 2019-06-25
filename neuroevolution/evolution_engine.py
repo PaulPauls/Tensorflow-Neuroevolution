@@ -33,6 +33,8 @@ class EvolutionEngine:
         :return:
         """
 
+        generation_counter = 0
+
         if self.ne_algorithm.population.initialized_flag is False:
             self.ne_algorithm.create_initial_population()
 
@@ -47,10 +49,14 @@ class EvolutionEngine:
 
             # Break if: max_generations reached, fitness_threshold reached or population extinct.
             # Otherwise loop indefinitely
+            generation_counter += 1
 
-            break
+            if (generation_counter == max_generations) or \
+                    self.ne_algorithm.population.get_best_genome().fitness == fitness_threshold or \
+                    self.ne_algorithm.check_population_extinction():
+                break
 
-        pass
+        return self.ne_algorithm.population.get_best_genome()
 
     def _evaluate_population(self, population):
         """

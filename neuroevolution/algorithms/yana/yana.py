@@ -120,3 +120,10 @@ class YANA(BaseNeuroevolutionAlgorithm):
         :return:
         """
         pass
+
+    def check_population_extinction(self):
+        """
+        ToDo
+        :return:
+        """
+        return len(self.population.genome_list) == 0

@@ -17,7 +17,7 @@ def main():
 
     engine = ne.EvolutionEngine(ne_algorithm, config, env)
 
-    best_genome = engine.train()
+    best_genome = engine.train(max_generations=2)
     env.replay_genome(best_genome)
 
 
