@@ -38,4 +38,8 @@ class FashionMNISTEnvironment(BaseEnvironment):
         :param genome:
         :return: None
         """
-        pass
+        model = genome.translate_to_phenotype()
+        _, test_acc = model.evaluate(self.test_images, self.test_labels)
+
+        print("Genome {} scored test_accuracy: {}".format(genome, test_acc))
+        model.summary()
