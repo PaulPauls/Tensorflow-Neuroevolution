@@ -21,7 +21,7 @@ class FashionMNISTEnvironment(BaseEnvironment):
         self.test_images = test_images / 255.0
 
         # Read in config parameters for environment
-        self.train_epochs = int(config.parameters['FashionMNISTEnvironment']['train_epochs'])
+        self.train_epochs = int(config.get('FashionMNISTEnvironment','train_epochs'))
 
     def eval_genome_fitness(self, genome):
         """

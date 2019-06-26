@@ -9,12 +9,11 @@ def main():
 
     logger.debug(tf.__version__)
 
-    config = ne.Config('./fashion_mnist_example_config.cfg')
+    config = ne.load_config('./fashion_mnist_example_config.cfg')
     env = ne.environments.FashionMNISTEnvironment(config)
     pop = ne.Population()
-    exit(1)
-
     ne_algorithm = ne.algorithms.YANA(config, pop)
+    exit(1)
 
     engine = ne.EvolutionEngine(ne_algorithm, config, env)
 

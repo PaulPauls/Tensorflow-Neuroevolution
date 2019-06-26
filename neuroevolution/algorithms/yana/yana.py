@@ -1,3 +1,4 @@
+import ast
 import tensorflow as tf
 from random import randint
 
@@ -18,9 +19,11 @@ class YANA(BaseNeuroevolutionAlgorithm):
         """
         self.logger = tf.get_logger()
 
-        self.config = config
         self.population = population
-        self.available_activations = ['linear', 'relu', 'sigmoid', 'softmax', 'tanh']
+
+        # Read in config parameters for neuroevolution algorithm
+        self.pop_size = int(config.get('YANA','pop_size'))
+        self.available_activations = ast.literal_eval(config.get('YANA','available_activations'))
 
     def create_initial_population(self):
         """
