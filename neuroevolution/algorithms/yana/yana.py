@@ -38,7 +38,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
     def create_genome(self, genome_id):
         """
         ToDo
-        :param genome_id
+        :param genome_id:
         :return:
         """
         return self.encoding.create_genome(genome_id)
@@ -122,10 +122,3 @@ class YANA(BaseNeuroevolutionAlgorithm):
         :return:
         """
         pass
-
-    def check_population_extinction(self):
-        """
-        ToDo
-        :return:
-        """
-        return len(self.population.genome_list) == 0

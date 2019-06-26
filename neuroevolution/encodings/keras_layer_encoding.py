@@ -53,15 +53,15 @@ class KerasLayerGenome(BaseGenome):
         self.id = genome_id
         self.fitness = 0
         self.model = KerasLayerModel(input_shape, num_output)
+        self.model.compile(optimizer='adam',
+                           loss='sparse_categorical_crossentropy',
+                           metrics=['accuracy'])
 
     def to_phenotype(self):
         """
         ToDo
         :return:
         """
-        self.model.compile(optimizer='adam',
-                           loss='sparse_categorical_crossentropy',
-                           metrics=['accuracy'])
         return self.model
 
     def get_id(self):
@@ -70,6 +70,14 @@ class KerasLayerGenome(BaseGenome):
         :return:
         """
         return self.id
+
+    def set_fitness(self, fitness):
+        """
+        ToDo
+        :param fitness:
+        :return:
+        """
+        self.fitness = fitness
 
     def get_fitness(self):
         """

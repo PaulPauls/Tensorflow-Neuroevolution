@@ -52,26 +52,16 @@ class EvolutionEngine:
 
             # Evaluate population
             for genome in self.population.get_genome_list():
-                genome.fitness = self.environment.eval_genome_fitness(genome)
-
-            exit(15)
+                genome.set_fitness(self.environment.eval_genome_fitness(genome))
 
             # Apply neuroevolution methods to change up population and create new generation
-            self.ne_algorithm.create_new_generation()
+            #self.ne_algorithm.create_new_generation()
 
             # Break if: max_generations reached, fitness_threshold reached or population extinct.
-            self.population.generation_counter += 1
-            if (self.population.generation_counter == max_generations) or \
-                    self.ne_algorithm.population.get_best_genome().fitness == fitness_threshold or \
-                    self.ne_algorithm.check_population_extinction():
+            self.population.increment_generation_counter()
+            if (self.population.get_generation_counter() == max_generations) or \
+                    self.population.get_best_genome().get_fitness() == fitness_threshold or \
+                    self.population.check_extinction():
                 break
 
-        return self.ne_algorithm.population.get_best_genome()
-
-    def _evaluate_population(self, population):
-        """
-        ToDo
-        :param population:
-        :return:
-        """
-        # Apply self.environment.eval_genome_fitness to whole population
+        return self.population.get_best_genome()

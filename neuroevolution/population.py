@@ -30,12 +30,20 @@ class Population:
         """
         return self.genome_list
 
+    def get_genome(self, i):
+        """
+        ToDo
+        :param i:
+        :return:
+        """
+        return self.genome_list[i]
+
     def get_best_genome(self):
         """
         ToDo
         :return:
         """
-        return max(self.genome_list, key=lambda x: x.fitness)
+        return max(self.genome_list, key=lambda x: x.get_fitness())
 
     def set_initialized(self):
         """
@@ -44,6 +52,27 @@ class Population:
         """
         self.generation_counter = 0
         self.initialized_flag = True
+
+    def increment_generation_counter(self):
+        """
+        ToDo
+        :return:
+        """
+        self.generation_counter += 1
+
+    def get_generation_counter(self):
+        """
+        ToDo
+        :return:
+        """
+        return self.generation_counter
+
+    def check_extinction(self):
+        """
+        ToDo
+        :return:
+        """
+        return len(self.genome_list) == 0
 
     def save_population(self):
         """
