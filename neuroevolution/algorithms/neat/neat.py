@@ -1,4 +1,4 @@
-from neuroevolution.algorithms.base_algorithm import BaseNeuroevolutionAlgorithm
+from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
 
 
 class NEAT(BaseNeuroevolutionAlgorithm):

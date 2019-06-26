@@ -1,8 +1,7 @@
-import ast
 import tensorflow as tf
 from random import randint
 
-from neuroevolution.algorithms.base_algorithm import BaseNeuroevolutionAlgorithm
+from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
 
 
 class YANA(BaseNeuroevolutionAlgorithm):
@@ -22,7 +21,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
 
         # Read in config parameters for neuroevolution algorithm
         self.pop_size = int(config.get('YANA','pop_size'))
-        self.available_activations = ast.literal_eval(config.get('YANA','available_activations'))
 
     def create_initial_population(self):
         """

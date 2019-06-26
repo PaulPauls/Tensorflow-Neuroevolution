@@ -14,9 +14,25 @@ class BaseGenome(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def translate_to_phenotype(self):
+    def to_phenotype(self):
         """
         ToDo
         :return:
         """
-        raise NotImplementedError("Should implement translate_to_phenotype()")
+        raise NotImplementedError("Should implement to_phenotype()")
+
+    @abstractmethod
+    def get_id(self):
+        """
+        ToDo
+        :return:
+        """
+        raise NotImplementedError("Should implement get_id()")
+
+    @abstractmethod
+    def get_fitness(self):
+        """
+        ToDo
+        :return:
+        """
+        raise NotImplementedError("Should implement get_fitness()")

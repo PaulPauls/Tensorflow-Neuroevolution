@@ -1,4 +1,4 @@
-from neuroevolution.environments.base_environment import BaseEnvironment
+from neuroevolution.environments import BaseEnvironment
 
 
 class CartPoleEnvironment(BaseEnvironment):
