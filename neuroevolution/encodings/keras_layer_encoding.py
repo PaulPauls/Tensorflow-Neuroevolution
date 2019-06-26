@@ -1,4 +1,3 @@
-import ast
 import tensorflow as tf
 
 from neuroevolution.encodings import BaseEncoding
@@ -53,6 +52,13 @@ class KerasLayerGenome(BaseGenome):
         self.id = genome_id
         self.fitness = 0
         self.model = KerasLayerModel(input_shape, num_output)
+        self.compile_model()
+
+    def compile_model(self):
+        """
+        ToDo
+        :return:
+        """
         self.model.compile(optimizer='adam',
                            loss='sparse_categorical_crossentropy',
                            metrics=['accuracy'])
@@ -63,6 +69,47 @@ class KerasLayerGenome(BaseGenome):
         :return:
         """
         return self.model
+
+    def add_layer(self, index, layer):
+        """
+        ToDo
+        :param index:
+        :param layer:
+        :return:
+        """
+        self.model.layer_list.insert(index, layer)
+        self.compile_model()
+
+    def replace_layer(self, index, layer_type, units=None, activation=None):
+        """
+        ToDo
+        :param index:
+        :param layer_type:
+        :param units:
+        :param activation:
+        :return:
+        """
+        if units is None:
+            units = self.model.layer_list[index].units
+        if activation is None:
+            activation = self.model.layer_list[index].activation
+        self.model.layer_list[index] = layer_type(units=units, activation=activation)
+        self.compile_model()
+
+    def get_layer_count(self):
+        """
+        ToDo
+        :return:
+        """
+        return len(self.model.layer_list)
+
+    def set_id(self, genome_id):
+        """
+        ToDo
+        :param genome_id:
+        :return:
+        """
+        self.id = genome_id
 
     def get_id(self):
         """
@@ -103,9 +150,6 @@ class KerasLayerEncoding(BaseEncoding):
 
         self.genome_id_counter = 0
 
-        # Read in config parameters for genome encoding
-        self.available_activations = ast.literal_eval(config.get('KerasLayerEncoding', 'available_activations'))
-
     def create_genome(self):
         """
         ToDo
@@ -114,3 +158,12 @@ class KerasLayerEncoding(BaseEncoding):
         genome = KerasLayerGenome(self.input_shape, self.num_output, self.genome_id_counter)
         self.genome_id_counter += 1
         return genome
+
+    def pop_id(self):
+        """
+        ToDo
+        :return:
+        """
+        new_id = self.genome_id_counter
+        self.genome_id_counter += 1
+        return new_id

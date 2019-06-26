@@ -15,3 +15,11 @@ class BaseEncoding(object):
         :return:
         """
         raise NotImplementedError("Should implement create_genome()")
+
+    @abstractmethod
+    def pop_id(self):
+        """
+        ToDo
+        :return:
+        """
+        raise NotImplementedError("Should implement pop_id()")

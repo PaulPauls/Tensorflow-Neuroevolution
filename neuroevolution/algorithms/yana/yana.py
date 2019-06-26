@@ -1,5 +1,6 @@
+import ast
 import tensorflow as tf
-from random import randint
+from random import random, randint
 
 from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
 
@@ -23,7 +24,9 @@ class YANA(BaseNeuroevolutionAlgorithm):
 
         # Read in config parameters for neuroevolution algorithm
         self.pop_size = int(config.get('YANA', 'pop_size'))
-        self.genome_removal_percentage = float(config.get('YANA', 'genome_removal_percentage'))
+        self.genome_removal_prob = float(config.get('YANA', 'genome_removal_prob'))
+        self.genome_mutate_prob = float(config.get('YANA', 'genome_mutate_prob'))
+        self.available_activations = ast.literal_eval(config.get('YANA', 'available_activations'))
 
     def create_initial_population(self):
         """
@@ -42,7 +45,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
         :return:
         """
         # Select and mutate population. Recombining population has been left out for the sake of brevity
-        num_genomes_to_remove = int(self.genome_removal_percentage * self.pop_size)
+        num_genomes_to_remove = int(self.genome_removal_prob * self.pop_size)
         self._select_genomes(num_genomes_to_remove)
         num_genomes_to_add = self.pop_size - num_genomes_to_remove
         self._mutate_genomes(num_genomes_to_add)
@@ -65,40 +68,41 @@ class YANA(BaseNeuroevolutionAlgorithm):
         :param num_genomes_to_add:
         :return:
         """
-        return
         added_genomes = 0
 
-        while added_genomes != num_genomes_to_add_in_mutation:
+        while added_genomes != num_genomes_to_add:
             # Choose a random genome as the basis for the new mutated genome
-            new_genome = self.population.genome_list[randint(0, len(self.population.genome_list)-1)]
+            new_genome = self.population.get_genome_list()[randint(0, len(self.population.get_genome_list())-1)]
+            # Change ID of genome to signify as new
+            new_genome.set_id(self.encoding.pop_id())
+            new_genome.set_fitness(0)
 
-            # Mutate the new genome repeatedly with probability 33%, though at least once
+            # Mutate the new genome repeatedly with specified probability, though at least once
             while True:
                 # Decide if to mutate existing structure or add new structure
                 if randint(0, 1) == 0:
                     # Add new structure
+                    index = randint(1, new_genome.get_layer_count()-1)
                     units = 8 * (2 ** randint(0, 4))
                     activation = self.available_activations[randint(0, 4)]
-                    index = randint(1, len(new_genome.phenotype.layer_list)-1)
-                    new_genome.phenotype.layer_list.insert(index, tf.keras.layers.Dense(units, activation=activation))
+                    new_genome.add_layer(index, tf.keras.layers.Dense(units, activation=activation))
                 else:
-                    # Mutate existing structure
-                    index = randint(1, len(new_genome.phenotype.layer_list)-1)
-                    # If last mutate activation function:
-                    if index == (len(new_genome.phenotype.layer_list)-1) or randint(0, 1) == 0:
+                    # Mutate existing structure. Choose which layer
+                    index = randint(1, new_genome.get_layer_count()-1)
+                    # Check if last layer chosen or chance has it that only activation function is mutated:
+                    if index == new_genome.get_layer_count()-1 or randint(0, 1) == 0:
                         # mutate activation function
-                        units = new_genome.phenotype.layer_list[index].units
                         activation = self.available_activations[randint(0, 4)]
-                        new_genome.phenotype.layer_list[index] = tf.keras.layers.Dense(units, activation=activation)
+                        new_genome.replace_layer(index, tf.keras.layers.Dense, activation=activation)
                     else:
+                        # mutate units in layer
                         units = 8 * (2 ** randint(0, 4))
-                        activation = new_genome.phenotype.layer_list[index].activation
-                        new_genome.phenotype.layer_list[index] = tf.keras.layers.Dense(units, activation=activation)
+                        new_genome.replace_layer(index, tf.keras.layers.Dense, units=units)
 
-                if randint(0, 2) == 0:
+                if random() > self.genome_mutate_prob:
                     break
 
             # Add newly generated genome to population
             added_genomes += 1
-            self.population.genome_list.append(new_genome)
-            self.logger.debug("Added new mutated genome: {}".format(new_genome))
+            self.population.add_genome(new_genome)
+            self.logger.debug("Added new mutated genome with ID {}".format(new_genome.get_id()))
