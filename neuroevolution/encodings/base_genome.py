@@ -30,6 +30,14 @@ class BaseGenome(object):
         raise NotImplementedError("Should implement get_id()")
 
     @abstractmethod
+    def set_fitness(self, fitness):
+        """
+        ToDo
+        :return:
+        """
+        raise NotImplementedError("Should implement set_fitness()")
+
+    @abstractmethod
     def get_fitness(self):
         """
         ToDo

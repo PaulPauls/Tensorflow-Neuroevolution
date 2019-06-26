@@ -27,8 +27,8 @@ class EvolutionEngine:
             self.batch_size = batch_size
 
         # Read in config parameters for evolution process
-        self.max_generations_config = int(config.get('EvolutionEngine','max_generations'))
-        self.fitness_threshold_config = float(config.get('EvolutionEngine','fitness_threshold'))
+        self.max_generations_config = int(config.get('EvolutionEngine', 'max_generations'))
+        self.fitness_threshold_config = float(config.get('EvolutionEngine', 'fitness_threshold'))
 
     def train(self, max_generations=None, fitness_threshold=None):
         """
@@ -55,7 +55,7 @@ class EvolutionEngine:
                 genome.set_fitness(self.environment.eval_genome_fitness(genome))
 
             # Apply neuroevolution methods to change up population and create new generation
-            #self.ne_algorithm.create_new_generation()
+            # self.ne_algorithm.create_new_generation()
 
             # Break if: max_generations reached, fitness_threshold reached or population extinct.
             self.population.increment_generation_counter()
