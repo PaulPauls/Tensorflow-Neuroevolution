@@ -9,7 +9,7 @@ class FashionMNISTEnvironment(BaseEnvironment):
           execution (see batch_size) or the inability of the environment to be properly reset when testing a new genome.
           Therefore possibly put the creation of this class in the evolution_engine as it will know the batch_size.
     """
-    def __init__(self):
+    def __init__(self, config):
         """
         ToDo
         """
@@ -20,6 +20,9 @@ class FashionMNISTEnvironment(BaseEnvironment):
         self.train_images = train_images / 255.0
         self.test_images = test_images / 255.0
 
+        # Read in config parameters for environment
+        self.train_epochs = int(config.parameters['FashionMNISTEnvironment']['train_epochs'])
+
     def eval_genome_fitness(self, genome):
         """
         ToDo: Input genome; apply the genome to the test environments; Return its calculated resulting fitness value
@@ -27,10 +30,10 @@ class FashionMNISTEnvironment(BaseEnvironment):
         :return:
         """
         model = genome.translate_to_phenotype()
-        model.fit(self.train_images, self.train_labels, epochs=1)
-        _, test_acc = model.evaluate(self.test_images, self.test_labels)
-        self.logger.debug("Genome {} scored test_accuracy: {}".format(genome, test_acc))
-        return test_acc
+        model.fit(self.train_images, self.train_labels, epochs=self.train_epochs)
+        _, test_accuracy = model.evaluate(self.test_images, self.test_labels)
+        self.logger.debug("Genome {} scored test_accuracy: {}".format(genome, test_accuracy))
+        return test_accuracy
 
     def replay_genome(self, genome):
         """
@@ -39,7 +42,6 @@ class FashionMNISTEnvironment(BaseEnvironment):
         :return: None
         """
         model = genome.translate_to_phenotype()
-        _, test_acc = model.evaluate(self.test_images, self.test_labels)
-
-        print("Genome {} scored test_accuracy: {}".format(genome, test_acc))
+        _, test_accuracy = model.evaluate(self.test_images, self.test_labels)
+        self.logger.debug("Genome {} scored test_accuracy: {}".format(genome, test_accuracy))
         model.summary()

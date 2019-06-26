@@ -14,11 +14,11 @@ class Config:
         """
         self.logger = tf.get_logger()
 
-        self.algorithm_parameters = self._load_algorithm_parameters(config_path)
-        self.logger.debug(self.algorithm_parameters)
+        self.parameters = self._load_parameters(config_path)
+        self.logger.debug("Processed parameters in config ({}):\n{}".format(config_path, self.parameters))
 
     @staticmethod
-    def _load_algorithm_parameters(config_path):
+    def _load_parameters(config_path):
         """
         ToDo
         :param config_path:
@@ -32,8 +32,8 @@ class Config:
         with open(config_path) as config_file:
             parameters.read_file(config_file)
 
-        algorithm_parameters = {}
+        parameters_dict = {}
         for section in parameters.sections():
-            algorithm_parameters[section] = dict(parameters.items(section))
+            parameters_dict[section] = dict(parameters.items(section))
 
-        return algorithm_parameters
+        return parameters_dict

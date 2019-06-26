@@ -26,9 +26,8 @@ class Population:
             genome.set_id(i)
             self.genome_list.append(genome)
 
-        self.logger.debug("Created genomes: {}\tExample Genome: {}".format(len(self.genome_list), self.genome_list[0]))
-
         self.initialized_flag = True
+        self.logger.debug("Created genomes: {}\tExample Genome: {}".format(len(self.genome_list), self.genome_list[0]))
 
     def get_best_genome(self):
         """
