@@ -30,7 +30,7 @@ class FashionMNISTEnvironment(BaseEnvironment):
         :param genome:
         :return:
         """
-        model = genome.translate_to_phenotype()
+        model = genome.to_phenotype()
         model.fit(self.train_images, self.train_labels, epochs=self.train_epochs)
         _, test_accuracy = model.evaluate(self.test_images, self.test_labels)
         self.logger.debug("Genome {} scored test_accuracy: {}".format(genome, test_accuracy))
@@ -42,7 +42,7 @@ class FashionMNISTEnvironment(BaseEnvironment):
         :param genome:
         :return: None
         """
-        model = genome.translate_to_phenotype()
+        model = genome.to_phenotype()
         _, test_accuracy = model.evaluate(self.test_images, self.test_labels)
         self.logger.debug("Genome {} scored test_accuracy: {}".format(genome, test_accuracy))
         model.summary()
@@ -52,7 +52,7 @@ class FashionMNISTEnvironment(BaseEnvironment):
         ToDo
         :return:
         """
-        return 28, 28
+        return (28, 28)
 
     def get_num_output(self):
         """
