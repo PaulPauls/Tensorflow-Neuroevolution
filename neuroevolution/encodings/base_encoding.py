@@ -9,10 +9,9 @@ class BaseEncoding(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def create_genome(self, genome_id):
+    def create_genome(self):
         """
         ToDo
-        :param genome_id:
         :return:
         """
         raise NotImplementedError("Should implement create_genome()")

@@ -30,19 +30,11 @@ class YANA(BaseNeuroevolutionAlgorithm):
         ToDo
         :return:
         """
-        for i in range(self.pop_size):
-            genome = self.create_genome(i)
+        for _ in range(self.pop_size):
+            genome = self.encoding.create_genome()
             self.population.add_genome(genome)
 
         self.population.set_initialized()
-
-    def create_genome(self, genome_id):
-        """
-        ToDo
-        :param genome_id:
-        :return:
-        """
-        return self.encoding.create_genome(genome_id)
 
     def create_new_generation(self):
         """
@@ -64,7 +56,8 @@ class YANA(BaseNeuroevolutionAlgorithm):
         for _ in range(num_genomes_to_remove):
             worst_genome = self.population.get_worst_genome()
             self.population.remove_genome(worst_genome)
-            self.logger.debug("Genome {} with fitness {} deleted".format(worst_genome.get_id(), worst_genome.get_fitness()))
+            self.logger.debug("Genome {} with fitness {} deleted".format(worst_genome.get_id(),
+                                                                         worst_genome.get_fitness()))
 
     def _mutate_genomes(self, num_genomes_to_add):
         """

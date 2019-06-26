@@ -101,13 +101,16 @@ class KerasLayerEncoding(BaseEncoding):
         self.input_shape = input_shape
         self.num_output = num_output
 
+        self.genome_id_counter = 0
+
         # Read in config parameters for genome encoding
         self.available_activations = ast.literal_eval(config.get('KerasLayerEncoding', 'available_activations'))
 
-    def create_genome(self, genome_id):
+    def create_genome(self):
         """
         ToDo
-        :param genome_id:
         :return:
         """
-        return KerasLayerGenome(self.input_shape, self.num_output, genome_id)
+        genome = KerasLayerGenome(self.input_shape, self.num_output, self.genome_id_counter)
+        self.genome_id_counter += 1
+        return genome
