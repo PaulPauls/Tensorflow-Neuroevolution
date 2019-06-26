@@ -46,6 +46,9 @@ class KerasLayerGenome(BaseGenome):
     def __init__(self, input_shape, num_output, genome_id):
         """
         ToDo
+        :param input_shape:
+        :param num_output:
+        :param genome_id:
         """
         self.id = genome_id
         self.fitness = 0
@@ -83,6 +86,9 @@ class KerasLayerEncoding(BaseEncoding):
     def __init__(self, input_shape, num_output, config):
         """
         ToDo
+        :param input_shape:
+        :param num_output:
+        :param config:
         """
         self.input_shape = input_shape
         self.num_output = num_output
@@ -93,7 +99,7 @@ class KerasLayerEncoding(BaseEncoding):
     def create_genome(self, genome_id):
         """
         ToDo
-        :param: genome_id
+        :param genome_id:
         :return:
         """
         return KerasLayerGenome(self.input_shape, self.num_output, genome_id)

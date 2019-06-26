@@ -12,7 +12,7 @@ class BaseEncoding(object):
     def create_genome(self, genome_id):
         """
         ToDo
-        :param: genome_id
+        :param genome_id:
         :return:
         """
         raise NotImplementedError("Should implement create_genome()")

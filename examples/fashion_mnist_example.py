@@ -16,15 +16,13 @@ def main():
     input_shape = env.get_input_shape()
     num_output = env.get_num_output()
     encoding = ne.encodings.KerasLayerEncoding(input_shape, num_output, config)
-    exit(1)
-
-
-
     ne_algorithm = ne.algorithms.YANA(encoding, pop, config)
+
+    exit(13)
 
     engine = ne.EvolutionEngine(ne_algorithm, pop, env, config)
 
-    exit(1)
+
 
     best_genome = engine.train(max_generations=2)
     env.replay_genome(best_genome)

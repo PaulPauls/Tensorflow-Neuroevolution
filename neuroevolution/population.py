@@ -18,6 +18,7 @@ class Population:
     def add_genome(self, genome):
         """
         ToDo
+        :param genome:
         :return:
         """
         self.genome_list.append(genome)

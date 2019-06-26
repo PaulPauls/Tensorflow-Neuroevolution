@@ -12,6 +12,7 @@ class FashionMNISTEnvironment(BaseEnvironment):
     def __init__(self, config):
         """
         ToDo
+        :param config:
         """
         self.logger = tf.get_logger()
 

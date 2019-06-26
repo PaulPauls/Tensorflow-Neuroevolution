@@ -9,8 +9,9 @@ class EvolutionEngine:
         """
         ToDo
         :param ne_algorithm:
-        :param config:
+        :param population:
         :param environment:
+        :param config:
         :param batch_size: If parameter not specified attempt training process to the maximum parallel degree.
         """
         self.logger = tf.get_logger()
@@ -68,6 +69,7 @@ class EvolutionEngine:
     def _evaluate_population(self, population):
         """
         ToDo
+        :param population:
         :return:
         """
         # Apply self.environment.eval_genome_fitness to whole population

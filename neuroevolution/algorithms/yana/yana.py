@@ -9,14 +9,16 @@ class YANA(BaseNeuroevolutionAlgorithm):
     ToDo: Test implementation of the the dummy 'Yet Another Neuroevolution Algorithm', which does all required
           Neuroevolution Algorithm tasks in the most basic way to enable testing the framework.
     """
-    def __init__(self, config, population):
+    def __init__(self, encoding, population, config):
         """
         ToDo
+        :param encoding:
         :param config:
         :param population:
         """
         self.logger = tf.get_logger()
 
+        self.encoding = encoding
         self.population = population
 
         # Read in config parameters for neuroevolution algorithm
@@ -64,7 +66,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
     def _select_genomes(self, num_genomes_to_remove):
         """
         ToDo
-        :param: num_genomes_to_remove
+        :param num_genomes_to_remove:
         :return:
         """
         # for now, delete the 20% of the population that is performing the lowest
@@ -76,7 +78,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
     def _mutate_genomes(self, num_genomes_to_add_in_mutation):
         """
         ToDo
-        :param: num_genomes_to_add_in_mutation
+        :param num_genomes_to_add_in_mutation:
         :return:
         """
         added_genomes = 0
@@ -119,7 +121,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
     def _recombine_genomes(self, num_genomes_to_add_in_recombination):
         """
         ToDo
-        :param: num_genomes_to_add_in_recombination
+        :param num_genomes_to_add_in_recombination:
         :return:
         """
         pass
