@@ -1,7 +1,6 @@
 import tensorflow as tf
 
 import neuroevolution as ne
-from neuroevolution.environments import FashionMNISTEnvironment
 
 
 def main():
@@ -10,9 +9,11 @@ def main():
 
     logger.debug(tf.__version__)
 
-    env = FashionMNISTEnvironment()
-    config = ne.Config('./yana_example_config.cfg')
+    config = ne.Config('./fashion_mnist_example_config.cfg')
+    env = ne.environments.FashionMNISTEnvironment(config)
     pop = ne.Population()
+    exit(1)
+
     ne_algorithm = ne.algorithms.YANA(config, pop)
 
     engine = ne.EvolutionEngine(ne_algorithm, config, env)
