@@ -1,8 +1,3 @@
-"""
-Base class for potential neuroevolution algorithms to subclass. This ensures that the ne-algorithms used in the
-Tensorflow-Neuroevolution framework implements the required functions in the intended way.
-"""
-
 from abc import ABCMeta, abstractmethod
 
 
@@ -28,11 +23,3 @@ class BaseNeuroevolutionAlgorithm(object):
         :return:
         """
         raise NotImplementedError("Should implement create_new_generation()")
-
-    @abstractmethod
-    def check_population_extinction(self):
-        """
-        ToDo
-        :return:
-        """
-        raise NotImplementedError("Should implement check_population_extinction()")

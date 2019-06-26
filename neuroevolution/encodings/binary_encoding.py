@@ -1,7 +1,7 @@
-from neuroevolution.environments import BaseEnvironment
+from neuroevolution.encodings import BaseEncoding
 
 
-class CartPoleEnvironment(BaseEnvironment):
+class BinaryEncoding(BaseEncoding):
     """
     ToDo
     """

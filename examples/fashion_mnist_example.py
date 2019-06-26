@@ -1,7 +1,6 @@
 import tensorflow as tf
 
 import neuroevolution as ne
-from neuroevolution.environments import FashionMNISTEnvironment
 
 
 def main():
@@ -10,12 +9,16 @@ def main():
 
     logger.debug(tf.__version__)
 
-    env = FashionMNISTEnvironment()
-    config = ne.Config('./yana_example_config.cfg')
+    config = ne.load_config('./fashion_mnist_example_config.cfg')
+    env = ne.environments.FashionMNISTEnvironment(config)
     pop = ne.Population()
-    ne_algorithm = ne.algorithms.YANA(config, pop)
 
-    engine = ne.EvolutionEngine(ne_algorithm, config, env)
+    input_shape = env.get_input_shape()
+    num_output = env.get_num_output()
+    encoding = ne.encodings.KerasLayerEncoding(input_shape, num_output, config)
+    ne_algorithm = ne.algorithms.YANA(encoding, pop, config)
+
+    engine = ne.EvolutionEngine(ne_algorithm, pop, env, config)
 
     best_genome = engine.train(max_generations=2)
     env.replay_genome(best_genome)

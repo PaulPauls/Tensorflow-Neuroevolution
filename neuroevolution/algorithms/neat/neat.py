@@ -1,41 +1,12 @@
-from neuroevolution.algorithms.base_algorithm import BaseNeuroevolutionAlgorithm
+from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
 
 
 class NEAT(BaseNeuroevolutionAlgorithm):
     """
-    ToDo:
+    ToDo
     """
-    def __init__(self, *args):
+    def __init__(self):
         """
         ToDo
-        :param args:
-        """
-        pass
-
-    def create_genomes(self):
-        """
-        ToDo
-        :return:
-        """
-        pass
-
-    def select_genomes(self):
-        """
-        ToDo
-        :return:
-        """
-        pass
-
-    def mutate_genomes(self):
-        """
-        ToDo
-        :return:
-        """
-        pass
-
-    def speciate_genomes(self):
-        """
-        ToDo
-        :return:
         """
         pass

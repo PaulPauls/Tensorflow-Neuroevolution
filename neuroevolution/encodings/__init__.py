@@ -1,3 +1,5 @@
 # Import modules
-from neuroevolution.encodings.binary_encoding_genome import BinaryEncodingGenome
-from neuroevolution.encodings.keras_layer_encoding_genome import KerasLayerEncodingGenome
+from neuroevolution.encodings.base_encoding import BaseEncoding
+from neuroevolution.encodings.base_genome import BaseGenome
+from neuroevolution.encodings.binary_encoding import BinaryEncoding
+from neuroevolution.encodings.keras_layer_encoding import KerasLayerEncoding

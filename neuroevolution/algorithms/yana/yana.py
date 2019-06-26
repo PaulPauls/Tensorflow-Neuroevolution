@@ -1,8 +1,8 @@
+import ast
 import tensorflow as tf
-from random import randint
+from random import random, randint
 
-from neuroevolution.encodings import KerasLayerEncodingGenome
-from neuroevolution.algorithms.base_algorithm import BaseNeuroevolutionAlgorithm
+from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
 
 
 class YANA(BaseNeuroevolutionAlgorithm):
@@ -10,120 +10,99 @@ class YANA(BaseNeuroevolutionAlgorithm):
     ToDo: Test implementation of the the dummy 'Yet Another Neuroevolution Algorithm', which does all required
           Neuroevolution Algorithm tasks in the most basic way to enable testing the framework.
     """
-    def __init__(self, config, population):
+    def __init__(self, encoding, population, config):
         """
         ToDo
+        :param encoding:
         :param config:
         :param population:
         """
         self.logger = tf.get_logger()
 
-        self.config = config
+        self.encoding = encoding
         self.population = population
-        self.available_activations = ['linear', 'relu', 'sigmoid', 'softmax', 'tanh']
+
+        # Read in config parameters for neuroevolution algorithm
+        self.pop_size = int(config.get('YANA', 'pop_size'))
+        self.genome_removal_prob = float(config.get('YANA', 'genome_removal_prob'))
+        self.genome_mutate_prob = float(config.get('YANA', 'genome_mutate_prob'))
+        self.available_activations = ast.literal_eval(config.get('YANA', 'available_activations'))
 
     def create_initial_population(self):
         """
         ToDo
         :return:
         """
-        pop_size = int(self.config.algorithm_parameters['YANA']['pop_size'])
-        self.population.create_initial_population(pop_size, self.create_genome)
+        for _ in range(self.pop_size):
+            genome = self.encoding.create_genome()
+            self.population.add_genome(genome)
 
-    @staticmethod
-    def create_genome():
-        """
-        ToDo
-        :return:
-        """
-        # Somehow determine the input_shape and num_output for environment. For now I just magically know them
-        input_shape = (28, 28)
-        num_output = 10
-        return KerasLayerEncodingGenome(input_shape, num_output)
+        self.population.set_initialized()
 
     def create_new_generation(self):
         """
         ToDo
         :return:
         """
-        # Determine number of genomes to remove and how many to add through recombination and mutation
-        pop_size = int(self.config.algorithm_parameters['YANA']['pop_size'])
-        num_genomes_to_remove = int(pop_size * 0.2)
-        num_genomes_to_add_in_mutation = num_genomes_to_remove
-        # num_genomes_to_add_in_mutation = int(pop_size - num_genomes_to_remove / 2)
-        # num_genomes_to_add_in_recombination = pop_size - num_genomes_to_remove - num_genomes_to_add_in_mutation
-
-        # Select, Recombine and Mutate Population
+        # Select and mutate population. Recombining population has been left out for the sake of brevity
+        num_genomes_to_remove = int(self.genome_removal_prob * self.pop_size)
         self._select_genomes(num_genomes_to_remove)
-        self._mutate_genomes(num_genomes_to_add_in_mutation)
-        # self._recombine_genomes(num_genomes_to_add_in_recombination)
+        num_genomes_to_add = self.pop_size - num_genomes_to_remove
+        self._mutate_genomes(num_genomes_to_add)
 
     def _select_genomes(self, num_genomes_to_remove):
         """
         ToDo
-        :param: num_genomes_to_remove
+        :param num_genomes_to_remove:
         :return:
         """
-        # for now, delete the 20% of the population that is performing the lowest
         for _ in range(num_genomes_to_remove):
-            worst_genome = min(self.population.genome_list, key=lambda x: x.fitness)
-            self.logger.debug("Genome with fitness {} deleted".format(worst_genome.fitness))
-            self.population.genome_list.remove(worst_genome)
+            worst_genome = self.population.get_worst_genome()
+            self.population.remove_genome(worst_genome)
+            self.logger.debug("Genome {} with fitness {} deleted".format(worst_genome.get_id(),
+                                                                         worst_genome.get_fitness()))
 
-    def _mutate_genomes(self, num_genomes_to_add_in_mutation):
+    def _mutate_genomes(self, num_genomes_to_add):
         """
         ToDo
-        :param: num_genomes_to_add_in_mutation
+        :param num_genomes_to_add:
         :return:
         """
         added_genomes = 0
 
-        while added_genomes != num_genomes_to_add_in_mutation:
+        while added_genomes != num_genomes_to_add:
             # Choose a random genome as the basis for the new mutated genome
-            new_genome = self.population.genome_list[randint(0, len(self.population.genome_list)-1)]
+            new_genome = self.population.get_genome_list()[randint(0, len(self.population.get_genome_list())-1)]
+            # Change ID of genome to signify as new
+            new_genome.set_id(self.encoding.pop_id())
+            new_genome.set_fitness(0)
 
-            # Mutate the new genome repeatedly with probability 33%, though at least once
+            # Mutate the new genome repeatedly with specified probability, though at least once
             while True:
                 # Decide if to mutate existing structure or add new structure
                 if randint(0, 1) == 0:
                     # Add new structure
+                    index = randint(1, new_genome.get_layer_count()-1)
                     units = 8 * (2 ** randint(0, 4))
                     activation = self.available_activations[randint(0, 4)]
-                    index = randint(1, len(new_genome.phenotype.layer_list)-1)
-                    new_genome.phenotype.layer_list.insert(index, tf.keras.layers.Dense(units, activation=activation))
+                    new_genome.add_layer(index, tf.keras.layers.Dense(units, activation=activation))
                 else:
-                    # Mutate existing structure
-                    index = randint(1, len(new_genome.phenotype.layer_list)-1)
-                    # If last mutate activation function:
-                    if index == (len(new_genome.phenotype.layer_list)-1) or randint(0, 1) == 0:
+                    # Mutate existing structure. Choose which layer
+                    index = randint(1, new_genome.get_layer_count()-1)
+                    # Check if last layer chosen or chance has it that only activation function is mutated:
+                    if index == new_genome.get_layer_count()-1 or randint(0, 1) == 0:
                         # mutate activation function
-                        units = new_genome.phenotype.layer_list[index].units
                         activation = self.available_activations[randint(0, 4)]
-                        new_genome.phenotype.layer_list[index] = tf.keras.layers.Dense(units, activation=activation)
+                        new_genome.replace_layer(index, tf.keras.layers.Dense, activation=activation)
                     else:
+                        # mutate units in layer
                         units = 8 * (2 ** randint(0, 4))
-                        activation = new_genome.phenotype.layer_list[index].activation
-                        new_genome.phenotype.layer_list[index] = tf.keras.layers.Dense(units, activation=activation)
+                        new_genome.replace_layer(index, tf.keras.layers.Dense, units=units)
 
-                if randint(0, 2) == 0:
+                if random() > self.genome_mutate_prob:
                     break
 
             # Add newly generated genome to population
             added_genomes += 1
-            self.population.genome_list.append(new_genome)
-            self.logger.debug("Added new mutated genome: {}".format(new_genome))
-
-    def _recombine_genomes(self, num_genomes_to_add_in_recombination):
-        """
-        ToDo
-        :param: num_genomes_to_add_in_recombination
-        :return:
-        """
-        pass
-
-    def check_population_extinction(self):
-        """
-        ToDo
-        :return:
-        """
-        return len(self.population.genome_list) == 0
+            self.population.add_genome(new_genome)
+            self.logger.debug("Added new mutated genome with ID {}".format(new_genome.get_id()))

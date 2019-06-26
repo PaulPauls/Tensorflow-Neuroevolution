@@ -12,30 +12,82 @@ class Population:
         self.logger = tf.get_logger()
 
         self.genome_list = []
+        self.generation_counter = None
         self.initialized_flag = False
 
-    def create_initial_population(self, pop_size, create_genome_function):
+    def add_genome(self, genome):
         """
         ToDo
-        :param pop_size:
-        :param create_genome_function
+        :param genome:
         :return:
         """
-        for i in range(pop_size):
-            genome = create_genome_function()
-            genome.set_id(i)
-            self.genome_list.append(genome)
+        self.genome_list.append(genome)
 
-        self.logger.debug("Created genomes: {}\tExample Genome: {}".format(len(self.genome_list), self.genome_list[0]))
+    def remove_genome(self, genome):
+        """
+        ToDo
+        :param genome:
+        :return:
+        """
+        self.genome_list.remove(genome)
 
-        self.initialized_flag = True
+    def get_genome_list(self):
+        """
+        ToDo
+        :return:
+        """
+        return self.genome_list
+
+    def get_genome(self, i):
+        """
+        ToDo
+        :param i:
+        :return:
+        """
+        return self.genome_list[i]
 
     def get_best_genome(self):
         """
         ToDo
         :return:
         """
-        return max(self.genome_list, key=lambda x: x.fitness)
+        return max(self.genome_list, key=lambda x: x.get_fitness())
+
+    def get_worst_genome(self):
+        """
+        ToDo
+        :return:
+        """
+        return min(self.genome_list, key=lambda x: x.get_fitness())
+
+    def set_initialized(self):
+        """
+        ToDo
+        :return:
+        """
+        self.generation_counter = 0
+        self.initialized_flag = True
+
+    def increment_generation_counter(self):
+        """
+        ToDo
+        :return:
+        """
+        self.generation_counter += 1
+
+    def get_generation_counter(self):
+        """
+        ToDo
+        :return:
+        """
+        return self.generation_counter
+
+    def check_extinction(self):
+        """
+        ToDo
+        :return:
+        """
+        return len(self.genome_list) == 0
 
     def save_population(self):
         """
