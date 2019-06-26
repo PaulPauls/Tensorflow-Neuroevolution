@@ -64,4 +64,8 @@ class EvolutionEngine:
                     self.population.check_extinction():
                 break
 
-        return self.population.get_best_genome()
+        if self.population.check_extinction():
+            best_genome = None
+        else:
+            best_genome = self.population.get_best_genome()
+        return best_genome

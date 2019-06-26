@@ -23,6 +23,14 @@ class Population:
         """
         self.genome_list.append(genome)
 
+    def remove_genome(self, genome):
+        """
+        ToDo
+        :param genome:
+        :return:
+        """
+        self.genome_list.remove(genome)
+
     def get_genome_list(self):
         """
         ToDo
@@ -44,6 +52,13 @@ class Population:
         :return:
         """
         return max(self.genome_list, key=lambda x: x.get_fitness())
+
+    def get_worst_genome(self):
+        """
+        ToDo
+        :return:
+        """
+        return min(self.genome_list, key=lambda x: x.get_fitness())
 
     def set_initialized(self):
         """

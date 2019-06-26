@@ -50,7 +50,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
         :return:
         """
         # Select and mutate population. Recombining population has been left out for the sake of brevity
-        num_genomes_to_remove = self.genome_removal_percentage * self.pop_size
+        num_genomes_to_remove = int(self.genome_removal_percentage * self.pop_size)
         self._select_genomes(num_genomes_to_remove)
         num_genomes_to_add = self.pop_size - num_genomes_to_remove
         self._mutate_genomes(num_genomes_to_add)
@@ -61,12 +61,10 @@ class YANA(BaseNeuroevolutionAlgorithm):
         :param num_genomes_to_remove:
         :return:
         """
-        return
-        # for now, delete the 20% of the population that is performing the lowest
         for _ in range(num_genomes_to_remove):
-            worst_genome = min(self.population.genome_list, key=lambda x: x.fitness)
-            self.logger.debug("Genome with fitness {} deleted".format(worst_genome.fitness))
-            self.population.genome_list.remove(worst_genome)
+            worst_genome = self.population.get_worst_genome()
+            self.population.remove_genome(worst_genome)
+            self.logger.debug("Genome {} with fitness {} deleted".format(worst_genome.get_id(), worst_genome.get_fitness()))
 
     def _mutate_genomes(self, num_genomes_to_add):
         """
