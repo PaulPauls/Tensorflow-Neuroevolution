@@ -22,7 +22,8 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.population = population
 
         # Read in config parameters for neuroevolution algorithm
-        self.pop_size = int(config.get('YANA','pop_size'))
+        self.pop_size = int(config.get('YANA', 'pop_size'))
+        self.genome_removal_percentage = float(config.get('YANA', 'genome_removal_percentage'))
 
     def create_initial_population(self):
         """
@@ -48,17 +49,11 @@ class YANA(BaseNeuroevolutionAlgorithm):
         ToDo
         :return:
         """
-        # Determine number of genomes to remove and how many to add through recombination and mutation
-        pop_size = int(self.config.algorithm_parameters['YANA']['pop_size'])
-        num_genomes_to_remove = int(pop_size * 0.2)
-        num_genomes_to_add_in_mutation = num_genomes_to_remove
-        # num_genomes_to_add_in_mutation = int(pop_size - num_genomes_to_remove / 2)
-        # num_genomes_to_add_in_recombination = pop_size - num_genomes_to_remove - num_genomes_to_add_in_mutation
-
-        # Select, Recombine and Mutate Population
+        # Select and mutate population. Recombining population has been left out for the sake of brevity
+        num_genomes_to_remove = self.genome_removal_percentage * self.pop_size
         self._select_genomes(num_genomes_to_remove)
-        self._mutate_genomes(num_genomes_to_add_in_mutation)
-        # self._recombine_genomes(num_genomes_to_add_in_recombination)
+        num_genomes_to_add = self.pop_size - num_genomes_to_remove
+        self._mutate_genomes(num_genomes_to_add)
 
     def _select_genomes(self, num_genomes_to_remove):
         """
@@ -66,18 +61,20 @@ class YANA(BaseNeuroevolutionAlgorithm):
         :param num_genomes_to_remove:
         :return:
         """
+        return
         # for now, delete the 20% of the population that is performing the lowest
         for _ in range(num_genomes_to_remove):
             worst_genome = min(self.population.genome_list, key=lambda x: x.fitness)
             self.logger.debug("Genome with fitness {} deleted".format(worst_genome.fitness))
             self.population.genome_list.remove(worst_genome)
 
-    def _mutate_genomes(self, num_genomes_to_add_in_mutation):
+    def _mutate_genomes(self, num_genomes_to_add):
         """
         ToDo
-        :param num_genomes_to_add_in_mutation:
+        :param num_genomes_to_add:
         :return:
         """
+        return
         added_genomes = 0
 
         while added_genomes != num_genomes_to_add_in_mutation:
@@ -114,11 +111,3 @@ class YANA(BaseNeuroevolutionAlgorithm):
             added_genomes += 1
             self.population.genome_list.append(new_genome)
             self.logger.debug("Added new mutated genome: {}".format(new_genome))
-
-    def _recombine_genomes(self, num_genomes_to_add_in_recombination):
-        """
-        ToDo
-        :param num_genomes_to_add_in_recombination:
-        :return:
-        """
-        pass

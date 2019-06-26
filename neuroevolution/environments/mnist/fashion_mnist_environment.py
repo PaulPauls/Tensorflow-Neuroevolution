@@ -44,7 +44,7 @@ class FashionMNISTEnvironment(BaseEnvironment):
         """
         model = genome.to_phenotype()
         _, test_accuracy = model.evaluate(self.test_images, self.test_labels)
-        self.logger.debug("Best Genome {} scored test_accuracy: {}".format(genome.get_id(), test_accuracy))
+        self.logger.debug("Best Genome (Nr. {}) scored test_accuracy: {}".format(genome.get_id(), test_accuracy))
         model.summary()
 
     def get_input_shape(self):

@@ -55,7 +55,7 @@ class EvolutionEngine:
                 genome.set_fitness(self.environment.eval_genome_fitness(genome))
 
             # Apply neuroevolution methods to change up population and create new generation
-            # self.ne_algorithm.create_new_generation()
+            self.ne_algorithm.create_new_generation()
 
             # Break if: max_generations reached, fitness_threshold reached or population extinct.
             self.population.increment_generation_counter()
