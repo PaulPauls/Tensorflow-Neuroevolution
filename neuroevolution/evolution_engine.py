@@ -46,6 +46,8 @@ class EvolutionEngine:
         if self.population.initialized_flag is False:
             self.ne_algorithm.create_initial_population()
 
+        exit(14)
+
         while True:  # Each loop represents one complete generation in the evolution process
 
             # Print/Log information about current generation

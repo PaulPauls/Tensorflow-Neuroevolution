@@ -35,16 +35,13 @@ class YANA(BaseNeuroevolutionAlgorithm):
 
         self.population.set_initialized()
 
-    @staticmethod
-    def create_genome(i):
+    def create_genome(self, genome_id):
         """
         ToDo
+        :param genome_id
         :return:
         """
-        # Somehow determine the input_shape and num_output for environment. For now I just magically know them
-        input_shape = (28, 28)
-        num_output = 10
-        return KerasLayerEncodingGenome(input_shape, num_output)
+        return self.encoding.create_genome(genome_id)
 
     def create_new_generation(self):
         """
