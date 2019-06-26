@@ -12,10 +12,17 @@ def main():
     config = ne.load_config('./fashion_mnist_example_config.cfg')
     env = ne.environments.FashionMNISTEnvironment(config)
     pop = ne.Population()
-    ne_algorithm = ne.algorithms.YANA(config, pop)
+
+    input_shape = env.get_input_shape()
+    num_output = env.get_num_output()
+    encoding = ne.encodings.KerasLayerEncoding(input_shape, num_output, config)
     exit(1)
 
-    engine = ne.EvolutionEngine(ne_algorithm, config, env)
+
+
+    ne_algorithm = ne.algorithms.YANA(encoding, pop, config)
+
+    engine = ne.EvolutionEngine(ne_algorithm, pop, env, config)
 
     exit(1)
 

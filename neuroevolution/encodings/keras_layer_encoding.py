@@ -1,7 +1,6 @@
 import tensorflow as tf
 
-from neuroevolution.encodings.base_genome import BaseGenome
-
+from neuroevolution.encodings import BaseEncoding
 
 class KerasLayerEncodingModel(tf.keras.Model):
 
@@ -18,14 +17,15 @@ class KerasLayerEncodingModel(tf.keras.Model):
         return x
 
 
-class KerasLayerEncodingGenome(BaseGenome):
+class KerasLayerEncoding(BaseEncoding):
     """
     ToDo
     """
-    def __init__(self, input_shape, num_output):
+    def __init__(self, input_shape, num_output, config):
         """
         ToDo
         """
+        exit(1)
         self.fitness = 0
         self.id = None
         self.phenotype = KerasLayerEncodingModel(input_shape, num_output)

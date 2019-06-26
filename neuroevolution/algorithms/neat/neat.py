@@ -5,9 +5,8 @@ class NEAT(BaseNeuroevolutionAlgorithm):
     """
     ToDo
     """
-    def __init__(self, *args):
+    def __init__(self):
         """
         ToDo
-        :param args:
         """
         pass

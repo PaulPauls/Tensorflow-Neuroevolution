@@ -1,6 +1,7 @@
 # Import packages
 from neuroevolution import algorithms
 from neuroevolution import environments
+from neuroevolution import encodings
 
 # Import modules
 from neuroevolution.population import Population

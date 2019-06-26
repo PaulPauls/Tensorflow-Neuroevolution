@@ -6,7 +6,7 @@ Tensorflow-Neuroevolution framework implement the required functions in the inte
 from abc import ABCMeta, abstractmethod
 
 
-class BaseGenome(object):
+class BaseEncoding(object):
     """
     ToDo
     """
@@ -14,9 +14,9 @@ class BaseGenome(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def translate_to_phenotype(self):
+    def create_genome(self):
         """
         ToDo
         :return:
         """
-        raise NotImplementedError("Should implement translate_to_phenotype()")
+        raise NotImplementedError("Should implement create_genome()")

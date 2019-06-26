@@ -45,3 +45,17 @@ class FashionMNISTEnvironment(BaseEnvironment):
         _, test_accuracy = model.evaluate(self.test_images, self.test_labels)
         self.logger.debug("Genome {} scored test_accuracy: {}".format(genome, test_accuracy))
         model.summary()
+
+    def get_input_shape(self):
+        """
+        ToDo
+        :return:
+        """
+        return 28, 28
+
+    def get_num_output(self):
+        """
+        ToDo
+        :return:
+        """
+        return 10

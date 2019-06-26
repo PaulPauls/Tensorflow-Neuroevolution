@@ -30,11 +30,14 @@ class YANA(BaseNeuroevolutionAlgorithm):
         ToDo
         :return:
         """
-        pop_size = int(self.config.algorithm_parameters['YANA']['pop_size'])
-        self.population.create_initial_population(pop_size, self.create_genome)
+        for i in range(self.pop_size):
+            genome = self.create_genome(i)
+            self.population.add_genome(genome)
+
+        self.population.set_initialized()
 
     @staticmethod
-    def create_genome():
+    def create_genome(i):
         """
         ToDo
         :return:

@@ -12,22 +12,15 @@ class Population:
         self.logger = tf.get_logger()
 
         self.genome_list = []
+        self.generation_counter = None
         self.initialized_flag = False
 
-    def create_initial_population(self, pop_size, create_genome_function):
+    def add_genome(self, genome):
         """
         ToDo
-        :param pop_size:
-        :param create_genome_function
         :return:
         """
-        for i in range(pop_size):
-            genome = create_genome_function()
-            genome.set_id(i)
-            self.genome_list.append(genome)
-
-        self.initialized_flag = True
-        self.logger.debug("Created genomes: {}\tExample Genome: {}".format(len(self.genome_list), self.genome_list[0]))
+        self.genome_list.append(genome)
 
     def get_best_genome(self):
         """
@@ -35,6 +28,14 @@ class Population:
         :return:
         """
         return max(self.genome_list, key=lambda x: x.fitness)
+
+    def set_initialized(self):
+        """
+        ToDo
+        :return:
+        """
+        self.generation_counter = 0
+        self.initialized_flag = True
 
     def save_population(self):
         """

@@ -5,7 +5,7 @@ class EvolutionEngine:
     """
     ToDo
     """
-    def __init__(self, ne_algorithm, config, environment, batch_size=None):
+    def __init__(self, ne_algorithm, population, environment, config, batch_size=None):
         """
         ToDo
         :param ne_algorithm:
@@ -16,6 +16,7 @@ class EvolutionEngine:
         self.logger = tf.get_logger()
 
         self.ne_algorithm = ne_algorithm
+        self.population = population
         self.environment = environment
 
         if batch_size is None:
@@ -36,25 +37,28 @@ class EvolutionEngine:
         :return:
         """
 
-        generation_counter = 0
+        if max_generations is None:
+            max_generations = self.max_generations_config
+        if fitness_threshold is None:
+            fitness_threshold = self.fitness_threshold_config
 
-        if self.ne_algorithm.population.initialized_flag is False:
+        if self.population.initialized_flag is False:
             self.ne_algorithm.create_initial_population()
 
         while True:  # Each loop represents one complete generation in the evolution process
 
             # Print/Log information about current generation
 
-            self._evaluate_population(self.ne_algorithm.population)
+            # Evaluate population
+            for genome in self.population.genome_list:
+                genome.fitness = self.environment.eval_genome_fitness(genome)
 
             # Apply neuroevolution methods to change up population and create new generation
             self.ne_algorithm.create_new_generation()
 
             # Break if: max_generations reached, fitness_threshold reached or population extinct.
-            # Otherwise loop indefinitely
-            generation_counter += 1
-
-            if (generation_counter == max_generations) or \
+            self.population.generation_counter += 1
+            if (self.population.generation_counter == max_generations) or \
                     self.ne_algorithm.population.get_best_genome().fitness == fitness_threshold or \
                     self.ne_algorithm.check_population_extinction():
                 break
@@ -67,5 +71,3 @@ class EvolutionEngine:
         :return:
         """
         # Apply self.environment.eval_genome_fitness to whole population
-        for genome in population.genome_list:
-            genome.fitness = self.environment.eval_genome_fitness(genome)
