@@ -2,7 +2,6 @@ import ast
 import tensorflow as tf
 from random import randint
 
-from neuroevolution.encodings import KerasLayerEncodingGenome
 from neuroevolution.algorithms.base_algorithm import BaseNeuroevolutionAlgorithm
 
 
