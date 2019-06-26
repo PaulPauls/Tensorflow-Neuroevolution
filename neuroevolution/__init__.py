@@ -1,5 +1,6 @@
 # Import packages
 from neuroevolution import algorithms
+from neuroevolution import environments
 
 # Import modules
 from neuroevolution.config import Config
