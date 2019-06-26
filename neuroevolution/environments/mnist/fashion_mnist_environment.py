@@ -31,9 +31,9 @@ class FashionMNISTEnvironment(BaseEnvironment):
         :return:
         """
         model = genome.to_phenotype()
-        model.fit(self.train_images, self.train_labels, epochs=self.train_epochs)
+        model.fit(self.train_images, self.train_labels, epochs=self.train_epochs, verbose=0)
         _, test_accuracy = model.evaluate(self.test_images, self.test_labels)
-        self.logger.debug("Genome {} scored test_accuracy: {}".format(genome, test_accuracy))
+        self.logger.debug("Genome {} scored test_accuracy: {}".format(genome.get_id(), test_accuracy))
         return test_accuracy
 
     def replay_genome(self, genome):

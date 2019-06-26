@@ -46,15 +46,15 @@ class EvolutionEngine:
         if self.population.initialized_flag is False:
             self.ne_algorithm.create_initial_population()
 
-        exit(14)
-
         while True:  # Each loop represents one complete generation in the evolution process
 
             # Print/Log information about current generation
 
             # Evaluate population
-            for genome in self.population.genome_list:
+            for genome in self.population.get_genome_list():
                 genome.fitness = self.environment.eval_genome_fitness(genome)
+
+            exit(15)
 
             # Apply neuroevolution methods to change up population and create new generation
             self.ne_algorithm.create_new_generation()

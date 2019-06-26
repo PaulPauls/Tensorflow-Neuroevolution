@@ -23,6 +23,13 @@ class Population:
         """
         self.genome_list.append(genome)
 
+    def get_genome_list(self):
+        """
+        ToDo
+        :return:
+        """
+        return self.genome_list
+
     def get_best_genome(self):
         """
         ToDo
