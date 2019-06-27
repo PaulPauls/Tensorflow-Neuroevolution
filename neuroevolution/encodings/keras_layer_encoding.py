@@ -51,14 +51,9 @@ class KerasLayerGenome(BaseGenome):
         """
         self.id = genome_id
         self.fitness = 0
+        self.input_shape = input_shape
+        self.num_output = num_output
         self.model = KerasLayerModel(input_shape, num_output)
-        self.compile_model()
-
-    def compile_model(self):
-        """
-        ToDo
-        :return:
-        """
         self.model.compile(optimizer='adam',
                            loss='sparse_categorical_crossentropy',
                            metrics=['accuracy'])
@@ -78,7 +73,7 @@ class KerasLayerGenome(BaseGenome):
         :return:
         """
         self.model.layer_list.insert(index, layer)
-        self.compile_model()
+        self._build_layer(index)
 
     def replace_layer(self, index, layer_type, units=None, activation=None):
         """
@@ -94,7 +89,20 @@ class KerasLayerGenome(BaseGenome):
         if activation is None:
             activation = self.model.layer_list[index].activation
         self.model.layer_list[index] = layer_type(units=units, activation=activation)
-        self.compile_model()
+        self._build_layer(index)
+
+    def _build_layer(self, index):
+        """
+        ToDo
+        :param index:
+        :return:
+        """
+        # Get output shape of preceding layer
+        input_shape = self.input_shape
+        for layer_index in range(index-1):
+            input_shape = self.model.layer_list[layer_index].compute_output_shape(input_shape)
+
+        self.model.layer_list[index].build(input_shape)
 
     def get_layer_count(self):
         """
