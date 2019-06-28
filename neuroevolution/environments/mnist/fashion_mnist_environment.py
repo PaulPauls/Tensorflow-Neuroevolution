@@ -5,9 +5,7 @@ from neuroevolution.environments import BaseEnvironment
 
 class FashionMNISTEnvironment(BaseEnvironment):
     """
-    ToDo: Implement possibility that an algorithm will require multiple test environments either due to parallel
-          execution (see batch_size) or the inability of the environment to be properly reset when testing a new genome.
-          Therefore possibly put the creation of this class in the evolution_engine as it will know the batch_size.
+    ToDo
     """
     def __init__(self, config):
         """
