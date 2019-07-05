@@ -13,10 +13,21 @@ def main():
 
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.DEBUG)
     logger = tf.get_logger()
-
     logger.debug(tf.__version__)
 
     config = ne.load_config('./example_yanaAlg_directEnc_cartpoleEnv.cfg')
+
+    environment = ne.environments.CartPoleEnvironment(config)
+
+    encoding = ne.encodings.DirectEncoding(config)
+    population = ne.Population(encoding)
+
+    ne_algorithm = ne.algorithms.YANA(population, config)
+
+    engine = ne.EvolutionEngine(ne_algorithm, population, environment, config)
+
+    best_genome = engine.train()
+    #best_genome.summary()
 
 
 if __name__ == '__main__':

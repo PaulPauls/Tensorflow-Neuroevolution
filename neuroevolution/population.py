@@ -2,8 +2,10 @@ import tensorflow as tf
 
 
 class Population:
-    def __init__(self):
+    def __init__(self, encoding):
         self.logger = tf.get_logger()
+
+        self.encoding = encoding
 
         self.genome_list = []
         self.generation_counter = None

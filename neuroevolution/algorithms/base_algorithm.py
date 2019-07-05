@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class BaseNeuroevolutionAlgorithm(object):
-    __metaclass__ = ABCMeta
+class BaseNeuroevolutionAlgorithm(object, metaclass=ABCMeta):
 
     @abstractmethod
     def create_initial_population(self):

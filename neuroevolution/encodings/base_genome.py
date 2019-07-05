@@ -6,8 +6,7 @@ Tensorflow-Neuroevolution framework implement the required functions in the inte
 from abc import ABCMeta, abstractmethod
 
 
-class BaseGenome(object):
-    __metaclass__ = ABCMeta
+class BaseGenome(object, metaclass=ABCMeta):
 
     @abstractmethod
     def to_phenotype(self):

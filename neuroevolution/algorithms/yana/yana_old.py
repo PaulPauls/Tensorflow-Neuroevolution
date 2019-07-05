@@ -1,3 +1,4 @@
+import ast
 import tensorflow as tf
 from random import random, randint
 
@@ -9,15 +10,17 @@ class YANA(BaseNeuroevolutionAlgorithm):
     Test implementation of the the dummy 'Yet Another Neuroevolution Algorithm', which does all required Neuroevolution
     Algorithm tasks in the most basic way to enable testing the framework.
     """
-    def __init__(self, population, config):
+    def __init__(self, encoding, population, config):
         self.logger = tf.get_logger()
 
+        self.encoding = encoding
         self.population = population
 
         # Read in config parameters for neuroevolution algorithm
-        self.pop_size = int(config.get('NE_ALGORITHM', 'pop_size'))
-        self.genome_removal_prob = float(config.get('NE_ALGORITHM', 'genome_removal_prob'))
-        self.genome_mutate_prob = float(config.get('NE_ALGORITHM', 'genome_mutate_prob'))
+        self.pop_size = int(config.get('YANA', 'pop_size'))
+        self.genome_removal_prob = float(config.get('YANA', 'genome_removal_prob'))
+        self.genome_mutate_prob = float(config.get('YANA', 'genome_mutate_prob'))
+        self.available_activations = ast.literal_eval(config.get('YANA', 'available_activations'))
 
     def create_initial_population(self):
         for _ in range(self.pop_size):

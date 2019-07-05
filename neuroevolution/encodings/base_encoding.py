@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class BaseEncoding(object):
-    __metaclass__ = ABCMeta
+class BaseEncoding(object, metaclass=ABCMeta):
 
     @abstractmethod
     def create_genome(self):
