@@ -2,18 +2,7 @@ import tensorflow as tf
 
 
 class EvolutionEngine:
-    """
-    ToDo
-    """
     def __init__(self, ne_algorithm, population, environment, config, batch_size=None):
-        """
-        ToDo
-        :param ne_algorithm:
-        :param population:
-        :param environment:
-        :param config:
-        :param batch_size: If parameter not specified attempt training process to the maximum parallel degree.
-        """
         self.logger = tf.get_logger()
 
         self.ne_algorithm = ne_algorithm
@@ -31,13 +20,6 @@ class EvolutionEngine:
         self.fitness_threshold_config = float(config.get('EvolutionEngine', 'fitness_threshold'))
 
     def train(self, max_generations=None, fitness_threshold=None):
-        """
-        ToDo
-        :param max_generations:
-        :param fitness_threshold:
-        :return:
-        """
-
         if max_generations is None:
             max_generations = self.max_generations_config
         if fitness_threshold is None:

@@ -7,16 +7,10 @@ from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
 
 class YANA(BaseNeuroevolutionAlgorithm):
     """
-    ToDo: Test implementation of the the dummy 'Yet Another Neuroevolution Algorithm', which does all required
-          Neuroevolution Algorithm tasks in the most basic way to enable testing the framework.
+    Test implementation of the the dummy 'Yet Another Neuroevolution Algorithm', which does all required Neuroevolution
+    Algorithm tasks in the most basic way to enable testing the framework.
     """
     def __init__(self, encoding, population, config):
-        """
-        ToDo
-        :param encoding:
-        :param config:
-        :param population:
-        """
         self.logger = tf.get_logger()
 
         self.encoding = encoding
@@ -29,10 +23,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.available_activations = ast.literal_eval(config.get('YANA', 'available_activations'))
 
     def create_initial_population(self):
-        """
-        ToDo
-        :return:
-        """
         for _ in range(self.pop_size):
             genome = self.encoding.create_genome()
             self.population.add_genome(genome)
@@ -40,10 +30,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.population.set_initialized()
 
     def create_new_generation(self):
-        """
-        ToDo
-        :return:
-        """
         # Select and mutate population. Recombining population has been left out for the sake of brevity
         num_genomes_to_remove = int(self.genome_removal_prob * self.pop_size)
         self._select_genomes(num_genomes_to_remove)
@@ -51,11 +37,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self._mutate_genomes(num_genomes_to_add)
 
     def _select_genomes(self, num_genomes_to_remove):
-        """
-        ToDo
-        :param num_genomes_to_remove:
-        :return:
-        """
         for _ in range(num_genomes_to_remove):
             worst_genome = self.population.get_worst_genome()
             self.population.remove_genome(worst_genome)
@@ -63,11 +44,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
                                                                          worst_genome.get_fitness()))
 
     def _mutate_genomes(self, num_genomes_to_add):
-        """
-        ToDo
-        :param num_genomes_to_add:
-        :return:
-        """
         added_genomes = 0
 
         while added_genomes != num_genomes_to_add:
