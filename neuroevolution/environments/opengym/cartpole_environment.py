@@ -1,10 +1,12 @@
+import gym
+
 from neuroevolution.environments import BaseEnvironment
 
 
 class CartPoleEnvironment(BaseEnvironment):
 
     def __init__(self, config):
-        pass
+        self.env = gym.make("CartPole-v1")
 
     def eval_genome_fitness(self, genome):
         raise NotImplementedError("Should implement eval_genome_fitness()")
@@ -13,7 +15,7 @@ class CartPoleEnvironment(BaseEnvironment):
         raise NotImplementedError("Should implement replay_genome()")
 
     def get_input_shape(self):
-        raise NotImplementedError("Should implement get_input_shape()")
+        return self.env.observation_space.shape
 
     def get_num_output(self):
-        raise NotImplementedError("Should implement get_num_output()")
+        return self.env.action_space.n
