@@ -1,10 +1,13 @@
+import numpy as np
+
 from neuroevolution.environments import BaseEnvironment
 
 
 class XOREnvironment(BaseEnvironment):
 
     def __init__(self, config):
-        raise NotImplementedError("Should implement init()")
+        self.x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+        self.y = np.array([[0], [1], [1], [0]])
 
     def eval_genome_fitness(self, genome):
         raise NotImplementedError("Should implement eval_genome_fitness()")

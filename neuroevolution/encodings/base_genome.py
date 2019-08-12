@@ -9,24 +9,20 @@ from abc import ABCMeta, abstractmethod
 class BaseGenome(object, metaclass=ABCMeta):
 
     @abstractmethod
-    def to_phenotype(self):
-        raise NotImplementedError("Should implement to_phenotype()")
+    def serialize_genotype(self):
+        raise NotImplementedError("Should implement serialize_genotype()")
 
     @abstractmethod
-    def add_layer(self, index, layer):
-        raise NotImplementedError("Should implement add_layer()")
+    def summary(self):
+        raise NotImplementedError("Should implement summary()")
 
     @abstractmethod
-    def replace_layer(self, index, layer_type, units=None, activation=None):
-        raise NotImplementedError("Should implement replace_layer()")
+    def visualize(self):
+        raise NotImplementedError("Should implement visualize()")
 
     @abstractmethod
-    def get_layer_count(self):
-        raise NotImplementedError("Should implement get_layer_count()")
-
-    @abstractmethod
-    def set_id(self, genome_id):
-        raise NotImplementedError("Should implement set_id()")
+    def get_phenotype_model(self):
+        raise NotImplementedError("Should implement get_phenotype_model()")
 
     @abstractmethod
     def get_id(self):

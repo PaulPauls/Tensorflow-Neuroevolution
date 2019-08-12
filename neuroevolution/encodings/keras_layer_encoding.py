@@ -1,3 +1,8 @@
+raise NotImplementedError
+'''
+Not yet compatible with Architecture Refactoring (TFNE still in Alpha)
+'''
+
 import tensorflow as tf
 
 from neuroevolution.encodings import BaseEncoding
