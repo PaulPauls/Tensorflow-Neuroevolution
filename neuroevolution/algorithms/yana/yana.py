@@ -20,6 +20,29 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.genome_mutate_prob = float(config.get('NE_ALGORITHM', 'genome_mutate_prob'))
 
     def create_initial_population(self):
+        raise NotImplementedError("Should implement create_initial_population()")
+
+    def create_new_generation(self):
+        raise NotImplementedError("Should implement create_new_generation()")
+
+
+'''
+class YANA(BaseNeuroevolutionAlgorithm):
+    """
+    Test implementation of the the dummy 'Yet Another Neuroevolution Algorithm', which does all required Neuroevolution
+    Algorithm tasks in the most basic way to enable testing the framework.
+    """
+    def __init__(self, population, config):
+        self.logger = tf.get_logger()
+
+        self.population = population
+
+        # Read in config parameters for neuroevolution algorithm
+        self.pop_size = int(config.get('NE_ALGORITHM', 'pop_size'))
+        self.genome_removal_prob = float(config.get('NE_ALGORITHM', 'genome_removal_prob'))
+        self.genome_mutate_prob = float(config.get('NE_ALGORITHM', 'genome_mutate_prob'))
+
+    def create_initial_population(self):
         for _ in range(self.pop_size):
             genome = self.encoding.create_genome()
             self.population.add_genome(genome)
@@ -79,3 +102,4 @@ class YANA(BaseNeuroevolutionAlgorithm):
             added_genomes += 1
             self.population.add_genome(new_genome)
             self.logger.debug("Added new mutated genome with ID {}".format(new_genome.get_id()))
+'''

@@ -27,7 +27,7 @@ def main():
     engine = ne.EvolutionEngine(ne_algorithm, population, environment, config)
 
     best_genome = engine.train()
-    #best_genome.summary()
+    # best_genome.summary()
 
 
 if __name__ == '__main__':

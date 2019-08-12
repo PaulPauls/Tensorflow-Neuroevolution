@@ -10,7 +10,7 @@ class EvolutionEngine:
         self.environment = environment
 
         if batch_size is None:
-            # Determine self.batch_size
+            # ToDo: Determine self.batch_size
             pass
         else:
             self.batch_size = batch_size
