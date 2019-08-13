@@ -9,6 +9,14 @@ from abc import ABCMeta, abstractmethod
 class BaseGenome(object, metaclass=ABCMeta):
 
     @abstractmethod
+    def __call__(self, *args, **kwargs):
+        raise NotImplementedError("Should implement serialize_genotype()")
+
+    @abstractmethod
+    def __str__(self):
+        raise NotImplementedError("Should implement serialize_genotype()")
+
+    @abstractmethod
     def serialize_genotype(self):
         raise NotImplementedError("Should implement serialize_genotype()")
 

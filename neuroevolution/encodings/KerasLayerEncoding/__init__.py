@@ -1,0 +1,4 @@
+# Import modules
+from neuroevolution.encodings.KerasLayerEncoding.keras_layer_encoding import KerasLayerEncoding
+from neuroevolution.encodings.KerasLayerEncoding.keras_layer_encoding_genome import KerasLayerEncodingGenome
+from neuroevolution.encodings.KerasLayerEncoding.keras_layer_encoding_model import KerasLayerEncodingModel
