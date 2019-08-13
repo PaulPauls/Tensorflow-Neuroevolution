@@ -1,5 +1,0 @@
-# Import modules
-from neuroevolution.encodings.DirectEncoding.direct_encoding import DirectEncoding
-from neuroevolution.encodings.DirectEncoding.direct_encoding_genome import DirectEncodingGenome
-from neuroevolution.encodings.DirectEncoding.direct_encoding_model import DirectEncodingModel
-from neuroevolution.encodings.DirectEncoding.direct_encoding_visualizer import visualize_direct_encoding_genome
