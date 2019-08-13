@@ -16,8 +16,8 @@ class EvolutionEngine:
             self.batch_size = batch_size
 
         # Read in config parameters for evolution process
-        self.max_generations_config = int(config.get('EVOLUTION_ENGINE', 'max_generations'))
-        self.fitness_threshold_config = float(config.get('EVOLUTION_ENGINE', 'fitness_threshold'))
+        self.max_generations_config = config.getint('EVOLUTION_ENGINE', 'max_generations')
+        self.fitness_threshold_config = config.getfloat('EVOLUTION_ENGINE', 'fitness_threshold')
 
     def train(self, max_generations=None, fitness_threshold=None):
         pass

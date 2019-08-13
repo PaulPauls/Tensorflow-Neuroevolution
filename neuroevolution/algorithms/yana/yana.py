@@ -15,9 +15,9 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.population = population
 
         # Read in config parameters for neuroevolution algorithm
-        self.pop_size = int(config.get('NE_ALGORITHM', 'pop_size'))
-        self.genome_removal_prob = float(config.get('NE_ALGORITHM', 'genome_removal_prob'))
-        self.genome_mutate_prob = float(config.get('NE_ALGORITHM', 'genome_mutate_prob'))
+        self.pop_size = config.getint('NE_ALGORITHM', 'pop_size')
+        self.genome_removal_prob = config.getfloat('NE_ALGORITHM', 'genome_removal_prob')
+        self.genome_mutate_prob = config.getfloat('NE_ALGORITHM', 'genome_mutate_prob')
 
     def create_initial_population(self):
         raise NotImplementedError("Should implement create_initial_population()")
