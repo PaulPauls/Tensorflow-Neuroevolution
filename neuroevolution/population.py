@@ -16,10 +16,10 @@ class Population:
         self.genomes = deque(maxlen=self.pop_size)
         self.generation_counter = None
 
-    def initialize(self):
+    def initialize(self, input_shape, num_output):
         self.logger.info("Initializing population of size {}".format(self.pop_size))
         for _ in range(self.pop_size):
-            new_initialized_genome = self.ne_algorithm.create_initial_genome()
+            new_initialized_genome = self.ne_algorithm.create_initial_genome(input_shape, num_output)
             self.genomes.append(new_initialized_genome)
         self.generation_counter = 0
 
@@ -33,7 +33,13 @@ class Population:
         return len(self.genomes) == 0
 
     def summary(self):
-        raise NotImplementedError("summary() not yet implemented")
+        generation_counter = self.generation_counter
+        best_fitness = self.get_best_genome().get_fitness()
+        self.logger.info("#### GENERATION: {} #### BEST_FITNESS: {} #### AVERAGE_FITNESS: {} #### POP_SIZE: {} ####".
+                         format(generation_counter, best_fitness, "[TODO]", self.pop_size))
+        for i in range(self.pop_size):
+            self.logger.info(self.genomes[i].summary())
+        self.logger.info("#"*80 + "\n")
 
     def get_genome(self, i):
         return self.genomes[i]

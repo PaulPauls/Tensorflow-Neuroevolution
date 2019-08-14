@@ -24,7 +24,10 @@ class EvolutionEngine:
 
         # If population not yet initialized, do so. This is unnecessary if an already evolved population is supplied.
         if self.population.get_generation_counter() is None:
-            self.population.initialize()
+            input_shape = self.environment.get_input_shape()
+            num_output = self.environment.get_num_output()
+            self.population.initialize(input_shape, num_output)
+            self.population.summary()
         else:
             self.logger.info("Evolving already initialized population. Initial state of the population:")
             self.population.summary()

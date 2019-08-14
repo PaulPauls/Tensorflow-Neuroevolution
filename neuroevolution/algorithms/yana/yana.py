@@ -10,16 +10,37 @@ class YANA(BaseNeuroevolutionAlgorithm):
     Algorithm tasks in the most basic way to enable testing the framework.
     """
     def __init__(self, encoding, config):
-        self.logger = tf.get_logger()
-
         self.encoding = encoding
 
         # Read in config parameters for neuroevolution algorithm
         self.genome_removal_prob = config.getfloat('NE_ALGORITHM', 'genome_removal_prob')
         self.genome_mutate_prob = config.getfloat('NE_ALGORITHM', 'genome_mutate_prob')
 
-    def create_initial_genome(self):
-        raise NotImplementedError("Should implement create_initial_genome()")
+    def create_initial_genome(self, input_shape, num_output):
+        # Create as initial genome a fully connected (for now) phenotype with specified number of inputs and outputs
+        # genotype = TODO
+
+        # genotype_protoype for testing until actual genotype determination done
+        genotype = {
+            0: {
+                'inputs': [1, 2, 3, 4],
+                'outputs': [5, 6],
+                'layer_activations': [tf.keras.activations.tanh],
+                'out_activation': tf.keras.activations.sigmoid,
+                'default_activation': tf.keras.activations.softmax
+            },
+            1: (1, 5),
+            2: (1, 6),
+            3: (2, 5),
+            4: (2, 6),
+            5: (3, 5),
+            6: (3, 6),
+            7: (4, 5),
+            8: (4, 6)
+        }
+
+        new_initialized_genome = self.encoding.create_new_genome(genotype)
+        return new_initialized_genome
 
     def create_new_generation(self):
         raise NotImplementedError("Should implement create_new_generation()")

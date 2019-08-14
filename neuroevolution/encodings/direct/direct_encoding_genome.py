@@ -53,7 +53,7 @@ class DirectEncodingGenome(BaseGenome):
         return serialzed_genome
 
     def summary(self):
-        print(self)
+        return self.__str__()
         # If phenotype_model build, do: print(self.phenotype_model.summary())
 
     def visualize(self):
