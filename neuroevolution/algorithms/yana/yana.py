@@ -9,15 +9,17 @@ class YANA(BaseNeuroevolutionAlgorithm):
     Test implementation of the the dummy 'Yet Another Neuroevolution Algorithm', which does all required Neuroevolution
     Algorithm tasks in the most basic way to enable testing the framework.
     """
-    def __init__(self, config):
+    def __init__(self, encoding, config):
         self.logger = tf.get_logger()
+
+        self.encoding = encoding
 
         # Read in config parameters for neuroevolution algorithm
         self.genome_removal_prob = config.getfloat('NE_ALGORITHM', 'genome_removal_prob')
         self.genome_mutate_prob = config.getfloat('NE_ALGORITHM', 'genome_mutate_prob')
 
-    def create_initial_population(self):
-        raise NotImplementedError("Should implement create_initial_population()")
+    def create_initial_genome(self):
+        raise NotImplementedError("Should implement create_initial_genome()")
 
     def create_new_generation(self):
         raise NotImplementedError("Should implement create_new_generation()")

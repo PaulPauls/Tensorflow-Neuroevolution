@@ -4,10 +4,9 @@ import tensorflow as tf
 
 
 class Population:
-    def __init__(self, encoding, ne_algorithm, config):
+    def __init__(self, ne_algorithm, config):
         self.logger = tf.get_logger()
 
-        self.encoding = encoding
         self.ne_algorithm = ne_algorithm
 
         # Read in config parameters for population
@@ -18,7 +17,11 @@ class Population:
         self.generation_counter = None
 
     def initialize(self):
-        raise NotImplementedError("initialize() not yet implemented")
+        self.logger.info("Initializing population of size {}".format(self.pop_size))
+        for _ in range(self.pop_size):
+            new_initialized_genome = self.ne_algorithm.create_initial_genome()
+            self.genomes.append(new_initialized_genome)
+        self.generation_counter = 0
 
     def evaluate(self, genome_evaluation_function):
         raise NotImplementedError("evaluate() not yet implemented")

@@ -20,9 +20,9 @@ def main():
     environment = ne.environments.XOREnvironment(config)
 
     encoding = ne.encodings.DirectEncoding(config)
-    ne_algorithm = ne.algorithms.YANA(config)
+    ne_algorithm = ne.algorithms.YANA(encoding, config)
 
-    population = ne.Population(encoding, ne_algorithm, config)
+    population = ne.Population(ne_algorithm, config)
 
     engine = ne.EvolutionEngine(population, environment, config)
 
