@@ -13,7 +13,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.logger = tf.get_logger()
 
         # Read in config parameters for neuroevolution algorithm
-        self.pop_size = config.getint('NE_ALGORITHM', 'pop_size')
         self.genome_removal_prob = config.getfloat('NE_ALGORITHM', 'genome_removal_prob')
         self.genome_mutate_prob = config.getfloat('NE_ALGORITHM', 'genome_mutate_prob')
 

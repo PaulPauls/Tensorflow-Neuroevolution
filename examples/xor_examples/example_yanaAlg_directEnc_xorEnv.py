@@ -22,13 +22,17 @@ def main():
     encoding = ne.encodings.DirectEncoding(config)
     ne_algorithm = ne.algorithms.YANA(config)
 
-    population = ne.Population(encoding, ne_algorithm)
+    population = ne.Population(encoding, ne_algorithm, config)
 
     engine = ne.EvolutionEngine(population, environment, config)
 
     best_genome = engine.train()
-    # best_genome.summary()
 
+    if best_genome is not None:
+        environment.replay_genome(best_genome)
+        best_genome.summary()
+    else:
+        logger.info("Evolution of population did not return a valid genome")
 
 if __name__ == '__main__':
     main()

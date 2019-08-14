@@ -4,13 +4,17 @@ import tensorflow as tf
 
 
 class Population:
-    def __init__(self, encoding, ne_algorithm):
+    def __init__(self, encoding, ne_algorithm, config):
         self.logger = tf.get_logger()
 
         self.encoding = encoding
         self.ne_algorithm = ne_algorithm
 
-        self.genomes = deque(maxlen=None)
+        # Read in config parameters for population
+        self.pop_size = config.getint('POPULATION', 'pop_size')
+
+        # create genome container that is the actual population and set generation_counter to uninitialized
+        self.genomes = deque(maxlen=self.pop_size)
         self.generation_counter = None
 
     def initialize(self):
