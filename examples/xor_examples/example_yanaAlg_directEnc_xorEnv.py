@@ -20,11 +20,11 @@ def main():
     environment = ne.environments.XOREnvironment(config)
 
     encoding = ne.encodings.DirectEncoding(config)
-    population = ne.Population(encoding)
+    ne_algorithm = ne.algorithms.YANA(config)
 
-    ne_algorithm = ne.algorithms.YANA(population, config)
+    population = ne.Population(encoding, ne_algorithm)
 
-    engine = ne.EvolutionEngine(ne_algorithm, population, environment, config)
+    engine = ne.EvolutionEngine(population, environment, config)
 
     best_genome = engine.train()
     # best_genome.summary()

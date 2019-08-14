@@ -4,34 +4,29 @@ import tensorflow as tf
 
 
 class Population:
-    def __init__(self, encoding):
+    def __init__(self, encoding, ne_algorithm):
         self.logger = tf.get_logger()
 
         self.encoding = encoding
+        self.ne_algorithm = ne_algorithm
 
         self.genomes = deque(maxlen=None)
         self.generation_counter = None
 
-    def create_initial_population(self):
-        raise NotImplementedError("create_initial_population() not yet implemented")
+    def initialize(self):
+        raise NotImplementedError("initialize() not yet implemented")
 
-    def load_population(self):
-        raise NotImplementedError("load_population() not yet implemented")
+    def evaluate(self, genome_evaluation_function):
+        raise NotImplementedError("evaluate() not yet implemented")
 
-    def save_population(self):
-        raise NotImplementedError("save_population() not yet implemented")
-
-    def add_genome(self, genome):
-        self.genomes.append(genome)
-
-    def remove_genome(self, genome):
-        self.genomes.remove(genome)
-
-    def increment_generation_counter(self):
-        self.generation_counter += 1
+    def evolve(self):
+        raise NotImplementedError("evolve() not yet implemented")
 
     def check_extinction(self):
         return len(self.genomes) == 0
+
+    def summary(self):
+        raise NotImplementedError("summary() not yet implemented")
 
     def get_genome(self, i):
         return self.genomes[i]
@@ -44,6 +39,12 @@ class Population:
 
     def get_generation_counter(self):
         return self.generation_counter
+
+    def load_population(self):
+        raise NotImplementedError("load_population() not yet implemented")
+
+    def save_population(self):
+        raise NotImplementedError("save_population() not yet implemented")
 
 
 '''

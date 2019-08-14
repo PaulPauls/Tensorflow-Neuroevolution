@@ -9,10 +9,8 @@ class YANA(BaseNeuroevolutionAlgorithm):
     Test implementation of the the dummy 'Yet Another Neuroevolution Algorithm', which does all required Neuroevolution
     Algorithm tasks in the most basic way to enable testing the framework.
     """
-    def __init__(self, population, config):
+    def __init__(self, config):
         self.logger = tf.get_logger()
-
-        self.population = population
 
         # Read in config parameters for neuroevolution algorithm
         self.pop_size = config.getint('NE_ALGORITHM', 'pop_size')
