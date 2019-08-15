@@ -25,7 +25,18 @@ def deserialize_genome(genotype, activations):
 
 
 def check_genome_sanity_function(genotype, activations):
-    raise NotImplementedError()
+    """
+    TODO: Possible aspects to check for:
+    - All genes in genotype are valid and have all required fields
+    - genotype encoding a feed-forward network
+    - unique gene_ids
+    - if layer_activations implemented, check if it actually specifies an activation function for each layer
+    - etc
+    :param genotype:
+    :param activations:
+    :return:
+    """
+    pass
 
 
 def activation_string_to_function(activation_string):
