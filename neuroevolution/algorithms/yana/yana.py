@@ -15,35 +15,50 @@ class YANA(BaseNeuroevolutionAlgorithm):
         # Read in config parameters for neuroevolution algorithm
         self.genome_removal_prob = config.getfloat('NE_ALGORITHM', 'genome_removal_prob')
         self.genome_mutate_prob = config.getfloat('NE_ALGORITHM', 'genome_mutate_prob')
+        self.genome_default_activation = config.get('NE_ALGORITHM', 'default_activation')
+        self.genome_default_activation = self._activation_string_to_function(self.genome_default_activation)
+        self.genome_out_activation = config.get('NE_ALGORITHM', 'out_activation')
+        self.genome_out_activation = self._activation_string_to_function(self.genome_out_activation)
 
     def create_initial_genome(self, input_shape, num_output):
         # Create as initial genome a fully connected (for now) phenotype with specified number of inputs and outputs
-        # genotype = TODO
+        genotype = dict()
 
-        # genotype_protoype for testing until actual genotype determination done
-        genotype = {
-            0: {
-                'inputs': [1, 2, 3, 4],
-                'outputs': [5, 6],
-                'layer_activations': [tf.keras.activations.tanh],
-                'out_activation': tf.keras.activations.sigmoid,
-                'default_activation': tf.keras.activations.softmax
-            },
-            1: (1, 5),
-            2: (1, 6),
-            3: (2, 5),
-            4: (2, 6),
-            5: (3, 5),
-            6: (3, 6),
-            7: (4, 5),
-            8: (4, 6)
-        }
+        # Determine if multidimensional input vector (as this is not yet implemented
+        if len(input_shape) == 1:
+            num_input = input_shape[0]
+
+            # Create a connection from each input node to each output node
+            key_counter = 1
+            for in_node in range(1, num_input+1):
+                for out_node in range(num_input+1, num_input+num_output+1):
+                    conn_in_out = (in_node, out_node)
+                    genotype[key_counter] = conn_in_out
+                    key_counter += 1
+
+            # Create meta information of genotype
+            genotype[0] = {'out_activation': self.genome_out_activation,
+                           'default_activation': self.genome_default_activation}
+
+        else:
+            raise NotImplementedError("Multidimensional Input vector not yet supported")
 
         new_initialized_genome = self.encoding.create_new_genome(genotype)
         return new_initialized_genome
 
     def create_new_generation(self):
         raise NotImplementedError("Should implement create_new_generation()")
+
+    @staticmethod
+    def _activation_string_to_function(activation_string):
+        if activation_string == "sigmoid":
+            return tf.keras.activations.sigmoid
+        elif activation_string == "tanh":
+            return tf.keras.activations.tanh
+        elif activation_string == "softmax":
+            return tf.keras.activations.softmax
+
+        raise NotImplementedError("Specfied activation function ({}) not yet implemented".format(activation_string))
 
 
 '''
