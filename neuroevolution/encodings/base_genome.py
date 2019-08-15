@@ -17,8 +17,8 @@ class BaseGenome(object, metaclass=ABCMeta):
         raise NotImplementedError("Should implement serialize_genotype()")
 
     @abstractmethod
-    def serialize_genotype(self):
-        raise NotImplementedError("Should implement serialize_genotype()")
+    def serialize(self):
+        raise NotImplementedError("Should implement serialize()")
 
     @abstractmethod
     def summary(self):
@@ -31,6 +31,10 @@ class BaseGenome(object, metaclass=ABCMeta):
     @abstractmethod
     def get_phenotype_model(self):
         raise NotImplementedError("Should implement get_phenotype_model()")
+
+    @abstractmethod
+    def get_genotype(self):
+        raise NotImplementedError("Should implement get_genotype()")
 
     @abstractmethod
     def get_id(self):

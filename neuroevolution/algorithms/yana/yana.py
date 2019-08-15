@@ -16,13 +16,13 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.genome_removal_prob = config.getfloat('NE_ALGORITHM', 'genome_removal_prob')
         self.genome_mutate_prob = config.getfloat('NE_ALGORITHM', 'genome_mutate_prob')
         self.genome_default_activation = config.get('NE_ALGORITHM', 'default_activation')
-        self.genome_default_activation = self._activation_string_to_function(self.genome_default_activation)
         self.genome_out_activation = config.get('NE_ALGORITHM', 'out_activation')
-        self.genome_out_activation = self._activation_string_to_function(self.genome_out_activation)
 
     def create_initial_genome(self, input_shape, num_output):
         # Create as initial genome a fully connected (for now) phenotype with specified number of inputs and outputs
         genotype = dict()
+        activations = dict()
+        trainable = True
 
         # Determine if multidimensional input vector (as this is not yet implemented
         if len(input_shape) == 1:
@@ -36,29 +36,18 @@ class YANA(BaseNeuroevolutionAlgorithm):
                     genotype[key_counter] = conn_in_out
                     key_counter += 1
 
-            # Create meta information of genotype
-            genotype[0] = {'out_activation': self.genome_out_activation,
+            # Specify layer activation functions for genotype
+            activations = {'out_activation': self.genome_out_activation,
                            'default_activation': self.genome_default_activation}
 
         else:
             raise NotImplementedError("Multidimensional Input vector not yet supported")
 
-        new_initialized_genome = self.encoding.create_new_genome(genotype)
+        new_initialized_genome = self.encoding.create_new_genome(genotype, activations, trainable=trainable)
         return new_initialized_genome
 
     def create_new_generation(self):
         raise NotImplementedError("Should implement create_new_generation()")
-
-    @staticmethod
-    def _activation_string_to_function(activation_string):
-        if activation_string == "sigmoid":
-            return tf.keras.activations.sigmoid
-        elif activation_string == "tanh":
-            return tf.keras.activations.tanh
-        elif activation_string == "softmax":
-            return tf.keras.activations.softmax
-
-        raise NotImplementedError("Specfied activation function ({}) not yet implemented".format(activation_string))
 
 
 '''
