@@ -1,7 +1,8 @@
-from collections import deque
+import tempfile
+from graphviz import Digraph
 
 from neuroevolution.encodings import BaseGenome
-from neuroevolution.encodings.direct import DirectEncodingModel, visualize_direct_encoding_genome
+from neuroevolution.encodings.direct import DirectEncodingModel
 
 
 class DirectEncodingGene:
@@ -35,6 +36,35 @@ class DirectEncodingGenome(BaseGenome):
 
     def visualize(self):
         raise NotImplementedError()
+        '''
+        graph_name = "Graph_of_Genome_{}".format(genome.genome_id)
+
+        dot = Digraph(name=graph_name, format='png')
+        dot.attr(rankdir='BT')
+
+        edge_list = list()
+        gene = genome.genotype
+        while gene:
+            edge = ('{}'.format(gene.conn_in), '{}'.format(gene.conn_out))
+            edge_list.append(edge)
+            gene = gene.next_gene
+
+        dot.edges(edge_list)
+
+        with dot.subgraph(name='cluster_1') as dot_in:
+            for node in genome.inputs_outputs['inputs']:
+                dot_in.node('{}'.format(node))
+            dot_in.attr(label='inputs')
+            dot_in.attr(color='blue')
+
+        with dot.subgraph(name='cluster_2') as dot_out:
+            for node in genome.inputs_outputs['outputs']:
+                dot_out.node('{}'.format(node))
+            dot_out.attr(label='outputs')
+            dot_out.attr(color='grey')
+
+        dot.view(tempfile.mktemp())
+        '''
 
     def get_phenotype_model(self):
         return self.phenotype_model

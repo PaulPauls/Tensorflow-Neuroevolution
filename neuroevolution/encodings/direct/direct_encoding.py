@@ -1,18 +1,42 @@
+import tensorflow as tf
+from collections import deque
+
 from neuroevolution.encodings import BaseEncoding
-from neuroevolution.encodings.direct import DirectEncodingGenome
+from neuroevolution.encodings.direct import DirectEncodingGenome, DirectEncodingGene
 
-
-def serialize_genome(genotype, activations):
-    pass
-    #raise NotImplementedError()
 
 def deserialize_genome(genotype, activations):
-    pass
-    #raise NotImplementedError()
+    # Convert Key of genotype_dict to gene_id and create with specified connection the custom gene class. Then join
+    # all genes in a double ended linked list
+    deserialized_genotype = deque()
+    for gene_id, conns in genotype.items():
+        new_gene = DirectEncodingGene(gene_id, conns[0], conns[1])
+        deserialized_genotype.append(new_gene)
+
+    # Convert activation functions to the actual tensorflow functions if they are supplied as strings
+    if isinstance(activations['out_activation'], str):
+        activations['out_activation'] = activation_string_to_function(activations['out_activation'])
+    if isinstance(activations['default_activation'], str):
+        activations['default_activation'] = activation_string_to_function(activations['default_activation'])
+    if len(activations.keys()) > 2:
+        raise NotImplementedError("activation dict contains more activations than the 'out' and 'default' activation")
+
+    return deserialized_genotype, activations
+
 
 def check_genome_sanity_function(genotype, activations):
-    pass
-    #raise NotImplementedError()
+    raise NotImplementedError()
+
+
+def activation_string_to_function(activation_string):
+    if activation_string == "softmax":
+        return tf.keras.activations.softmax
+    if activation_string == "sigmoid":
+        return tf.keras.activations.sigmoid
+    if activation_string == "tanh":
+        return tf.keras.activations.tanh
+    raise NotImplementedError("requested activation function not yet implemented in tensorflow function lookup")
+
 
 class DirectEncoding(BaseEncoding):
 
@@ -29,7 +53,7 @@ class DirectEncoding(BaseEncoding):
         # we assume that the genotype is in the correct form (deque of DirectEncodingGenes). If this is not the
         # case will check_genome_sanity() throw an error
         if isinstance(genotype, dict):
-            genotype = deserialize_genome(genotype, activations)
+            genotype, activations = deserialize_genome(genotype, activations)
 
         if check_genome_sanity:
             check_genome_sanity_function(genotype, activations)
