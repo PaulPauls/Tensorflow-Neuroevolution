@@ -33,10 +33,9 @@ class Population:
         return len(self.genomes) == 0
 
     def summary(self):
-        generation_counter = self.generation_counter
-        best_fitness = self.get_best_genome().get_fitness()
+        best_fitness = self.get_best_genome().get_fitness() if self.generation_counter > 0 else None
         self.logger.info("#### GENERATION: {} #### BEST_FITNESS: {} #### AVERAGE_FITNESS: {} #### POP_SIZE: {} ####".
-                         format(generation_counter, best_fitness, "[TODO]", self.pop_size))
+                         format(self.generation_counter, best_fitness, "[TODO]", self.pop_size))
         for i in range(self.pop_size):
             self.logger.info(self.genomes[i].summary())
         self.logger.info("#"*80 + "\n")

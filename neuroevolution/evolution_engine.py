@@ -33,10 +33,12 @@ class EvolutionEngine:
 
         # Evaluate and evolve population in possibly endless loop, according to loop exit conditions.
         while True:
-            # Check exit conditions of loop: max_generations reached, fitness_threshold reached, population extinct
+            # Check exit conditions for loop: population extinct, max_generations reached,
+            #                                 At least one generation old and fitness_threshold reached
             if self.population.check_extinction() or \
-                    self.population.get_generation_counter() > max_generations or \
-                    self.population.get_best_genome().get_fitness() >= fitness_threshold:
+               self.population.get_generation_counter() > max_generations or \
+               self.population.get_generation_counter() > 0 and \
+               self.population.get_best_genome().get_fitness() >= fitness_threshold:
                 break
 
             # Evaluate population and assign each genome a fitness score
