@@ -1,3 +1,5 @@
+from random import randint, choice
+
 from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
 
 
@@ -13,10 +15,11 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.genome_default_activation = config.get('NE_ALGORITHM', 'default_activation')
         self.genome_out_activation = config.get('NE_ALGORITHM', 'out_activation')
 
+        self.trainable = True
+
     def create_initial_genome(self, input_shape, num_output):
         # Create as initial genome a fully connected (for now) phenotype with specified number of inputs and outputs
         genotype = dict()
-        trainable = True
 
         # Determine if multidimensional input vector (as this is not yet implemented
         if len(input_shape) == 1:
@@ -37,8 +40,40 @@ class YANA(BaseNeuroevolutionAlgorithm):
         else:
             raise NotImplementedError("Multidimensional Input vector not yet supported")
 
-        new_initialized_genome = self.encoding.create_new_genome(genotype, activations, trainable=trainable)
+        new_initialized_genome = self.encoding.create_new_genome(genotype, activations, trainable=self.trainable)
         return new_initialized_genome
 
     def create_mutated_genome(self, genome):
-        return self.create_initial_genome((2,), 1)
+        genotype, activations = genome.serialize()
+        topology_levels = genome.get_topology_levels()
+
+        # 50/50 chance of either adding a new connection or adding a new node to the existing genome
+        add_connection = randint(0,1)
+        add_connection = 0
+        if add_connection:
+            # Add new connection
+            for layer_index in range(len(topology_levels)-1):
+                possible_feedforward_nodes = set.union(*(topology_levels[layer_index+1:]))
+                for node in topology_levels[layer_index]:
+                    for feedforward_node in possible_feedforward_nodes:
+                        if (node, feedforward_node) not in genotype.values():
+                            key = max(genotype.keys())+1
+                            genotype[key] = (node, feedforward_node)
+                            mutated_genome = self.encoding.create_new_genome(genotype, activations,
+                                                                             trainable=self.trainable)
+                            return mutated_genome
+
+        # if no possible connection to add was found, add a new node:
+        output_node_layer = randint(1, len(topology_levels)-1)
+        input_node_layer = randint(0, output_node_layer-1)
+
+        output_node = choice(tuple(topology_levels[output_node_layer]))
+        input_node = choice(tuple(topology_levels[input_node_layer]))
+        new_node = max(set.union(*topology_levels)) + 1
+
+        key = max(genotype.keys()) + 1
+        genotype[key] = (input_node, new_node)
+        genotype[key+1] = (new_node, output_node)
+
+        mutated_genome = self.encoding.create_new_genome(genotype, activations, trainable=self.trainable)
+        return mutated_genome

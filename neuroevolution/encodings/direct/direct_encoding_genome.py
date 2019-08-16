@@ -77,8 +77,11 @@ class DirectEncodingGenome(BaseGenome):
     def get_genotype(self):
         return self.genotype
 
-    def get_genotype_and_activations(self):
-        return self.genotype, self.activations
+    def get_activations(self):
+        return self.activations
+
+    def get_topology_levels(self):
+        return self.topology_levels
 
     def get_id(self):
         return self.genome_id

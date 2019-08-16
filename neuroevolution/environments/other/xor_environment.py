@@ -22,7 +22,7 @@ class XOREnvironment(BaseEnvironment):
 
         # Compile and train the model
         model.compile(optimizer=optimizer, loss=loss_function)
-        model.fit(self.x, self.y, batch_size=1, epochs=10, verbose=0)
+        model.fit(self.x, self.y, batch_size=1, epochs=100, verbose=0)
 
         # Calculate the fitness of the genome as the percentage of accuracy in its prediction
         evaluated_fitness = 1 - loss_function(self.y, model.predict(self.x))
