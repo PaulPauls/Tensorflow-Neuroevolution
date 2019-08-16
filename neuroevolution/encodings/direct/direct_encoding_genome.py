@@ -19,7 +19,7 @@ class DirectEncodingGenome(BaseGenome):
         self.activations = activations
         self.trainable = trainable
 
-        self.fitness = None
+        self.fitness = 0
         self.phenotype_model, self.topology_levels = self._create_phenotype_model()
 
     def __call__(self, *args, **kwargs):

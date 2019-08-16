@@ -28,11 +28,11 @@ class Population:
 
     def evaluate(self, genome_evaluation_function):
         # Evaluate each genome that has so far not been evaluated (effectively having a fitness_score of None)
-        self.logger.debug("Evaluating {} genomes in generation {}".format(self.pop_size, self.generation_counter))
+        self.logger.debug("Evaluating {} genomes in generation {} ...".format(self.pop_size, self.generation_counter))
         for genome in self.genomes:
-            if genome.get_fitness() is None:
+            if genome.get_fitness() == 0:
                 genome_evaluation_function(genome)
-            self.logger.debug('Genome {} scored fitness {}'.format(genome.get_id(), genome.get_fitness()))
+                # self.logger.debug('Genome {} scored fitness {}'.format(genome.get_id(), genome.get_fitness()))
 
     def evolve(self):
         replacement_count = int(self.replacement_percentage * self.pop_size)
@@ -43,18 +43,18 @@ class Population:
 
         # Add the same number of mutated genomes (mutated from random genomes still in pop) back to the population
         for _ in range(replacement_count):
-            genome_to_mutate = self.genomes[randint(0, self.pop_size-replacement_count)]
+            genome_to_mutate = self.genomes[randint(0, self.pop_size-replacement_count-1)]
             mutated_genome = self.ne_algorithm.create_mutated_genome(genome_to_mutate)
             self.genomes.append(mutated_genome)
 
-        self.pop_size = self.pop_size - replacement_count
+        self.pop_size = len(self.genomes)
         self.generation_counter += 1
         self.logger.debug(
-            "{} genomes have been replaced. There are {} genomes present in generation {} after evolution"
+            "{} genomes have been replaced. After the evolution there are {} genomes present in generation {}"
             .format(replacement_count, self.pop_size, self.generation_counter))
 
     def check_extinction(self):
-        return len(self.genomes) == 0
+        return self.pop_size == 0
 
     def summary(self):
         best_fitness = self.get_best_genome().get_fitness() if self.generation_counter > 0 else None
@@ -79,60 +79,10 @@ class Population:
 
     def get_average_fitness(self):
         fitness_sum = sum(genome.get_fitness() for genome in self.genomes)
-        return (fitness_sum / self.pop_size)
+        return fitness_sum / self.pop_size
 
     def load_population(self):
         raise NotImplementedError("load_population() not yet implemented")
 
     def save_population(self):
         raise NotImplementedError("save_population() not yet implemented")
-
-
-'''
-class Population:
-    def __init__(self, encoding):
-        self.logger = tf.get_logger()
-
-        self.encoding = encoding
-
-        self.genome_list = []
-        self.generation_counter = None
-        self.initialized_flag = False
-
-    def add_genome(self, genome):
-        self.genome_list.append(genome)
-
-    def remove_genome(self, genome):
-        self.genome_list.remove(genome)
-
-    def get_genome_list(self):
-        return self.genome_list
-
-    def get_genome(self, i):
-        return self.genome_list[i]
-
-    def get_best_genome(self):
-        return max(self.genome_list, key=lambda x: x.get_fitness())
-
-    def get_worst_genome(self):
-        return min(self.genome_list, key=lambda x: x.get_fitness())
-
-    def set_initialized(self):
-        self.generation_counter = 0
-        self.initialized_flag = True
-
-    def increment_generation_counter(self):
-        self.generation_counter += 1
-
-    def get_generation_counter(self):
-        return self.generation_counter
-
-    def check_extinction(self):
-        return len(self.genome_list) == 0
-
-    def save_population(self):
-        raise NotImplementedError("save_population() not yet implemented")
-
-    def load_population(self):
-        raise NotImplementedError("load_population() not yet implemented")
-'''

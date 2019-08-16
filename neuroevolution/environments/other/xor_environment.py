@@ -22,14 +22,18 @@ class XOREnvironment(BaseEnvironment):
 
         # Compile and train the model
         model.compile(optimizer=optimizer, loss=loss_function)
-        model.fit(self.x, self.y, batch_size=1, epochs=1000, verbose=0)
+        model.fit(self.x, self.y, batch_size=1, epochs=10, verbose=0)
 
         # Calculate the fitness of the genome as the percentage of accuracy in its prediction
         evaluated_fitness = 1 - loss_function(self.y, model.predict(self.x))
         genome.set_fitness(evaluated_fitness)
 
     def replay_genome(self, genome):
-        raise NotImplementedError("Should implement replay_genome()")
+        model = genome.get_phenotype_model()
+        print("#"*100)
+        print("Solution Values:\n{}".format(self.y))
+        print("Predicted Values:\n{}".format(model.predict(self.x)))
+        print("#"*100)
 
     def get_input_shape(self):
         return self.input_shape

@@ -45,11 +45,11 @@ class EvolutionEngine:
             genome_evaluation_function = self.environment.eval_genome_fitness
             self.population.evaluate(genome_evaluation_function)
 
+            # Give summary of population after each evaluation
+            self.population.summary()
+
             # Create the next generation of the population
             self.population.evolve()
-
-            # Give summary of population after each generation
-            self.population.summary()
 
         best_genome = self.population.get_best_genome() if not self.population.check_extinction() else None
 
