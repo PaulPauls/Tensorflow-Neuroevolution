@@ -82,4 +82,6 @@ class DirectEncodingGenome(BaseGenome):
         return self.fitness
 
     def _create_phenotype_model(self):
-        raise NotImplementedError()
+        phenotype_model = DirectEncodingModel(self.genotype, self.activations, self.trainable)
+        topology_levels = phenotype_model.get_topology_dependency_levels()
+        return phenotype_model, topology_levels

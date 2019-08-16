@@ -22,43 +22,42 @@ class CustomLayer(tf.keras.layers.Layer):
 
 
 class DirectEncodingModel(tf.keras.Model):
-    def __init__(self, genotype, inputs_outputs, activations, trainable=True):
+    def __init__(self, genotype, activations, trainable):
         super(DirectEncodingModel, self).__init__(trainable=trainable)
-        # Create dictionary the keys are nodes that require preceding nodes to be evaluated beforehand. The values of
-        # each key is the very set of those nodes that need to be evalueated beforehand.
-        gene = genotype
+        # Create node_dependency dictionary. The keys are nodes that require preceding nodes to be evaluated beforehand.
+        # The corresponding values of each key is the set of those nodes that need to be evalueated beforehand.
+
         node_dependencies = dict()
-        while gene:
+        for gene in genotype:
             key = gene.conn_out
             if key in node_dependencies.keys():
                 node_dependencies[key].add(gene.conn_in)
             else:
                 node_dependencies[key] = {gene.conn_in}
-            gene = gene.next_gene
 
         # Create levels of dependency from the specified node_dependencies dict, showing which nodes can be evaluated
         # in parallel and which nodes need to be evaluated after all in the preceding levels have been.
-        topology_dependency_levels = list(toposort(node_dependencies))
+        self.topology_dependency_levels = list(toposort(node_dependencies))
 
         # Create a translation dict that takes node as key and returns the topology coordinate tuple in the form
         # (layer_index, node_index_within_layer)
         node_to_topology = dict()
-        for layer_index in range(len(topology_dependency_levels)):
-            layer = list(topology_dependency_levels[layer_index])
+        for layer_index in range(len(self.topology_dependency_levels)):
+            layer = list(self.topology_dependency_levels[layer_index])
             for node_index in range(len(layer)):
                 node = layer[node_index]
                 node_to_topology[node] = (layer_index, node_index)
 
         # Create the double list of custom_layers. In the first dimension it traverses through layers, in the second
         # it traverses through the nodes in the respective layer.
-        self.custom_layers = [None] * (len(topology_dependency_levels) - 1)
+        self.custom_layers = [None] * (len(self.topology_dependency_levels) - 1)
 
         # Traverse through each layer receiving an input from a preceding layer (therefore skip input layer and start
         # layer_index with 1) and create a 'joined_layer_node_dependencies dict in which the key is the set of nodes in
         # the layer that gets input from the nodes in the corresponding values.
-        for layer_index in range(1, len(topology_dependency_levels)):
+        for layer_index in range(1, len(self.topology_dependency_levels)):
             layer_node_dependencies = {key: node_dependencies[key] for key in
-                                       node_dependencies.keys() & topology_dependency_levels[layer_index]}
+                                       node_dependencies.keys() & self.topology_dependency_levels[layer_index]}
 
             joined_layer_node_dependencies = self.join_keys_with_same_value(layer_node_dependencies)
 
@@ -86,6 +85,9 @@ class DirectEncodingModel(tf.keras.Model):
                     layer_out = tfkl.concatenate([layer_out, out])
             input_list.append(layer_out)
         return input_list[-1]
+
+    def get_topology_dependency_levels(self):
+        return self.topology_dependency_levels
 
     @staticmethod
     def join_keys_with_same_value(input_dict):

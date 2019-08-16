@@ -27,7 +27,6 @@ class EvolutionEngine:
             input_shape = self.environment.get_input_shape()
             num_output = self.environment.get_num_output()
             self.population.initialize(input_shape, num_output)
-            self.population.summary()
         else:
             self.logger.info("Evolving already initialized population. Initial state of the population:")
             self.population.summary()
