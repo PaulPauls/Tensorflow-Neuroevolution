@@ -69,7 +69,7 @@ class DirectEncodingGenome(BaseGenome):
 
         # Render graph
         # Alternatively use directory='genome_visualizations' when history of visualized genomes requested
-        dot.render(filename=tempfile.mktemp(), view=True, cleanup=True, format='png')
+        dot.render(directory=tempfile.mkdtemp(), view=True, cleanup=True, format='png')
 
     def get_phenotype_model(self):
         return self.phenotype_model

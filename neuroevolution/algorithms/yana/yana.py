@@ -21,7 +21,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
     def create_initial_genome(self, input_shape, num_output):
         # Create as initial genome a fully connected (for now) phenotype with specified number of inputs and outputs
         genotype = dict()
-        activations = dict()
         trainable = True
 
         # Determine if multidimensional input vector (as this is not yet implemented
