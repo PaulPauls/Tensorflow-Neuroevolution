@@ -24,7 +24,10 @@ class Population:
         self.generation_counter = 0
 
     def evaluate(self, genome_evaluation_function):
-        raise NotImplementedError("evaluate() not yet implemented")
+        self.logger.debug('Evaluating {} genomes in generation {}'.format(self.pop_size, self.generation_counter))
+        for genome in self.genomes:
+            genome_evaluation_function(genome)
+            # self.logger.debug('Genome {} scored fitness {}'.format(genome.get_id(), genome.get_fitness()))
 
     def evolve(self):
         raise NotImplementedError("evolve() not yet implemented")
