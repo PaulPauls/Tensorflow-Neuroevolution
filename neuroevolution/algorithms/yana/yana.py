@@ -13,8 +13,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.encoding = encoding
 
         # Read in config parameters for neuroevolution algorithm
-        self.genome_removal_prob = config.getfloat('NE_ALGORITHM', 'genome_removal_prob')
-        self.genome_mutate_prob = config.getfloat('NE_ALGORITHM', 'genome_mutate_prob')
+        self.mutation_rate = config.getfloat('NE_ALGORITHM', 'mutation_rate')
         self.genome_default_activation = config.get('NE_ALGORITHM', 'default_activation')
         self.genome_out_activation = config.get('NE_ALGORITHM', 'out_activation')
 
@@ -45,9 +44,19 @@ class YANA(BaseNeuroevolutionAlgorithm):
         new_initialized_genome = self.encoding.create_new_genome(genotype, activations, trainable=trainable)
         return new_initialized_genome
 
-    def create_new_generation(self):
-        raise NotImplementedError("Should implement create_new_generation()")
+    def create_new_generation(self, genomes, pop_size):
+        # This simplified neuroevolution algorithm only removes genomes and replaces them with mutated versions of
+        # the remaining genomes
+        evolution_count = int(pop_size * self.mutation_rate)
+        self._select_genomes(genomes, evolution_count)
+        self._mutate_genomes(genomes, evolution_count)
 
+    def _select_genomes(self, genomes, evolution_count):
+        raise NotImplementedError()
+
+
+    def _mutate_genomes(self, genomes, evolution_count):
+        raise NotImplementedError()
 
 '''
 class YANA(BaseNeuroevolutionAlgorithm):

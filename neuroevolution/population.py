@@ -32,7 +32,10 @@ class Population:
             self.logger.debug('Genome {} scored fitness {}'.format(genome.get_id(), genome.get_fitness()))
 
     def evolve(self):
-        raise NotImplementedError("evolve() not yet implemented")
+        self.ne_algorithm.create_new_generation(self.genomes, self.pop_size)
+        self.generation_counter += 1
+        self.logger.debug("{} genomes present in generation {} after evolution".
+                          format(self.pop_size, self.generation_counter))
 
     def check_extinction(self):
         return len(self.genomes) == 0
