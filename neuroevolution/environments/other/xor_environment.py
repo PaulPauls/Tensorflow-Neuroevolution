@@ -11,7 +11,7 @@ class XOREnvironment(BaseEnvironment):
         self.y = np.array([[0], [1], [1], [0]])
 
         self.input_shape = ast.literal_eval(config.get('ENVIRONMENT', 'input_shape', fallback='(2,)'))
-        self.num_output = config.getint('ENVIRONMENT', 'num_output', fallback=2)
+        self.num_output = config.getint('ENVIRONMENT', 'num_output', fallback=1)
 
     def eval_genome_fitness(self, genome):
         raise NotImplementedError("Should implement eval_genome_fitness()")
