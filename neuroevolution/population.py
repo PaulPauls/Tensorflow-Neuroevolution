@@ -10,15 +10,17 @@ class Population:
         self.ne_algorithm = ne_algorithm
 
         # Read in config parameters for population
-        self.pop_size = config.getint('POPULATION', 'pop_size')
+        self.replacement_percentage = config.getfloat('POPULATION', 'replacement_percentage')
+        self.supplied_pop_size = config.getint('POPULATION', 'pop_size')
 
         # create genome container that is the actual population and set generation_counter to uninitialized
-        self.genomes = deque(maxlen=self.pop_size)
+        self.pop_size = self.supplied_pop_size
+        self.genomes = deque(maxlen=self.supplied_pop_size)
         self.generation_counter = None
 
     def initialize(self, input_shape, num_output):
-        self.logger.info("Initializing population of size {}".format(self.pop_size))
-        for _ in range(self.pop_size):
+        self.logger.info("Initializing population of size {}".format(self.supplied_pop_size))
+        for _ in range(self.supplied_pop_size):
             new_initialized_genome = self.ne_algorithm.create_initial_genome(input_shape, num_output)
             self.genomes.append(new_initialized_genome)
         self.generation_counter = 0
@@ -32,10 +34,16 @@ class Population:
             self.logger.debug('Genome {} scored fitness {}'.format(genome.get_id(), genome.get_fitness()))
 
     def evolve(self):
-        self.ne_algorithm.create_new_generation(self.genomes, self.pop_size)
+        replacement_count = int(self.replacement_percentage * self.pop_size)
+        # Remove the in replacement_count specified amount of the worst performing members of the population
+        for _ in range(replacement_count):
+            worst_genome = self.get_worst_genome()
+            self.genomes.remove(worst_genome)
+
+        self.pop_size = self.pop_size - replacement_count
         self.generation_counter += 1
-        self.logger.debug("{} genomes present in generation {} after evolution".
-                          format(self.pop_size, self.generation_counter))
+        self.logger.debug("{} genomes have been replaced. There are {} genomes present in generation {} after evolution"
+                          .format(replacement_count, self.pop_size, self.generation_counter))
 
     def check_extinction(self):
         return len(self.genomes) == 0
@@ -45,8 +53,8 @@ class Population:
         self.logger.info("#### GENERATION: {} #### BEST_FITNESS: {} #### AVERAGE_FITNESS: {} #### POP_SIZE: {} ####".
                          format(self.generation_counter, best_fitness, "[TODO]", self.pop_size))
         for i in range(self.pop_size):
-            self.logger.info(self.genomes[i].summary())
-        self.logger.info("#"*80 + "\n")
+            self.logger.info(self.genomes[i])
+        self.logger.info("#"*100 + "\n")
 
     def get_genome(self, i):
         return self.genomes[i]
