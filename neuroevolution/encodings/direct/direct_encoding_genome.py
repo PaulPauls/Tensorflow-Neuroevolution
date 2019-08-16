@@ -23,16 +23,25 @@ class DirectEncodingGenome(BaseGenome):
         self.phenotype_model, self.topology_levels = self._create_phenotype_model()
 
     def __call__(self, *args, **kwargs):
-        raise NotImplementedError()
+        return self.phenotype_model(*args, **kwargs)
 
     def __str__(self):
-        raise NotImplementedError()
+        serialized_genotype, serialized_activations = self.serialize()
+        string_repr = "Genome-ID: {} --- Fitness: {} --- Genotype: {} --- Activations: {}".format(
+            self.genome_id, self.fitness, serialized_genotype, serialized_activations)
+        return string_repr
 
     def serialize(self):
-        raise NotImplementedError()
+        # Convert genome into the explicit genotype and activation dicts that can also be supplied directly
+        serialized_genotype = dict()
+        for gene in self.genotype:
+            serialized_genotype[gene.gene_id] = (gene.conn_in, gene.conn_out)
+
+        return serialized_genotype, self.activations
 
     def summary(self):
-        raise NotImplementedError()
+        print(self)
+        # Possibly print the phenotype.summary() in this function as well
 
     def visualize(self):
         # Define meta parameters of Digraph
