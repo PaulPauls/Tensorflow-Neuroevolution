@@ -27,7 +27,7 @@ class DirectEncodingGenome(BaseGenome):
 
     def __str__(self):
         serialized_genotype, serialized_activations = self.serialize()
-        string_repr = "Genome-ID: {} --- Fitness: {} --- Genotype: {} --- Activations: {}".format(
+        string_repr = "Genome-ID: {} \t--- Fitness: {} \t--- Genotype: {} \t--- Activations: {}".format(
             self.genome_id, self.fitness, serialized_genotype, serialized_activations)
         return string_repr
 

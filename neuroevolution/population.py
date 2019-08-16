@@ -1,3 +1,4 @@
+from random import randint
 from collections import deque
 
 import tensorflow as tf
@@ -40,10 +41,17 @@ class Population:
             worst_genome = self.get_worst_genome()
             self.genomes.remove(worst_genome)
 
+        # Add the same number of mutated genomes (mutated from random genomes still in pop) back to the population
+        for _ in range(replacement_count):
+            genome_to_mutate = self.genomes[randint(0, self.pop_size-replacement_count)]
+            mutated_genome = self.ne_algorithm.create_mutated_genome(genome_to_mutate)
+            self.genomes.append(mutated_genome)
+
         self.pop_size = self.pop_size - replacement_count
         self.generation_counter += 1
-        self.logger.debug("{} genomes have been replaced. There are {} genomes present in generation {} after evolution"
-                          .format(replacement_count, self.pop_size, self.generation_counter))
+        self.logger.debug(
+            "{} genomes have been replaced. There are {} genomes present in generation {} after evolution"
+            .format(replacement_count, self.pop_size, self.generation_counter))
 
     def check_extinction(self):
         return len(self.genomes) == 0
