@@ -1,35 +1,19 @@
-import tensorflow as tf
+raise NotImplementedError
+'''
+Not yet compatible with Architecture Refactoring (TFNE Frameowrk still in early Alpha!)
+'''
 
-from neuroevolution.encodings import BaseEncoding
 from neuroevolution.encodings import BaseGenome
+from neuroevolution.encodings.layer import KerasLayerEncodingModel
 
 
-class KerasLayerModel(tf.keras.Model):
-
-    def __init__(self, input_shape, num_output):
-        super(KerasLayerModel, self).__init__(name='keras_layer_model')
-        self.layer_list = []
-        self.layer_list.append(tf.keras.layers.Flatten(input_shape=input_shape))
-        self.layer_list.append(tf.keras.layers.Dense(num_output, activation='softmax'))
-
-    def call(self, inputs, **kwargs):
-        x = inputs
-        for layer in self.layer_list:
-            x = layer(x)
-        return x
-
-    def compute_output_signature(self, input_signature):
-        # ToDo
-        pass
-
-
-class KerasLayerGenome(BaseGenome):
+class KerasLayerEncodingGenome(BaseGenome):
     def __init__(self, input_shape, num_output, genome_id):
         self.id = genome_id
         self.fitness = 0
         self.input_shape = input_shape
         self.num_output = num_output
-        self.model = KerasLayerModel(input_shape, num_output)
+        self.model = KerasLayerEncodingModel(input_shape, num_output)
         self.model.compile(optimizer='adam',
                            loss='sparse_categorical_crossentropy',
                            metrics=['accuracy'])
@@ -71,21 +55,3 @@ class KerasLayerGenome(BaseGenome):
 
     def get_fitness(self):
         return self.fitness
-
-
-class KerasLayerEncoding(BaseEncoding):
-    def __init__(self, input_shape, num_output, config):
-        self.input_shape = input_shape
-        self.num_output = num_output
-
-        self.genome_id_counter = 0
-
-    def create_genome(self):
-        genome = KerasLayerGenome(self.input_shape, self.num_output, self.genome_id_counter)
-        self.genome_id_counter += 1
-        return genome
-
-    def pop_id(self):
-        new_id = self.genome_id_counter
-        self.genome_id_counter += 1
-        return new_id

@@ -2,52 +2,55 @@ import tensorflow as tf
 
 
 class EvolutionEngine:
-    def __init__(self, ne_algorithm, population, environment, config, batch_size=None):
+    def __init__(self, population, environment, config, batch_size=None):
         self.logger = tf.get_logger()
 
-        self.ne_algorithm = ne_algorithm
         self.population = population
         self.environment = environment
 
         if batch_size is None:
-            # Determine self.batch_size
+            # ToDo: Determine self.batch_size
             pass
         else:
             self.batch_size = batch_size
 
         # Read in config parameters for evolution process
-        self.max_generations_config = int(config.get('EvolutionEngine', 'max_generations'))
-        self.fitness_threshold_config = float(config.get('EvolutionEngine', 'fitness_threshold'))
+        self.max_generations_config = config.getint('EVOLUTION_ENGINE', 'max_generations')
+        self.fitness_threshold_config = config.getfloat('EVOLUTION_ENGINE', 'fitness_threshold')
 
     def train(self, max_generations=None, fitness_threshold=None):
-        if max_generations is None:
-            max_generations = self.max_generations_config
-        if fitness_threshold is None:
-            fitness_threshold = self.fitness_threshold_config
+        max_generations = self.max_generations_config if max_generations is None else max_generations
+        fitness_threshold = self.fitness_threshold_config if fitness_threshold is None else fitness_threshold
 
-        if self.population.initialized_flag is False:
-            self.ne_algorithm.create_initial_population()
+        # If population not yet initialized, do so. This is unnecessary if an already evolved population is supplied.
+        if self.population.get_generation_counter() is None:
+            input_shape = self.environment.get_input_shape()
+            num_output = self.environment.get_num_output()
+            self.population.initialize(input_shape, num_output)
+        else:
+            self.logger.info("Evolving already initialized population. Initial state of the population:")
+            self.population.summary()
 
-        while True:  # Each loop represents one complete generation in the evolution process
-
-            # Print/Log information about current generation
-
-            # Evaluate population
-            for genome in self.population.get_genome_list():
-                genome.set_fitness(self.environment.eval_genome_fitness(genome))
-
-            # Apply neuroevolution methods to change up population and create new generation
-            self.ne_algorithm.create_new_generation()
-
-            # Break if: max_generations reached, fitness_threshold reached or population extinct.
-            self.population.increment_generation_counter()
-            if (self.population.get_generation_counter() == max_generations) or \
-                    self.population.get_best_genome().get_fitness() == fitness_threshold or \
-                    self.population.check_extinction():
+        # Evaluate and evolve population in possibly endless loop, according to loop exit conditions.
+        while True:
+            # Check exit conditions for loop: population extinct, max_generations reached,
+            #                                 At least one generation old and fitness_threshold reached
+            if self.population.check_extinction() or \
+               self.population.get_generation_counter() > max_generations or \
+               self.population.get_generation_counter() > 0 and \
+               self.population.get_best_genome().get_fitness() >= fitness_threshold:
                 break
 
-        if self.population.check_extinction():
-            best_genome = None
-        else:
-            best_genome = self.population.get_best_genome()
+            # Evaluate population and assign each genome a fitness score
+            genome_evaluation_function = self.environment.eval_genome_fitness
+            self.population.evaluate(genome_evaluation_function)
+
+            # Give summary of population after each evaluation
+            self.population.summary()
+
+            # Create the next generation of the population
+            self.population.evolve()
+
+        best_genome = self.population.get_best_genome() if not self.population.check_extinction() else None
+
         return best_genome

@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class BaseEnvironment(object):
-    __metaclass__ = ABCMeta
+class BaseEnvironment(object, metaclass=ABCMeta):
 
     @abstractmethod
     def eval_genome_fitness(self, genome):

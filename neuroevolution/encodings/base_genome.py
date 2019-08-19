@@ -6,28 +6,35 @@ Tensorflow-Neuroevolution framework implement the required functions in the inte
 from abc import ABCMeta, abstractmethod
 
 
-class BaseGenome(object):
-    __metaclass__ = ABCMeta
+class BaseGenome(object, metaclass=ABCMeta):
 
     @abstractmethod
-    def to_phenotype(self):
-        raise NotImplementedError("Should implement to_phenotype()")
+    def __call__(self, *args, **kwargs):
+        raise NotImplementedError("Should implement serialize_genotype()")
 
     @abstractmethod
-    def add_layer(self, index, layer):
-        raise NotImplementedError("Should implement add_layer()")
+    def __str__(self):
+        raise NotImplementedError("Should implement serialize_genotype()")
 
     @abstractmethod
-    def replace_layer(self, index, layer_type, units=None, activation=None):
-        raise NotImplementedError("Should implement replace_layer()")
+    def serialize(self):
+        raise NotImplementedError("Should implement serialize()")
 
     @abstractmethod
-    def get_layer_count(self):
-        raise NotImplementedError("Should implement get_layer_count()")
+    def summary(self):
+        raise NotImplementedError("Should implement summary()")
 
     @abstractmethod
-    def set_id(self, genome_id):
-        raise NotImplementedError("Should implement set_id()")
+    def visualize(self):
+        raise NotImplementedError("Should implement visualize()")
+
+    @abstractmethod
+    def get_phenotype_model(self):
+        raise NotImplementedError("Should implement get_phenotype_model()")
+
+    @abstractmethod
+    def get_genotype(self):
+        raise NotImplementedError("Should implement get_genotype()")
 
     @abstractmethod
     def get_id(self):
