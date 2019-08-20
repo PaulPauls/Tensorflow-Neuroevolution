@@ -15,9 +15,9 @@ def deserialize_genome(genotype, activations):
 
     # Convert activation functions to the actual tensorflow functions if they are supplied as strings
     if isinstance(activations['out_activation'], str):
-        activations['out_activation'] = activation_string_to_function(activations['out_activation'])
+        activations['out_activation'] = tf.keras.activations.deserialize(activations['out_activation'])
     if isinstance(activations['default_activation'], str):
-        activations['default_activation'] = activation_string_to_function(activations['default_activation'])
+        activations['default_activation'] = tf.keras.activations.deserialize(activations['default_activation'])
     if len(activations.keys()) > 2:
         raise NotImplementedError("activation dict contains more activations than the 'out' and 'default' activation")
 
@@ -37,16 +37,6 @@ def check_genome_sanity_function(genotype, activations):
     :return:
     """
     pass
-
-
-def activation_string_to_function(activation_string):
-    if activation_string == "softmax":
-        return tf.keras.activations.softmax
-    if activation_string == "sigmoid":
-        return tf.keras.activations.sigmoid
-    if activation_string == "tanh":
-        return tf.keras.activations.tanh
-    raise NotImplementedError("requested activation function not yet implemented in tensorflow function lookup")
 
 
 class DirectEncoding(BaseEncoding):
