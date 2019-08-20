@@ -34,5 +34,6 @@ def main():
     else:
         logger.info("Evolution of population did not return a valid genome")
 
+
 if __name__ == '__main__':
     main()
