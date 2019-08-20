@@ -13,16 +13,18 @@ class XOREnvironment(BaseEnvironment):
 
         self.input_shape = ast.literal_eval(config.get('ENVIRONMENT', 'input_shape', fallback='(2,)'))
         self.num_output = config.getint('ENVIRONMENT', 'num_output', fallback=1)
+        self.learning_rate = config.getfloat('ENVIRONMENT', 'learning_rate')
+        self.epochs = config.getint('ENVIRONMENT', 'epochs')
 
     def eval_genome_fitness(self, genome):
         # Get the phenotype model from the genome and declare the optimizer and loss_function
         model = genome.get_phenotype_model()
-        optimizer = tf.keras.optimizers.SGD(lr=0.2)
+        optimizer = tf.keras.optimizers.SGD(lr=self.learning_rate)
         loss_function = tf.keras.losses.BinaryCrossentropy()
 
         # Compile and train the model
         model.compile(optimizer=optimizer, loss=loss_function)
-        model.fit(self.x, self.y, batch_size=1, epochs=100, verbose=0)
+        model.fit(self.x, self.y, batch_size=1, epochs=self.epochs, verbose=0)
 
         # Calculate the genome fitness as the percentage of accuracy in its prediction, rounded to 3 decimal points
         evaluated_fitness = float(100*(1 - loss_function(self.y, model.predict(self.x))))

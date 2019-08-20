@@ -28,7 +28,7 @@ class Population:
         self.generation_counter = 0
 
     def evaluate(self, genome_evaluation_function):
-        # Evaluate each genome that has so far not been evaluated (effectively having a fitness_score of None)
+        # Evaluate each genome that has so far not been evaluated (effectively having a fitness_score of 0)
         self.logger.debug("Evaluating {} genomes in generation {} ...".format(self.pop_size, self.generation_counter))
         for genome in self.genomes:
             if genome.get_fitness() == 0:
