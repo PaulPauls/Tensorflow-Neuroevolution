@@ -48,8 +48,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
         topology_levels = genome.get_topology_levels()
 
         # 50/50 chance of either adding a new connection or adding a new node to the existing genome
-        add_connection = randint(0,1)
-        add_connection = 0
+        add_connection = randint(0, 1)
         if add_connection:
             # Add new connection
             for layer_index in range(len(topology_levels)-1):
