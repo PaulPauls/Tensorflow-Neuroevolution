@@ -43,9 +43,12 @@ class DirectEncodingGenome(BaseGenome):
         print(self)
         # Possibly print the phenotype.summary() in this function as well
 
-    def visualize(self):
-        # Define meta parameters of Digraph
-        dot = Digraph(name="Graph_of_genome_{}".format(self.genome_id))
+    def visualize(self, filename=None, directory=None, view=True):
+        filename = "graph_genome_{}".format(self.genome_id) if filename is None else filename
+        directory = tempfile.mkdtemp() if directory is None else directory
+
+        # Create Digraph and set graph orientaion
+        dot = Digraph(name=filename)
         dot.attr(rankdir='BT')
 
         # Specify edges of Digraph
@@ -59,17 +62,14 @@ class DirectEncodingGenome(BaseGenome):
         with dot.subgraph(name='cluster_1') as dot_in:
             for node in self.topology_levels[0]:
                 dot_in.node('{}'.format(node))
-            dot_in.attr(label='inputs')
-            dot_in.attr(color='blue')
+            dot_in.attr(label='inputs', color='blue')
         with dot.subgraph(name='cluster_2') as dot_out:
             for node in self.topology_levels[-1]:
                 dot_out.node('{}'.format(node))
-            dot_out.attr(label='outputs')
-            dot_out.attr(color='grey')
+            dot_out.attr(label='outputs', color='grey')
 
-        # Render graph
-        # Alternatively use directory='genome_visualizations' when history of visualized genomes requested
-        dot.render(directory=tempfile.mkdtemp(), view=True, cleanup=True, format='png')
+        # Render graph and save it in the specified directory (or temporary dir) and view it if set
+        dot.render(filename=filename, directory=directory, view=view, cleanup=True, format='png')
 
     def get_phenotype_model(self):
         return self.phenotype_model
