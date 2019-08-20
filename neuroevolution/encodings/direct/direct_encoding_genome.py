@@ -1,4 +1,5 @@
 import tempfile
+import tensorflow as tf
 from graphviz import Digraph
 
 from neuroevolution.encodings import BaseGenome
@@ -27,7 +28,7 @@ class DirectEncodingGenome(BaseGenome):
 
     def __str__(self):
         serialized_genotype, serialized_activations = self.serialize()
-        string_repr = "Genome-ID: {} \t--- Fitness: {} \t--- Genotype: {} \t--- Activations: {}".format(
+        string_repr = "Genome-ID: {:>4}     Fitness: {:>7}     Genotype: {} --- Activations: {}".format(
             self.genome_id, self.fitness, serialized_genotype, serialized_activations)
         return string_repr
 
@@ -37,7 +38,13 @@ class DirectEncodingGenome(BaseGenome):
         for gene in self.genotype:
             serialized_genotype[gene.gene_id] = (gene.conn_in, gene.conn_out)
 
-        return serialized_genotype, self.activations
+        # Reserialize activation functions to their according string
+        serialized_activations = dict()
+        serialized_activations['out_activation'] = tf.keras.activations.serialize(self.activations['out_activation'])
+        serialized_activations['default_activation'] = \
+            tf.keras.activations.serialize(self.activations['default_activation'])
+
+        return serialized_genotype, serialized_activations
 
     def summary(self):
         print(self)

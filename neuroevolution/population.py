@@ -58,8 +58,8 @@ class Population:
         return self.pop_size == 0
 
     def summary(self):
-        best_fitness = self.get_best_genome().get_fitness() if self.generation_counter > 0 else None
-        average_fitness = self.get_average_fitness() if self.generation_counter > 0 else None
+        best_fitness = self.get_best_genome().get_fitness()
+        average_fitness = self.get_average_fitness()
         self.logger.info("#### GENERATION: {} #### BEST_FITNESS: {} #### AVERAGE_FITNESS: {} #### POP_SIZE: {} ####".
                          format(self.generation_counter, best_fitness, average_fitness, self.pop_size))
         for i in range(self.pop_size):
@@ -80,7 +80,8 @@ class Population:
 
     def get_average_fitness(self):
         fitness_sum = sum(genome.get_fitness() for genome in self.genomes)
-        return fitness_sum / self.pop_size
+        average_fitness = round(fitness_sum / self.pop_size, 3)
+        return average_fitness
 
     def load_population(self):
         raise NotImplementedError("load_population() not yet implemented")

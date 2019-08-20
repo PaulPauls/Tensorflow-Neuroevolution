@@ -32,15 +32,11 @@ class EvolutionEngine:
             self.logger.info("Evolving already initialized population. Initial state of the population:")
             self.population.summary()
 
-        # Evaluate and evolve population in possibly endless loop, according to loop exit conditions.
-        while True:
-            # Check exit conditions for loop: population extinct, max_generations reached,
-            #                                 At least one generation old and fitness_threshold reached
-            if self.population.check_extinction() or \
-               self.population.get_generation_counter() > max_generations or \
-               self.population.get_generation_counter() > 0 and \
-               self.population.get_best_genome().get_fitness() >= fitness_threshold:
-                break
+        # Evaluate and evolve population in possibly endless loop. Exit conditions:
+        # population not extinct, max_generations not reached, best genome's fitness below fitness_threshold
+        while not self.population.check_extinction() and \
+                self.population.get_generation_counter() <= max_generations and \
+                self.population.get_best_genome().get_fitness() < fitness_threshold:
 
             # Evaluate population and assign each genome a fitness score
             genome_evaluation_function = self.environment.eval_genome_fitness

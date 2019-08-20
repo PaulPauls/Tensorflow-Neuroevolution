@@ -24,9 +24,10 @@ class XOREnvironment(BaseEnvironment):
         model.compile(optimizer=optimizer, loss=loss_function)
         model.fit(self.x, self.y, batch_size=1, epochs=100, verbose=0)
 
-        # Calculate the fitness of the genome as the percentage of accuracy in its prediction
-        evaluated_fitness = 1 - loss_function(self.y, model.predict(self.x))
-        genome.set_fitness(evaluated_fitness)
+        # Calculate the genome fitness as the percentage of accuracy in its prediction, rounded to 3 decimal points
+        evaluated_fitness = float(100*(1 - loss_function(self.y, model.predict(self.x))))
+        rounded_evaluated_fitness = round(evaluated_fitness, 3)
+        genome.set_fitness(rounded_evaluated_fitness)
 
     def replay_genome(self, genome):
         model = genome.get_phenotype_model()
