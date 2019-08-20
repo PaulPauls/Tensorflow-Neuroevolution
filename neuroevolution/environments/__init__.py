@@ -1,5 +1,3 @@
 # Import modules
 from neuroevolution.environments.base_environment import BaseEnvironment
 from neuroevolution.environments.other.xor_environment import XOREnvironment
-from neuroevolution.environments.opengym.cartpole_environment import CartPoleEnvironment
-from neuroevolution.environments.mnist.fashion_mnist_environment import FashionMNISTEnvironment
