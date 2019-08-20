@@ -1,3 +1,4 @@
+import os
 import tensorflow as tf
 
 
@@ -18,9 +19,18 @@ class EvolutionEngine:
         self.max_generations_config = config.getint('EVOLUTION_ENGINE', 'max_generations')
         self.fitness_threshold_config = config.getfloat('EVOLUTION_ENGINE', 'fitness_threshold')
 
-    def train(self, max_generations=None, fitness_threshold=None):
+    def train(self, max_generations=None, fitness_threshold=None, render_best_genome_each_gen=False, render_dir=None):
         max_generations = self.max_generations_config if max_generations is None else max_generations
         fitness_threshold = self.fitness_threshold_config if fitness_threshold is None else fitness_threshold
+
+        # Determine directory for renders of the best genome if not supplied
+        if render_best_genome_each_gen and render_dir is None:
+            render_dir_nr = 1
+            while os.path.isdir("best_genome_each_generation_-_run_{}".format(render_dir_nr)):
+                render_dir_nr += 1
+            render_dir_name = "best_genome_each_generation_-_run_{}".format(render_dir_nr)
+            os.mkdir(render_dir_name)
+            render_dir = os.path.abspath(render_dir_name)
 
         # If population not yet initialized, do so. This is unnecessary if an already evolved population is supplied.
         if self.population.get_generation_counter() is None:
@@ -42,8 +52,8 @@ class EvolutionEngine:
             genome_evaluation_function = self.environment.eval_genome_fitness
             self.population.evaluate(genome_evaluation_function)
 
-            # Give summary of population after each evaluation
-            self.population.summary()
+            # Give summary of population after each evaluation and render the best genome if required
+            self.population.summary(best_genome_render_dir=render_dir)
 
             # Create the next generation of the population
             self.population.evolve()

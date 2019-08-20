@@ -26,7 +26,7 @@ def main():
 
     engine = ne.EvolutionEngine(population, environment, config)
 
-    best_genome = engine.train()
+    best_genome = engine.train(render_best_genome_each_gen=True)
 
     if best_genome is not None:
         environment.replay_genome(best_genome)

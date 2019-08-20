@@ -57,14 +57,19 @@ class Population:
     def check_extinction(self):
         return self.pop_size == 0
 
-    def summary(self):
-        best_fitness = self.get_best_genome().get_fitness()
+    def summary(self, best_genome_render_dir=None):
+        best_genome = self.get_best_genome()
+        best_fitness = best_genome.get_fitness()
         average_fitness = self.get_average_fitness()
         self.logger.info("#### GENERATION: {} #### BEST_FITNESS: {} #### AVERAGE_FITNESS: {} #### POP_SIZE: {} ####".
                          format(self.generation_counter, best_fitness, average_fitness, self.pop_size))
         for i in range(self.pop_size):
             self.logger.info(self.genomes[i])
         self.logger.info("#"*100 + "\n")
+
+        if best_genome_render_dir is not None:
+            filename = "graph_genome_{}_from_gen_{}".format(best_genome.get_id(), self.generation_counter)
+            best_genome.visualize(filename=filename, directory=best_genome_render_dir, view=False)
 
     def get_genome(self, i):
         return self.genomes[i]
