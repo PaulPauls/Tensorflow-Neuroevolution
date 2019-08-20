@@ -42,21 +42,29 @@ class EvolutionEngine:
             self.logger.info("Evolving already initialized population. Initial state of the population:")
             self.population.summary()
 
+        # Create an initial evaluation before entering the loop to check if exit conditions already met
+        genome_evaluation_function = self.environment.eval_genome_fitness
+        self.population.evaluate(genome_evaluation_function)
+
         # Evaluate and evolve population in possibly endless loop. Exit conditions:
         # population not extinct, max_generations not reached, best genome's fitness below fitness_threshold
         while not self.population.check_extinction() and \
-                self.population.get_generation_counter() <= max_generations and \
+                self.population.get_generation_counter() < max_generations and \
                 self.population.get_best_genome().get_fitness() < fitness_threshold:
 
+            # Create the next generation of the population by evolving it
+            self.population.evolve()
+
             # Evaluate population and assign each genome a fitness score
-            genome_evaluation_function = self.environment.eval_genome_fitness
             self.population.evaluate(genome_evaluation_function)
 
-            # Give summary of population after each evaluation and render the best genome if required
-            self.population.summary(best_genome_render_dir=render_dir)
-
-            # Create the next generation of the population
-            self.population.evolve()
+            # Give summary of population after each evaluation and render and save the best genome if required
+            self.population.summary()
+            if render_best_genome_each_gen:
+                best_genome = self.population.get_best_genome()
+                genome_fname = "graph_genome_{}_from_gen_{}".format(
+                    best_genome.get_id(), self.population.get_generation_counter())
+                best_genome.visualize(filename=genome_fname, directory=render_dir, view=False)
 
         best_genome = self.population.get_best_genome() if not self.population.check_extinction() else None
         return best_genome

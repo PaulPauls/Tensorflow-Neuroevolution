@@ -31,6 +31,7 @@ def main():
     if best_genome is not None:
         environment.replay_genome(best_genome)
         best_genome.summary()
+        best_genome.visualize()
     else:
         logger.info("Evolution of population did not return a valid genome")
 
