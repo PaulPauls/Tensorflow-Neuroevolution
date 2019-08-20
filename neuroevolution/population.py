@@ -1,4 +1,3 @@
-from random import randint
 from collections import deque
 
 import tensorflow as tf
@@ -11,13 +10,13 @@ class Population:
         self.ne_algorithm = ne_algorithm
 
         # Read in config parameters for population
-        self.replacement_percentage = config.getfloat('POPULATION', 'replacement_percentage')
         self.supplied_pop_size = config.getint('POPULATION', 'pop_size')
+        self.limited_pop_size = config.getboolean('POPULATION', 'limited_pop_size')
 
         # create flexible pop_size, genome container that is the actual population and set generation_counter to
         # uninitialized
         self.pop_size = self.supplied_pop_size
-        self.genomes = deque(maxlen=self.supplied_pop_size)
+        self.genomes = deque(maxlen=self.supplied_pop_size) if self.limited_pop_size else deque()
         self.generation_counter = None
 
     def initialize(self, input_shape, num_output):
@@ -36,26 +35,11 @@ class Population:
                 # self.logger.debug('Genome {} scored fitness {}'.format(genome.get_id(), genome.get_fitness()))
 
     def evolve(self):
-        replacement_count = int(self.replacement_percentage * self.pop_size)
-        # Remove the in replacement_count specified amount of the worst performing members of the population
-        for _ in range(replacement_count):
-            worst_genome = self.get_worst_genome()
-            self.genomes.remove(worst_genome)
-
-        # Add the same number of mutated genomes (mutated from random genomes still in pop) back to the population
-        for _ in range(replacement_count):
-            genome_to_mutate = self.genomes[randint(0, self.pop_size-replacement_count-1)]
-            mutated_genome = self.ne_algorithm.create_mutated_genome(genome_to_mutate)
-            self.genomes.append(mutated_genome)
-
+        replacement_count = self.ne_algorithm.create_new_generation(self)
         self.pop_size = len(self.genomes)
         self.generation_counter += 1
-        self.logger.debug(
-            "{} genomes have been replaced. After the evolution there are {} genomes present in generation {}"
-            .format(replacement_count, self.pop_size, self.generation_counter))
-
-    def check_extinction(self):
-        return self.pop_size == 0
+        self.logger.debug("Evolving the population from generation {} to {} replaced {} genomes.".format(
+            self.generation_counter-1, self.generation_counter, replacement_count))
 
     def summary(self):
         best_fitness = self.get_best_genome().get_fitness()
@@ -65,6 +49,15 @@ class Population:
         for i in range(self.pop_size):
             self.logger.info(self.genomes[i])
         self.logger.info("#"*100 + "\n")
+
+    def check_extinction(self):
+        return self.pop_size == 0
+
+    def append_genome(self, genome):
+        self.genomes.append(genome)
+
+    def remove_genome(self, genome):
+        self.genomes.remove(genome)
 
     def get_genome(self, i):
         return self.genomes[i]
@@ -77,6 +70,9 @@ class Population:
 
     def get_generation_counter(self):
         return self.generation_counter
+
+    def get_pop_size(self):
+        return self.pop_size
 
     def get_average_fitness(self):
         fitness_sum = sum(genome.get_fitness() for genome in self.genomes)

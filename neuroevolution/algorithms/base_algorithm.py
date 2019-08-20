@@ -8,5 +8,5 @@ class BaseNeuroevolutionAlgorithm(object, metaclass=ABCMeta):
         raise NotImplementedError("Should implement create_initial_genome()")
 
     @abstractmethod
-    def create_mutated_genome(self, genome):
-        raise NotImplementedError("Should implement create_mutated_genome()")
+    def create_new_generation(self, population):
+        raise NotImplementedError("Should implement create_new_generation()")

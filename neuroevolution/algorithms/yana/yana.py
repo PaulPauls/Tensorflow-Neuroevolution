@@ -12,6 +12,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.encoding = encoding
 
         # Read in config parameters for neuroevolution algorithm
+        self.replacement_percentage = config.getfloat('NE_ALGORITHM', 'replacement_percentage')
         self.genome_default_activation = config.get('NE_ALGORITHM', 'default_activation')
         self.genome_out_activation = config.get('NE_ALGORITHM', 'out_activation')
 
@@ -45,7 +46,23 @@ class YANA(BaseNeuroevolutionAlgorithm):
         new_initialized_genome = self.encoding.create_new_genome(genotype, activations, trainable=self.trainable)
         return new_initialized_genome
 
-    def create_mutated_genome(self, genome):
+    def create_new_generation(self, population):
+        replacement_count = int(self.replacement_percentage * population.get_pop_size())
+        # Remove the in replacement_count specified amount of the worst performing members of the population
+        for _ in range(replacement_count):
+            worst_genome = population.get_worst_genome()
+            population.remove_genome(worst_genome)
+
+        # Add the same number of mutated genomes (mutated from random genomes still in pop) back to the population
+        for _ in range(replacement_count):
+            genome_to_mutate = population.get_genome(randint(0, population.get_pop_size()-replacement_count-1))
+            mutated_genome = self._create_mutated_genome(genome_to_mutate)
+            population.append_genome(mutated_genome)
+
+        # Return count of successfully replaced/mutated genomes
+        return replacement_count
+
+    def _create_mutated_genome(self, genome):
         genotype, activations = genome.serialize()
         topology_levels = genome.get_topology_levels()
 
