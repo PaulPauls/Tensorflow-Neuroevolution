@@ -24,6 +24,7 @@ class EvolutionEngine:
 
         # If population not yet initialized, do so. This is unnecessary if an already evolved population is supplied.
         if self.population.get_generation_counter() is None:
+            # Determine and supply the parameters for the input and output layers when initially creating genomes
             input_shape = self.environment.get_input_shape()
             num_output = self.environment.get_num_output()
             self.population.initialize(input_shape, num_output)
@@ -52,5 +53,4 @@ class EvolutionEngine:
             self.population.evolve()
 
         best_genome = self.population.get_best_genome() if not self.population.check_extinction() else None
-
         return best_genome

@@ -14,7 +14,8 @@ class Population:
         self.replacement_percentage = config.getfloat('POPULATION', 'replacement_percentage')
         self.supplied_pop_size = config.getint('POPULATION', 'pop_size')
 
-        # create genome container that is the actual population and set generation_counter to uninitialized
+        # create flexible pop_size, genome container that is the actual population and set generation_counter to
+        # uninitialized
         self.pop_size = self.supplied_pop_size
         self.genomes = deque(maxlen=self.supplied_pop_size)
         self.generation_counter = None

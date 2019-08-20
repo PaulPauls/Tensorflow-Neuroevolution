@@ -15,6 +15,8 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.genome_default_activation = config.get('NE_ALGORITHM', 'default_activation')
         self.genome_out_activation = config.get('NE_ALGORITHM', 'out_activation')
 
+        # As YANA uses SGD to optimize the weights of the topology (and as of now only evolves topology), set  trainable
+        # variable to true
         self.trainable = True
 
     def create_initial_genome(self, input_shape, num_output):
