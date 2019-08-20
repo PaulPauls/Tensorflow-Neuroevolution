@@ -42,9 +42,11 @@ class EvolutionEngine:
             self.logger.info("Evolving already initialized population. Initial state of the population:")
             self.population.summary()
 
-        # Create an initial evaluation before entering the loop to check if exit conditions already met
+        # Create an initial evaluation before entering the loop to check if exit conditions already met and summarize it
+        self.logger.info("Summary of the initial state of the population:")
         genome_evaluation_function = self.environment.eval_genome_fitness
         self.population.evaluate(genome_evaluation_function)
+        self.population.summary()
 
         # Evaluate and evolve population in possibly endless loop. Exit conditions:
         # population not extinct, max_generations not reached, best genome's fitness below fitness_threshold
