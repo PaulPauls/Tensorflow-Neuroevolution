@@ -10,6 +10,8 @@ def main():
 
     :return: None
     """
+    # Assert that TF 2.x is used
+    assert tf.__version__[0] == "2"
 
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.DEBUG)
     logger = tf.get_logger()

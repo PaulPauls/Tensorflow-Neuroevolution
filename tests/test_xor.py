@@ -5,7 +5,8 @@ import neuroevolution as ne
 
 
 def test_xor():
-    assert tf.__version__ == "2.0.0-beta1"
+    # Assert that TF 2.x is used
+    assert tf.__version__[0] == "2"
 
     genotype = {
         1: (1, 2),
