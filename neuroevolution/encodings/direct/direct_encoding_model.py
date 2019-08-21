@@ -16,12 +16,14 @@ class CustomLayer(tf.keras.layers.Layer):
             self.call = self.call_single_inputs
 
     def call_single_inputs(self, inputs, **kwargs):
-        sel_inputs = inputs[self.layer_index][ :, self.node_index:self.node_index+1]
+        sel_inputs = inputs[self.layer_index][:, self.node_index:self.node_index + 1]
         return self.custom_layer(sel_inputs)
 
     def call_multiple_inputs(self, inputs, **kwargs):
-        sel_inputs = tf.concat([inputs[layer_index][:, node_index:node_index+1] for (layer_index, node_index) in self.input_node_coords], -1)
+        sel_inputs = tf.concat([inputs[layer_index][:, node_index:node_index + 1]
+                                for (layer_index, node_index) in self.input_node_coords], 1)
         return self.custom_layer(sel_inputs)
+
 
 class DirectEncodingModel(tf.keras.Model):
     def __init__(self, genotype, activations, trainable):
@@ -58,7 +60,8 @@ class DirectEncodingModel(tf.keras.Model):
         # layer_index with 1) and create a 'joined_layer_node_dependencies dict in which the key is the set of nodes in
         # the layer that gets input from the nodes in the corresponding values.
         for layer_index in range(1, len(self.topology_dependency_levels)):
-            layer_node_dependencies = {key: node_dependencies[key] for key in self.topology_dependency_levels[layer_index]}
+            layer_node_dependencies = {key: node_dependencies[key]
+                                       for key in self.topology_dependency_levels[layer_index]}
 
             # Join all keys with the same values in a common joined key (which is a frozenset to be hashable)
             values_to_keys = dict()
@@ -71,12 +74,13 @@ class DirectEncodingModel(tf.keras.Model):
             joined_layer_node_dependencies = {frozenset(v): set(k) for k, v in values_to_keys.items()}
 
             # Create CustomLayers for each joined node collection and add them to the double list of custom_layers
-            self.custom_layers[layer_index-1] = []
+            self.custom_layers[layer_index - 1] = []
             for k, v in joined_layer_node_dependencies.items():
                 input_node_coords = [node_to_topology[x] for x in v]
-                activation = activations['out_activation'] if layer_index == len(self.topology_dependency_levels)-1 else activations['default_activation']
+                activation = activations['out_activation'] if layer_index == len(self.topology_dependency_levels) - 1 \
+                    else activations['default_activation']
                 new_layer = CustomLayer(num_outputs=len(k), input_node_coords=input_node_coords, activation=activation)
-                self.custom_layers[layer_index-1].append(new_layer)
+                self.custom_layers[layer_index - 1].append(new_layer)
 
     def call(self, inputs, **kwargs):
         # tf.print("Model Inputs: ", inputs)
