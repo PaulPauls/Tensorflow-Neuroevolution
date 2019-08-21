@@ -7,18 +7,22 @@ class CustomLayer(tf.keras.layers.Layer):
     def __init__(self, num_outputs, input_node_coords, activation, dtype=tf.float64):
         super(CustomLayer, self).__init__(dtype=dtype)
         self.custom_layer = tfkl.Dense(units=num_outputs, activation=activation, dtype=dtype)
-        self.input_node_coords = input_node_coords
-
-    def call(self, inputs, **kwargs):
-        if len(self.input_node_coords) >= 2:
-            sel_input = tfkl.concatenate([inputs[layer][:, node:node+1] for (layer, node) in self.input_node_coords])
+        # Set the layer's call function to either a function handling a single input or handling multiple inputs
+        # and preconfigure the requirements to accelerate the heavily used call function.
+        if len(input_node_coords) >= 2:
+            self.input_node_coords = input_node_coords
+            self.call = self.call_multiple_inputs
         else:
-            (layer, node) = self.input_node_coords[0]
-            sel_input = inputs[layer][:, node:node+1]
-        # tf.print("sel_input: ", sel_input)
-        out = self.custom_layer(sel_input)
-        return out
+            (self.layer_index, self.node_index) = input_node_coords[0]
+            self.call = self.call_single_inputs
 
+    def call_single_inputs(self, inputs, **kwargs):
+        sel_input = inputs[self.layer_index][ :, self.node_index:self.node_index+1]
+        return self.custom_layer(sel_input)
+
+    def call_multiple_inputs(self, inputs, **kwargs):
+        sel_input = tfkl.concatenate([inputs[layer_index][:, node_index:node_index+1] for (layer_index, node_index) in self.input_node_coords])
+        return self.custom_layer(sel_input)
 
 class DirectEncodingModel(tf.keras.Model):
     def __init__(self, genotype, activations, trainable):
@@ -47,7 +51,7 @@ class DirectEncodingModel(tf.keras.Model):
                 node = next(layer_iterable)
                 node_to_topology[node] = (layer_index, node_index)
 
-        # Create the double list of custom_layers. In the first dimension it traverses through layers, in the second
+        # Create a list of lists of custom_layers. In the first dimension it traverses through layers, in the second
         # it traverses through the nodes in the respective layer.
         self.custom_layers = [None] * (len(self.topology_dependency_levels) - 1)
 
