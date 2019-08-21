@@ -1,12 +1,11 @@
 import tensorflow as tf
-import tensorflow.keras.layers as tfkl
 from toposort import toposort
 
 
 class CustomLayer(tf.keras.layers.Layer):
     def __init__(self, num_outputs, input_node_coords, activation, dtype=tf.float64):
         super(CustomLayer, self).__init__(dtype=dtype)
-        self.custom_layer = tfkl.Dense(units=num_outputs, activation=activation, dtype=dtype)
+        self.custom_layer = tf.keras.layers.Dense(units=num_outputs, activation=activation, dtype=dtype)
         # Set the layer's call function to either a function handling a single input or handling multiple inputs
         # and preconfigure the requirements to accelerate the heavily used call function.
         if len(input_node_coords) >= 2:
@@ -17,12 +16,12 @@ class CustomLayer(tf.keras.layers.Layer):
             self.call = self.call_single_inputs
 
     def call_single_inputs(self, inputs, **kwargs):
-        sel_input = inputs[self.layer_index][ :, self.node_index:self.node_index+1]
-        return self.custom_layer(sel_input)
+        sel_inputs = inputs[self.layer_index][ :, self.node_index:self.node_index+1]
+        return self.custom_layer(sel_inputs)
 
     def call_multiple_inputs(self, inputs, **kwargs):
-        sel_input = tfkl.concatenate([inputs[layer_index][:, node_index:node_index+1] for (layer_index, node_index) in self.input_node_coords])
-        return self.custom_layer(sel_input)
+        sel_inputs = tf.concat([inputs[layer_index][:, node_index:node_index+1] for (layer_index, node_index) in self.input_node_coords], -1)
+        return self.custom_layer(sel_inputs)
 
 class DirectEncodingModel(tf.keras.Model):
     def __init__(self, genotype, activations, trainable):
@@ -80,20 +79,19 @@ class DirectEncodingModel(tf.keras.Model):
                 self.custom_layers[layer_index-1].append(new_layer)
 
     def call(self, inputs, **kwargs):
-        # tf.print("Model Input: ", inputs)
-        input_list = [tf.cast(inputs, tf.float64)]
-        for layer_index in range(len(self.custom_layers)):
-            # tf.print("Input List: ", input_list)
-            layer = self.custom_layers[layer_index]
+        # tf.print("Model Inputs: ", inputs)
+        # Cast Inputs and create a list of inputs, in which each entry corresponds to the inputs of the layer.
+        # Expanding the inputs dimension instead of having a slower list is not possible as this will (according to
+        # multiple tests) interfere with the automatic gradient calculation and will lead to further complications
+        inputs = [tf.cast(inputs, tf.float64)]
+        for layer_functions in self.custom_layers:
             layer_out = None
-            for joined_nodes_index in range(len(layer)):
-                out = layer[joined_nodes_index](input_list)
-                if joined_nodes_index == 0:
-                    layer_out = out
-                else:
-                    layer_out = tfkl.concatenate([layer_out, out])
-            input_list.append(layer_out)
-        return input_list[-1]
+            for joined_nodes_layer_function in layer_functions:
+                out = joined_nodes_layer_function(inputs)
+                layer_out = out if layer_out is None else tf.concat([layer_out, out], 1)
+            inputs.append(layer_out)
+
+        return inputs[-1]
 
     def get_topology_dependency_levels(self):
         return self.topology_dependency_levels
