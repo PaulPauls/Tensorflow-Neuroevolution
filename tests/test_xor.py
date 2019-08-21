@@ -12,10 +12,13 @@ def test_xor():
         2: (1, 3),
         3: (4, 3),
         4: (4, 2),
+        6: (1, 5),
+        7: (4, 5),
+        8: (5, 2),
         5: (3, 2)}
 
     activations = {'out_activation': tf.keras.activations.sigmoid,
-                   'default_activation': tf.keras.activations.sigmoid}
+                   'default_activation': tf.keras.activations.tanh}
 
     config = ne.load_config('../examples/xor_example/example_yanaAlg_directEnc_xorEnv.cfg')
     encoding = ne.encodings.DirectEncoding(config)

@@ -4,18 +4,17 @@ from toposort import toposort
 
 
 class CustomLayer(tf.keras.layers.Layer):
-    def __init__(self, num_outputs, input_node_coords, activation, dtype=tf.float64, **kwargs):
-        super(CustomLayer, self).__init__(dtype=dtype, **kwargs)
+    def __init__(self, num_outputs, input_node_coords, activation, dtype=tf.float64):
+        super(CustomLayer, self).__init__(dtype=dtype)
         self.custom_layer = tfkl.Dense(units=num_outputs, activation=activation, dtype=dtype)
         self.input_node_coords = input_node_coords
 
-    def call(self, input):
-        # TODO
+    def call(self, inputs, **kwargs):
         if len(self.input_node_coords) >= 2:
-            sel_input = tfkl.concatenate([input[layer][:, node:node+1] for (layer, node) in self.input_node_coords])
+            sel_input = tfkl.concatenate([inputs[layer][:, node:node+1] for (layer, node) in self.input_node_coords])
         else:
             (layer, node) = self.input_node_coords[0]
-            sel_input = input[layer][:, node:node+1]
+            sel_input = inputs[layer][:, node:node+1]
         # tf.print("sel_input: ", sel_input)
         out = self.custom_layer(sel_input)
         return out
@@ -43,9 +42,9 @@ class DirectEncodingModel(tf.keras.Model):
         # (layer_index, node_index_within_layer)
         node_to_topology = dict()
         for layer_index in range(len(self.topology_dependency_levels)):
-            layer = list(self.topology_dependency_levels[layer_index])
-            for node_index in range(len(layer)):
-                node = layer[node_index]
+            layer_iterable = iter(self.topology_dependency_levels[layer_index])
+            for node_index in range(len(self.topology_dependency_levels[layer_index])):
+                node = next(layer_iterable)
                 node_to_topology[node] = (layer_index, node_index)
 
         # Create the double list of custom_layers. In the first dimension it traverses through layers, in the second
@@ -56,21 +55,27 @@ class DirectEncodingModel(tf.keras.Model):
         # layer_index with 1) and create a 'joined_layer_node_dependencies dict in which the key is the set of nodes in
         # the layer that gets input from the nodes in the corresponding values.
         for layer_index in range(1, len(self.topology_dependency_levels)):
-            layer_node_dependencies = {key: node_dependencies[key] for key in
-                                       node_dependencies.keys() & self.topology_dependency_levels[layer_index]}
+            layer_node_dependencies = {key: node_dependencies[key] for key in self.topology_dependency_levels[layer_index]}
 
-            joined_layer_node_dependencies = self.join_keys_with_same_value(layer_node_dependencies)
+            # Join all keys with the same values in a common joined key (which is a frozenset to be hashable)
+            values_to_keys = dict()
+            for k, v in layer_node_dependencies.items():
+                frozen_v = frozenset(v)
+                if frozen_v in values_to_keys:
+                    values_to_keys[frozen_v].add(k)
+                else:
+                    values_to_keys[frozen_v] = {k}
+            joined_layer_node_dependencies = {frozenset(v): set(k) for k, v in values_to_keys.items()}
 
             # Create CustomLayers for each joined node collection and add them to the double list of custom_layers
             self.custom_layers[layer_index-1] = []
             for k, v in joined_layer_node_dependencies.items():
-                # TODO
                 input_node_coords = [node_to_topology[x] for x in v]
-                activation = activations['default_activation']
+                activation = activations['out_activation'] if layer_index == len(self.topology_dependency_levels)-1 else activations['default_activation']
                 new_layer = CustomLayer(num_outputs=len(k), input_node_coords=input_node_coords, activation=activation)
                 self.custom_layers[layer_index-1].append(new_layer)
 
-    def call(self, inputs):
+    def call(self, inputs, **kwargs):
         # tf.print("Model Input: ", inputs)
         input_list = [tf.cast(inputs, tf.float64)]
         for layer_index in range(len(self.custom_layers)):
@@ -88,18 +93,3 @@ class DirectEncodingModel(tf.keras.Model):
 
     def get_topology_dependency_levels(self):
         return self.topology_dependency_levels
-
-    @staticmethod
-    def join_keys_with_same_value(input_dict):
-        # No general function but very specific to my translation function!
-        # Joins all keys with the same values in a common joined key (as frozenset to be hashable)
-        input_dict_frozen = {k: frozenset(v) for k, v in input_dict.items()}
-        values_to_keys = dict()
-        for k, v in input_dict_frozen.items():
-            if v in values_to_keys.keys():
-                values_to_keys[v].add(k)
-            else:
-                values_to_keys[v] = {k}
-
-        joined_input_dict = {frozenset(v): set(k) for k, v in values_to_keys.items()}
-        return joined_input_dict
