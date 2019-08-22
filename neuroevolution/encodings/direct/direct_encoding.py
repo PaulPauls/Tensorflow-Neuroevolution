@@ -6,6 +6,12 @@ from neuroevolution.encodings.direct import DirectEncodingGenome, DirectEncoding
 
 
 def deserialize_genome(genotype, activations):
+    """
+    :param genotype: dict of explicitely specified genotype
+    :param activations: dict of activation functions, possibly specified as string
+    :return: converted genotype to deque of direct-encoding Genes, converted activation functions to explicit functions
+        instead of strings
+    """
     # Convert Key of genotype_dict to gene_id and create with specified connection the custom gene class. Then join
     # all genes in a double ended linked list
     deserialized_genotype = deque()
@@ -26,7 +32,7 @@ def deserialize_genome(genotype, activations):
 
 def check_genome_sanity_function(genotype, activations):
     """
-    TODO: Possible aspects to check for:
+    ToDo: Possible aspects to check for:
     - All genes in genotype are valid and have all required fields
     - genotype encoding a feed-forward network
     - unique gene_ids
@@ -40,6 +46,11 @@ def check_genome_sanity_function(genotype, activations):
 
 
 class DirectEncoding(BaseEncoding):
+    """
+    Factory wrapper for direct-encoding genomes that creates new genomes after deserializing possibly explicitely
+    specified genotypes, checking the genotype and activation functions for errors and assigning the newly created
+    genome a continuing ID.
+    """
 
     def __init__(self, config):
         self.logger = tf.get_logger()
@@ -51,6 +62,14 @@ class DirectEncoding(BaseEncoding):
         self.logger.debug("Encoding read from config: check_genome_sanity = {}".format(self.check_genome_sanity))
 
     def create_new_genome(self, genotype, activations, trainable=True, check_genome_sanity=None):
+        """
+        :param genotype: genome genotype either specified explicitely as a dict of connections or as a deque of direct-
+            encoding genes.
+        :param activations: dict of activation functions
+        :param trainable: flag if the direct-encoding genome's model should have trainable weights
+        :param check_genome_sanity: flag if the genotype and activation functions should be checked for errors
+        :return: DirectedEncodingGenome configured with the supplied parameters
+        """
         check_genome_sanity = self.check_genome_sanity if check_genome_sanity is None else check_genome_sanity
 
         # if genotype is explicitely specified in dict form it will be deserialized into a linked-List. Otherwise

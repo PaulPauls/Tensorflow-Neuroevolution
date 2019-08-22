@@ -1,12 +1,11 @@
-"""
-Base class for potential neuroevolution encoding genomes to subclass. This ensures that the encoding-genomes used in the
-Tensorflow-Neuroevolution framework implement the required functions in the intended way.
-"""
-
 from abc import ABCMeta, abstractmethod
 
 
 class BaseGenome(object, metaclass=ABCMeta):
+    """
+    Base class for potential neuroevolution encoding genomes to subclass. This ensures that the encoding-genomes used in the
+    Tensorflow-Neuroevolution framework implement the required functions in the intended way.
+    """
 
     @abstractmethod
     def __call__(self, *args, **kwargs):

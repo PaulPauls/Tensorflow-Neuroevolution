@@ -2,6 +2,10 @@ from abc import ABCMeta, abstractmethod
 
 
 class BaseEnvironment(object, metaclass=ABCMeta):
+    """
+    Base class for potential neuroevolution environments to subclass. This ensures that the environments used in the
+    Tensorflow-Neuroevolution framework implement the required functions in the intended way.
+    """
 
     @abstractmethod
     def eval_genome_fitness(self, genome):

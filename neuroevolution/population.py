@@ -4,6 +4,12 @@ import tensorflow as tf
 
 
 class Population:
+    """
+    Implementation of the central interface between the evolution engine driving the neuroevolution on the specified
+    environment and the collection of genomes and the way they are created, evolved and summarized in the specific way
+    dictated by the NE-algorithm.
+    """
+
     def __init__(self, ne_algorithm, config):
         self.logger = tf.get_logger()
 
@@ -41,7 +47,7 @@ class Population:
         self.pop_size = len(self.genomes)
         self.generation_counter += 1
         self.logger.info("Evolving the population from generation {} to {} replaced {} genomes.".format(
-            self.generation_counter-1, self.generation_counter, replacement_count))
+            self.generation_counter - 1, self.generation_counter, replacement_count))
 
     def summary(self):
         best_fitness = self.get_best_genome().get_fitness()
@@ -50,7 +56,7 @@ class Population:
                          format(self.generation_counter, best_fitness, average_fitness, self.pop_size))
         for i in range(self.pop_size):
             self.logger.info(self.genomes[i])
-        self.logger.info("#"*100 + "\n")
+        self.logger.info("#" * 100 + "\n")
 
     def check_extinction(self):
         return self.pop_size == 0

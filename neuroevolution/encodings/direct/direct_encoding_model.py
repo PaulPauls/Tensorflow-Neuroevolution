@@ -3,6 +3,11 @@ from toposort import toposort
 
 
 class CustomLayer(tf.keras.layers.Layer):
+    """
+    Custom TF Layer for a DirectEncoding model. This custom layer only takes inputs from specified topology coordinates
+    to enable arbitrary topologies.
+    """
+
     def __init__(self, num_outputs, input_node_coords, activation, dtype=tf.float64):
         super(CustomLayer, self).__init__(dtype=dtype)
         self.custom_layer = tf.keras.layers.Dense(units=num_outputs, activation=activation, dtype=dtype)
@@ -26,6 +31,13 @@ class CustomLayer(tf.keras.layers.Layer):
 
 
 class DirectEncodingModel(tf.keras.Model):
+    """
+    Implementaiton that takes a genotype and activation function from a direct-encoding genome as input and turns them
+    into a fully-custom topology feedforward tensorflow model. The created fully-custom topology feedforward model
+    supports sparsely connected layers or connections that skip layers altogether, while still being fully integrated
+    with the tensorflow ecosystem to support auto gradient for optimization, model summaries, manual weight-setting, etc
+    """
+
     def __init__(self, genotype, activations, trainable):
         super(DirectEncodingModel, self).__init__(trainable=trainable)
         # Create node_dependency dictionary. The keys are nodes that require preceding nodes to be evaluated beforehand.

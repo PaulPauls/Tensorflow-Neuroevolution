@@ -6,6 +6,12 @@ from neuroevolution.environments import BaseEnvironment
 
 
 class XOREnvironment(BaseEnvironment):
+    """
+    Environment that provides the XOR function imitation problem to the TFNE framework in a way that assumes that only
+    the genome model's topology will be evaluated. In order to reasonably determine the genomes fitness based on the
+    topology will this environment first train the weights of the model according to the neuroevolution configuration
+    and then assign a fitness score to the genome.
+    """
 
     def __init__(self, config):
         self.logger = tf.get_logger()
@@ -33,6 +39,12 @@ class XOREnvironment(BaseEnvironment):
             self.logger.debug("Environment read from config: early_stop_patience = {}".format(self.early_stop_patience))
 
     def eval_genome_fitness(self, genome):
+        """
+        Evaluate the genome by grabbing its model and training its weights with SGD. If activated will the training
+        process stop early if no progress will take place. The genomes fitness is then determined as the inverted loss
+        of the model, multiplied by 100 to get the percentage, effectively representing the model's accuracy in
+        predicting the correct values.
+        """
         # Get the phenotype model from the genome and declare the optimizer and loss_function
         model = genome.get_phenotype_model()
         optimizer = tf.keras.optimizers.SGD(lr=self.learning_rate)

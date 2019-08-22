@@ -3,6 +3,12 @@ import tensorflow as tf
 
 
 class EvolutionEngine:
+    """
+    Implementation of the central engine driving the central aspects of Neuroevolution within the train loop:
+    Evaluation, Selection and Evolution. The train loop will also take care of additional tasks such as taking snapshots
+    of the best genomes in each generation or regularly checking for exit loop conditions.
+    """
+
     def __init__(self, population, environment, config, batch_size=None):
         self.logger = tf.get_logger()
 
@@ -10,7 +16,7 @@ class EvolutionEngine:
         self.environment = environment
 
         if batch_size is None:
-            # ToDo: Determine self.batch_size
+            # ToDo: Determine batch_size to potentially accelerate training
             pass
         else:
             self.batch_size = batch_size
@@ -24,6 +30,13 @@ class EvolutionEngine:
                           .format(self.fitness_threshold_config))
 
     def train(self, max_generations=None, fitness_threshold=None, render_best_genome_each_gen=False, render_dir=None):
+        """
+        Train the in the constructor specified population of genomes on the in the constructor specified environment.
+        If no pretrained population has been supplied will this function initialize the population and train it in a
+        loop, evolving it, evaluating it, printing a summary and possibly saving a render of the best genome of the
+        current generation. The training loop will end if the specified maximum number of generations is reached,
+        the best genome crosses the fitness_threshold or the population went extinct.
+        """
         max_generations = self.max_generations_config if max_generations is None else max_generations
         fitness_threshold = self.fitness_threshold_config if fitness_threshold is None else fitness_threshold
         self.logger.info("EvolutionEngine will train population for {} generations or until fitness threshold of {} "
