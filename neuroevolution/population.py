@@ -12,6 +12,8 @@ class Population:
         # Read in config parameters for population
         self.supplied_pop_size = config.getint('POPULATION', 'pop_size')
         self.limited_pop_size = config.getboolean('POPULATION', 'limited_pop_size')
+        self.logger.debug("Population read from config: supplied_pop_size = {}".format(self.supplied_pop_size))
+        self.logger.debug("Population read from config: limited_pop_size = {}".format(self.limited_pop_size))
 
         # create flexible pop_size, genome container that is the actual population and set generation_counter to
         # uninitialized
@@ -20,7 +22,7 @@ class Population:
         self.generation_counter = None
 
     def initialize(self, input_shape, num_output):
-        self.logger.info("Initializing population of size {}".format(self.supplied_pop_size))
+        self.logger.info("Initializing population to size {}".format(self.supplied_pop_size))
         for _ in range(self.supplied_pop_size):
             new_initialized_genome = self.ne_algorithm.create_initial_genome(input_shape, num_output)
             self.genomes.append(new_initialized_genome)
@@ -38,7 +40,7 @@ class Population:
         replacement_count = self.ne_algorithm.create_new_generation(self)
         self.pop_size = len(self.genomes)
         self.generation_counter += 1
-        self.logger.debug("Evolving the population from generation {} to {} replaced {} genomes.".format(
+        self.logger.info("Evolving the population from generation {} to {} replaced {} genomes.".format(
             self.generation_counter-1, self.generation_counter, replacement_count))
 
     def summary(self):

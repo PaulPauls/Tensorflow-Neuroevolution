@@ -8,6 +8,8 @@ from neuroevolution.environments import BaseEnvironment
 class XOREnvironment(BaseEnvironment):
 
     def __init__(self, config):
+        self.logger = tf.get_logger()
+
         self.x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
         self.y = np.array([[0], [1], [1], [0]])
 
@@ -19,6 +21,16 @@ class XOREnvironment(BaseEnvironment):
         if self.early_stop:
             self.early_stop_min_delta = config.getfloat('ENVIRONMENT', 'early_stop_min_delta')
             self.early_stop_patience = config.getint('ENVIRONMENT', 'early_stop_patience')
+
+        self.logger.debug("Environment read from config: input_shape = {}".format(self.input_shape))
+        self.logger.debug("Environment read from config: num_output = {}".format(self.num_output))
+        self.logger.debug("Environment read from config: learning_rate = {}".format(self.learning_rate))
+        self.logger.debug("Environment read from config: epochs = {}".format(self.epochs))
+        self.logger.debug("Environment read from config: early_stop = {}".format(self.early_stop))
+        if self.early_stop:
+            self.logger.debug("Environment read from config: early_stop_min_delta = {}"
+                              .format(self.early_stop_min_delta))
+            self.logger.debug("Environment read from config: early_stop_patience = {}".format(self.early_stop_patience))
 
     def eval_genome_fitness(self, genome):
         # Get the phenotype model from the genome and declare the optimizer and loss_function

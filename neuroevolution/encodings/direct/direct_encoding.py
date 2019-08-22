@@ -42,10 +42,13 @@ def check_genome_sanity_function(genotype, activations):
 class DirectEncoding(BaseEncoding):
 
     def __init__(self, config):
+        self.logger = tf.get_logger()
+
         self.genome_id_counter = 0
 
         # Read in config parameters for the genome encoding
         self.check_genome_sanity = config.getboolean('ENCODING', 'check_genome_sanity')
+        self.logger.debug("Encoding read from config: check_genome_sanity = {}".format(self.check_genome_sanity))
 
     def create_new_genome(self, genotype, activations, trainable=True, check_genome_sanity=None):
         check_genome_sanity = self.check_genome_sanity if check_genome_sanity is None else check_genome_sanity
