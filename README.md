@@ -52,7 +52,7 @@ Example usage demonstrated in folder `examples/` and `tests/`. Currently the fol
 
 Illustration of the architecture showing the entity relations between the core modules and their respective interactions in the sequence diagram:
 
-![Architecture Illustration](https://github.com/PaulPauls/Tensorflow-Neuroevolution/tree/master/.architecture_illustration/Entity_Sequence_Diagram_TFNE-Framework.png)
+![Architecture Illustration](https://raw.githubusercontent.com/PaulPauls/Tensorflow-Neuroevolution/master/.architecture_illustration/Entity_Sequence_Diagram_TFNE-Framework.png)
 
 
 
