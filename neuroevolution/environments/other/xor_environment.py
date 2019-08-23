@@ -7,6 +7,39 @@ from neuroevolution.environments import BaseEnvironment
 
 class XOREnvironment(BaseEnvironment):
     """
+    ToDo: Redo docstring
+    Environment that provides the XOR function imitation problem to the TFNE framework in a way that assumes that only
+    the genome model's topology will be evaluated. In order to reasonably determine the genomes fitness based on the
+    topology will this environment first train the weights of the model according to the neuroevolution configuration
+    and then assign a fitness score to the genome.
+    """
+
+    def __init__(self, config):
+        pass
+
+    def eval_genome_fitness(self, genome):
+        """
+        ToDo: Redo docstring
+        Evaluate the genome by grabbing its model and training its weights with SGD. If activated will the training
+        process stop early if no progress will take place. The genomes fitness is then determined as the inverted loss
+        of the model, multiplied by 100 to get the percentage, effectively representing the model's accuracy in
+        predicting the correct values.
+        """
+        raise NotImplementedError("Should implement eval_genome_fitness()")
+
+    def replay_genome(self, genome):
+        raise NotImplementedError("Should implement replay_genome()")
+
+    def get_input_shape(self):
+        raise NotImplementedError("Should implement get_input_shape()")
+
+    def get_num_output(self):
+        raise NotImplementedError("Should implement get_num_output()")
+
+
+class XORWeightTrainingEnvironment(BaseEnvironment):
+    """
+    ToDo: Redo docstring
     Environment that provides the XOR function imitation problem to the TFNE framework in a way that assumes that only
     the genome model's topology will be evaluated. In order to reasonably determine the genomes fitness based on the
     topology will this environment first train the weights of the model according to the neuroevolution configuration
@@ -40,6 +73,7 @@ class XOREnvironment(BaseEnvironment):
 
     def eval_genome_fitness(self, genome):
         """
+        ToDo: Redo docstring
         Evaluate the genome by grabbing its model and training its weights with SGD. If activated will the training
         process stop early if no progress will take place. The genomes fitness is then determined as the inverted loss
         of the model, multiplied by 100 to get the percentage, effectively representing the model's accuracy in

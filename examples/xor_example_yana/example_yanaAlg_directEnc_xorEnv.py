@@ -19,7 +19,7 @@ def main():
 
     config = ne.load_config('./example_yanaAlg_directEnc_xorEnv.cfg')
 
-    environment = ne.environments.XOREnvironment(config)
+    environment = ne.environments.XORWeightTrainingEnvironment(config)
 
     encoding = ne.encodings.DirectEncoding(config)
     ne_algorithm = ne.algorithms.YANA(encoding, config)
