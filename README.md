@@ -131,7 +131,7 @@ The development diary for this project can be found [here](https://paulpauls.git
 
 #### About ####
 
-Project developed by Paul Pauls in collaboration with Rezsa Farahani in the context of Tensorflow's Google Summer of Code Program in 2019.
+Project developed by [Paul Pauls](https://github.com/PaulPauls) in collaboration with [Rezsa Farahani](https://github.com/rezsa) in the context of Tensorflow's Google Summer of Code Program in 2019.
 
 
 
