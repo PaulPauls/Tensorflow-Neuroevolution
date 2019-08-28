@@ -21,7 +21,7 @@ def test_xor():
     activations = {'out_activation': tf.keras.activations.sigmoid,
                    'default_activation': tf.keras.activations.tanh}
 
-    config = ne.load_config('../examples/xor_example/example_yanaAlg_directEnc_xorEnv.cfg')
+    config = ne.load_config('../examples/xor_example_yana/example_yanaAlg_directEnc_xorEnv.cfg')
     encoding = ne.encodings.DirectEncoding(config)
 
     genome = encoding.create_new_genome(genotype, activations, check_genome_sanity=True)

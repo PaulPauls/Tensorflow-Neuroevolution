@@ -15,7 +15,16 @@ class XOREnvironment(BaseEnvironment):
     """
 
     def __init__(self, config):
-        pass
+        self.logger = tf.get_logger()
+
+        self.x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+        self.y = np.array([[0], [1], [1], [0]])
+
+        self.input_shape = ast.literal_eval(config.get('ENVIRONMENT', 'input_shape', fallback='(2,)'))
+        self.num_output = config.getint('ENVIRONMENT', 'num_output', fallback=1)
+
+        self.logger.debug("Environment read from config: input_shape = {}".format(self.input_shape))
+        self.logger.debug("Environment read from config: num_output = {}".format(self.num_output))
 
     def eval_genome_fitness(self, genome):
         """
@@ -25,16 +34,26 @@ class XOREnvironment(BaseEnvironment):
         of the model, multiplied by 100 to get the percentage, effectively representing the model's accuracy in
         predicting the correct values.
         """
-        raise NotImplementedError("Should implement eval_genome_fitness()")
+        # Get the phenotype model from the genome and declare the loss_function
+        model = genome.get_phenotype_model()
+        loss_function = tf.keras.losses.BinaryCrossentropy()
+
+        # Calculate the genome fitness as the percentage of accuracy in its prediction, rounded to 3 decimal points
+        evaluated_fitness = float(100 * (1 - loss_function(self.y, model.predict(self.x))))
+        rounded_evaluated_fitness = round(evaluated_fitness, 3)
+        genome.set_fitness(rounded_evaluated_fitness)
 
     def replay_genome(self, genome):
-        raise NotImplementedError("Should implement replay_genome()")
+        model = genome.get_phenotype_model()
+        print("#" * 100)
+        print("Solution Values:\n{}".format(self.y))
+        print("Predicted Values:\n{}".format(model.predict(self.x)))
 
     def get_input_shape(self):
-        raise NotImplementedError("Should implement get_input_shape()")
+        return self.input_shape
 
     def get_num_output(self):
-        raise NotImplementedError("Should implement get_num_output()")
+        return self.num_output
 
 
 class XORWeightTrainingEnvironment(BaseEnvironment):
