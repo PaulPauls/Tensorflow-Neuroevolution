@@ -127,8 +127,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         mutate_choice = random()
 
         # Get genotype and activations, as all mutations require this info from the genome they are based on
-        genotype = genome.get_genotype()
-        activations = genome.get_activations()
+        genotype, activations = genome.serialize()
 
         if mutate_choice < self.mutate_weights_prob:
             # Create a new genome by mutating the weights of the supplied genome and leaving the genotype and
