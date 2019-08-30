@@ -2,7 +2,7 @@ import tensorflow as tf
 from collections import deque
 
 from neuroevolution.encodings import BaseEncoding
-from neuroevolution.encodings.direct import DirectEncodingGenome, DirectEncodingGene
+from .direct_encoding_genome import DirectEncodingGenome, DirectEncodingGene
 
 
 def deserialize_genome(genotype, activations):

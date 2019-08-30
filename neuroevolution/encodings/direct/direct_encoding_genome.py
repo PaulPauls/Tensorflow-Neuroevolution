@@ -3,7 +3,7 @@ import tensorflow as tf
 from graphviz import Digraph
 
 from neuroevolution.encodings import BaseGenome
-from neuroevolution.encodings.direct import DirectEncodingModel
+from .direct_encoding_model import DirectEncodingModel
 
 
 class DirectEncodingGene:
