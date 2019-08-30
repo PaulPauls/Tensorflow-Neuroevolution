@@ -14,18 +14,23 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
         self.encoding = encoding
 
-        # Read in config parameters for neuroevolution algorithm
-        self.replacement_percentage = config.getfloat('NE_ALGORITHM', 'replacement_percentage')
-        self.mutate_to_recombine_prob = config.getfloat('NE_ALGORITHM', 'mutate_to_recombine_prob')
-        self.genome_default_activation = config.get('NE_ALGORITHM', 'default_activation')
-        self.genome_out_activation = config.get('NE_ALGORITHM', 'out_activation')
-        self.logger.debug("NE Algorithm read from config: replacement_percentage = {}"
+        # Read in config parameters for the NEAT neuroevolution algorithm and the evolvable config parameters of the
+        # Direct encoding
+        section_name_algorithm = 'NEAT' if config.has_section('NEAT') else 'NE_ALGORITHM'
+        section_name_evolvable_encoding = 'DIRECT_ENCODING_EVOLVABLE' \
+            if config.has_section('DIRECT_ENCODING_EVOLVABLE') else 'ENCODING_EVOLVABLE'
+        self.replacement_percentage = config.getfloat(section_name_algorithm, 'replacement_percentage')
+        self.mutate_to_recombine_prob = config.getfloat(section_name_algorithm, 'mutate_to_recombine_prob')
+        self.genome_default_activation = config.get(section_name_evolvable_encoding, 'default_activation')
+        self.genome_out_activation = config.get(section_name_evolvable_encoding, 'out_activation')
+
+        self.logger.debug("NEAT NE Algorithm read from config: replacement_percentage = {}"
                           .format(self.replacement_percentage))
-        self.logger.debug("NE Algorithm read from config: mutate_to_recombine_prob = {}"
+        self.logger.debug("NEAT NE Algorithm read from config: mutate_to_recombine_prob = {}"
                           .format(self.mutate_to_recombine_prob))
-        self.logger.debug("NE Algorithm read from config: genome_default_activation = {}"
+        self.logger.debug("NEAT NE Algorithm read from config: genome_default_activation = {}"
                           .format(self.genome_default_activation))
-        self.logger.debug("NE Algorithm read from config: genome_out_activation = {}"
+        self.logger.debug("NEAT NE Algorithm read from config: genome_out_activation = {}"
                           .format(self.genome_out_activation))
 
         # As NEAT evolves model weights manually, set `trainable` to False as automatic weight training should not be

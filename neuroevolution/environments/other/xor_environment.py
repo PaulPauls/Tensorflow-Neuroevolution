@@ -17,11 +17,13 @@ class XOREnvironment(BaseEnvironment):
         self.y = np.array([[0], [1], [1], [0]])
         self.loss_function = tf.keras.losses.BinaryCrossentropy()
 
-        self.input_shape = ast.literal_eval(config.get('ENVIRONMENT', 'input_shape', fallback='(2,)'))
-        self.num_output = config.getint('ENVIRONMENT', 'num_output', fallback=1)
+        # Read in config parameters for the xor environment
+        section_name = 'XOR_ENVIRONMENT' if config.has_section('XOR_ENVIRONMENT') else 'ENVIRONMENT'
+        self.input_shape = ast.literal_eval(config.get(section_name, 'input_shape', fallback='(2,)'))
+        self.num_output = config.getint(section_name, 'num_output', fallback=1)
 
-        self.logger.debug("Environment read from config: input_shape = {}".format(self.input_shape))
-        self.logger.debug("Environment read from config: num_output = {}".format(self.num_output))
+        self.logger.debug("XOR Environment read from config: input_shape = {}".format(self.input_shape))
+        self.logger.debug("XOR Environment read from config: num_output = {}".format(self.num_output))
 
     def eval_genome_fitness(self, genome):
         """
@@ -61,14 +63,16 @@ class XORWeightTrainingEnvironment(BaseEnvironment):
         self.y = np.array([[0], [1], [1], [0]])
         self.loss_function = tf.keras.losses.BinaryCrossentropy()
 
-        self.input_shape = ast.literal_eval(config.get('ENVIRONMENT', 'input_shape', fallback='(2,)'))
-        self.num_output = config.getint('ENVIRONMENT', 'num_output', fallback=1)
-        self.learning_rate = config.getfloat('ENVIRONMENT', 'learning_rate')
-        self.epochs = config.getint('ENVIRONMENT', 'epochs')
-        self.early_stop = config.getboolean('ENVIRONMENT', 'early_stop')
+        # Read in config parameters for the xor environment
+        section_name = 'XOR_ENVIRONMENT' if config.has_section('XOR_ENVIRONMENT') else 'ENVIRONMENT'
+        self.input_shape = ast.literal_eval(config.get(section_name, 'input_shape', fallback='(2,)'))
+        self.num_output = config.getint(section_name, 'num_output', fallback=1)
+        self.learning_rate = config.getfloat(section_name, 'learning_rate')
+        self.epochs = config.getint(section_name, 'epochs')
+        self.early_stop = config.getboolean(section_name, 'early_stop')
         if self.early_stop:
-            self.early_stop_min_delta = config.getfloat('ENVIRONMENT', 'early_stop_min_delta')
-            self.early_stop_patience = config.getint('ENVIRONMENT', 'early_stop_patience')
+            self.early_stop_min_delta = config.getfloat(section_name, 'early_stop_min_delta')
+            self.early_stop_patience = config.getint(section_name, 'early_stop_patience')
 
         self.logger.debug("Environment read from config: input_shape = {}".format(self.input_shape))
         self.logger.debug("Environment read from config: num_output = {}".format(self.num_output))

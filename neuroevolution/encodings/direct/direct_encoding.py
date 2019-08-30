@@ -57,15 +57,17 @@ class DirectEncoding(BaseEncoding):
 
         self.genome_id_counter = 0
 
-        # Read in config parameters for the genome encoding
-        self.check_genome_sanity = config.getboolean('ENCODING', 'check_genome_sanity')
-        self.initializer_kernel = tf.keras.initializers.deserialize(config.get('ENCODING', 'initializer_kernel'))
-        self.initializer_bias = tf.keras.initializers.deserialize(config.get('ENCODING', 'initializer_bias'))
-        self.dtype = tf.dtypes.as_dtype(config.get('ENCODING', 'dtype'))
-        self.logger.debug("Encoding read from config: check_genome_sanity = {}".format(self.check_genome_sanity))
-        self.logger.debug("Encoding read from config: initializer_kernel = {}".format(self.initializer_kernel))
-        self.logger.debug("Encoding read from config: initializer_bias = {}".format(self.initializer_bias))
-        self.logger.debug("Encoding read from config: dtype = {}".format(self.dtype))
+        # Read in config parameters for the direct genome encoding
+        section_name = 'DIRECT_ENCODING' if config.has_section('DIRECT_ENCODING') else 'ENCODING'
+        self.check_genome_sanity = config.getboolean(section_name, 'check_genome_sanity')
+        self.initializer_kernel = tf.keras.initializers.deserialize(config.get(section_name, 'initializer_kernel'))
+        self.initializer_bias = tf.keras.initializers.deserialize(config.get(section_name, 'initializer_bias'))
+        self.dtype = tf.dtypes.as_dtype(config.get(section_name, 'dtype'))
+
+        self.logger.debug("Direct Encoding read from config: check_genome_sanity = {}".format(self.check_genome_sanity))
+        self.logger.debug("Direct Encoding read from config: initializer_kernel = {}".format(self.initializer_kernel))
+        self.logger.debug("Direct Encoding read from config: initializer_bias = {}".format(self.initializer_bias))
+        self.logger.debug("Direct Encoding read from config: dtype = {}".format(self.dtype))
 
     def create_new_genome(self, genotype, activations, trainable, check_genome_sanity=None):
         """

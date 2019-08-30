@@ -15,9 +15,10 @@ class Population:
 
         self.ne_algorithm = ne_algorithm
 
-        # Read in config parameters for population
+        # Read in config parameters for the population
         self.supplied_pop_size = config.getint('POPULATION', 'pop_size')
         self.limited_pop_size = config.getboolean('POPULATION', 'limited_pop_size')
+
         self.logger.debug("Population read from config: supplied_pop_size = {}".format(self.supplied_pop_size))
         self.logger.debug("Population read from config: limited_pop_size = {}".format(self.limited_pop_size))
 

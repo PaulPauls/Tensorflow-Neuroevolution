@@ -21,9 +21,10 @@ class EvolutionEngine:
         else:
             self.batch_size = batch_size
 
-        # Read in config parameters for evolution process
+        # Read in config parameters for the evolution engine
         self.max_generations_config = config.getint('EVOLUTION_ENGINE', 'max_generations')
         self.fitness_threshold_config = config.getfloat('EVOLUTION_ENGINE', 'fitness_threshold')
+
         self.logger.debug("EvolutionEngine read from config: max_generations_config = {}"
                           .format(self.max_generations_config))
         self.logger.debug("EvolutionEngine read from config: fitness_threshold_config = {}"

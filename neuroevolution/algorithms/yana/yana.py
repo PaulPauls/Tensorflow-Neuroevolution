@@ -18,15 +18,20 @@ class YANA(BaseNeuroevolutionAlgorithm):
 
         self.encoding = encoding
 
-        # Read in config parameters for neuroevolution algorithm
-        self.replacement_percentage = config.getfloat('NE_ALGORITHM', 'replacement_percentage')
-        self.genome_default_activation = config.get('NE_ALGORITHM', 'default_activation')
-        self.genome_out_activation = config.get('NE_ALGORITHM', 'out_activation')
-        self.logger.debug("NE Algorithm read from config: replacement_percentage = {}"
+        # Read in config parameters for the YANA neuroevolution algorithm and the evolvable config parameters of the
+        # Direct encoding
+        section_name_algorithm = 'YANA' if config.has_section('YANA') else 'NE_ALGORITHM'
+        section_name_evolvable_encoding = 'DIRECT_ENCODING_EVOLVABLE' \
+            if config.has_section('DIRECT_ENCODING_EVOLVABLE') else 'ENCODING_EVOLVABLE'
+        self.replacement_percentage = config.getfloat(section_name_algorithm, 'replacement_percentage')
+        self.genome_default_activation = config.get(section_name_evolvable_encoding, 'default_activation')
+        self.genome_out_activation = config.get(section_name_evolvable_encoding, 'out_activation')
+
+        self.logger.debug("YANA NE Algorithm read from config: replacement_percentage = {}"
                           .format(self.replacement_percentage))
-        self.logger.debug("NE Algorithm read from config: genome_default_activation = {}"
+        self.logger.debug("YANA NE Algorithm read from config: genome_default_activation = {}"
                           .format(self.genome_default_activation))
-        self.logger.debug("NE Algorithm read from config: genome_out_activation = {}"
+        self.logger.debug("YANA NE Algorithm read from config: genome_out_activation = {}"
                           .format(self.genome_out_activation))
 
         # As YANA uses SGD to optimize the weights of the topology (and as of now only evolves topology, not weights),
