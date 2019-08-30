@@ -59,9 +59,15 @@ class DirectEncoding(BaseEncoding):
 
         # Read in config parameters for the genome encoding
         self.check_genome_sanity = config.getboolean('ENCODING', 'check_genome_sanity')
+        self.initializer_kernel = tf.keras.initializers.deserialize(config.get('ENCODING', 'initializer_kernel'))
+        self.initializer_bias = tf.keras.initializers.deserialize(config.get('ENCODING', 'initializer_bias'))
+        self.dtype = tf.dtypes.as_dtype(config.get('ENCODING', 'dtype'))
         self.logger.debug("Encoding read from config: check_genome_sanity = {}".format(self.check_genome_sanity))
+        self.logger.debug("Encoding read from config: initializer_kernel = {}".format(self.initializer_kernel))
+        self.logger.debug("Encoding read from config: initializer_bias = {}".format(self.initializer_bias))
+        self.logger.debug("Encoding read from config: dtype = {}".format(self.dtype))
 
-    def create_new_genome(self, genotype, activations, trainable=True, check_genome_sanity=None):
+    def create_new_genome(self, genotype, activations, trainable, check_genome_sanity=None):
         """
         :param genotype: genome genotype either specified explicitely as a dict of connections or as a deque of direct-
             encoding genes.
@@ -82,4 +88,10 @@ class DirectEncoding(BaseEncoding):
             check_genome_sanity_function(genotype, activations)
 
         self.genome_id_counter += 1
-        return DirectEncodingGenome(self.genome_id_counter, genotype, activations, trainable=trainable)
+        return DirectEncodingGenome(genome_id=self.genome_id_counter,
+                                    genotype=genotype,
+                                    activations=activations,
+                                    initializer_kernel=self.initializer_kernel,
+                                    initializer_bias=self.initializer_bias,
+                                    trainable=trainable,
+                                    dtype=self.dtype)

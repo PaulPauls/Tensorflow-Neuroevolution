@@ -24,7 +24,7 @@ def test_xor():
     config = ne.load_config('../examples/xor_example_yana/example_yanaAlg_directEnc_xorEnv.cfg')
     encoding = ne.encodings.DirectEncoding(config)
 
-    genome = encoding.create_new_genome(genotype, activations, check_genome_sanity=True)
+    genome = encoding.create_new_genome(genotype, activations, trainable=True, check_genome_sanity=True)
     genome.summary()
     genome.visualize()
 

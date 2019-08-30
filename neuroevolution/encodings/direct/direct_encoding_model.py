@@ -2,15 +2,27 @@ import tensorflow as tf
 from toposort import toposort
 
 
-class CustomLayer(tf.keras.layers.Layer):
+class CustomArbitraryInputNodeFunction(tf.keras.layers.Layer):
     """
-    Custom TF Layer for a DirectEncoding model. This custom layer only takes inputs from specified topology coordinates
-    to enable arbitrary topologies.
+    ToDo doc
     """
 
-    def __init__(self, num_outputs, input_node_coords, activation, dtype=tf.float64):
-        super(CustomLayer, self).__init__(dtype=dtype)
-        self.custom_layer = tf.keras.layers.Dense(units=num_outputs, activation=activation, dtype=dtype)
+    def __init__(self, units, input_node_coords, activation, initializer_kernel, initializer_bias,
+                 trainable, dtype, dynamic):
+        super(CustomArbitraryInputNodeFunction, self).__init__(trainable=trainable, dtype=dtype, dynamic=dynamic)
+        self.activation = activation
+
+        # ToDo doc
+        self.kernel = self.add_weight(shape=(len(input_node_coords), units),
+                                      dtype=self.dtype,
+                                      initializer=initializer_kernel,
+                                      trainable=self.trainable)
+        self.bias = self.add_weight(shape=(units,),
+                                    dtype=self.dtype,
+                                    initializer=initializer_bias,
+                                    trainable=self.trainable)
+        self.built = True
+
         # Set the layer's call function to either a function handling a single input or handling multiple inputs
         # and preconfigure the requirements to accelerate the heavily used call function.
         if len(input_node_coords) >= 2:
@@ -21,25 +33,24 @@ class CustomLayer(tf.keras.layers.Layer):
             self.call = self.call_single_inputs
 
     def call_single_inputs(self, inputs, **kwargs):
-        sel_inputs = inputs[self.layer_index][:, self.node_index:self.node_index + 1]
-        return self.custom_layer(sel_inputs)
+        selected_inputs = inputs[self.layer_index][:, self.node_index:self.node_index + 1]
+        return self.activation(tf.matmul(selected_inputs, self.kernel) + self.bias)
 
     def call_multiple_inputs(self, inputs, **kwargs):
-        sel_inputs = tf.concat([inputs[layer_index][:, node_index:node_index + 1]
-                                for (layer_index, node_index) in self.input_node_coords], 1)
-        return self.custom_layer(sel_inputs)
+        selected_inputs = tf.concat(values=[inputs[layer_index][:, node_index:node_index + 1]
+                                            for (layer_index, node_index) in self.input_node_coords], axis=1)
+        return self.activation(tf.matmul(selected_inputs, self.kernel) + self.bias)
 
 
 class DirectEncodingModel(tf.keras.Model):
     """
-    Implementaiton that takes a genotype and activation function from a direct-encoding genome as input and turns them
-    into a fully-custom topology feedforward tensorflow model. The created fully-custom topology feedforward model
-    supports sparsely connected layers or connections that skip layers altogether, while still being fully integrated
-    with the tensorflow ecosystem to support auto gradient for optimization, model summaries, manual weight-setting, etc
+    ToDo doc
     """
 
-    def __init__(self, genotype, activations, trainable):
-        super(DirectEncodingModel, self).__init__(trainable=trainable)
+    def __init__(self, genotype, activations, initializer_kernel, initializer_bias, trainable, dtype, run_eagerly):
+        super(DirectEncodingModel, self).__init__(trainable=trainable, dtype=dtype)
+        self.run_eagerly = run_eagerly
+
         # Create node_dependency dictionary. The keys are nodes that require preceding nodes to be evaluated beforehand.
         # The corresponding values of each key is the set of those nodes that need to be evalueated beforehand.
 
@@ -91,20 +102,33 @@ class DirectEncodingModel(tf.keras.Model):
                 input_node_coords = [node_to_topology[x] for x in v]
                 activation = activations['out_activation'] if layer_index == len(self.topology_dependency_levels) - 1 \
                     else activations['default_activation']
-                new_layer = CustomLayer(num_outputs=len(k), input_node_coords=input_node_coords, activation=activation)
-                self.custom_layers[layer_index - 1].append(new_layer)
+                new_nodes_function = CustomArbitraryInputNodeFunction(units=len(k),
+                                                                      input_node_coords=input_node_coords,
+                                                                      activation=activation,
+                                                                      initializer_kernel=initializer_kernel,
+                                                                      initializer_bias=initializer_bias,
+                                                                      trainable=self.trainable,
+                                                                      dtype=self.dtype,
+                                                                      dynamic=run_eagerly)
+                self.custom_layers[layer_index - 1].append(new_nodes_function)
 
     def call(self, inputs, **kwargs):
-        # tf.print("Model Inputs: ", inputs)
-        # Cast Inputs and create a list of inputs, in which each entry corresponds to the inputs of the layer.
-        # Expanding the inputs dimension instead of having a slower list is not possible as this will (according to
-        # multiple tests) interfere with the automatic gradient calculation and will lead to further complications
-        inputs = [tf.cast(inputs, tf.float64)]
-        for layer_functions in self.custom_layers:
+        """
+        ToDo doc
+        :param inputs:
+        :param kwargs:
+        :return:
+        """
+        # tf.print("Model inputs: ", inputs)
+        inputs = [tf.cast(x=inputs, dtype=self.dtype)]
+        for layers in self.custom_layers:
+            # tf.print("Layer inputs: ", inputs)
             layer_out = None
-            for joined_nodes_layer_function in layer_functions:
-                out = joined_nodes_layer_function(inputs)
-                layer_out = out if layer_out is None else tf.concat([layer_out, out], 1)
+            for nodes_function in layers:
+                out = nodes_function(inputs)
+                # tf.print("nodes_function out: ", out)
+                layer_out = out if layer_out is None else tf.concat(values=[layer_out, out], axis=1)
+            # tf.print("layer_out: ", layer_out)
             inputs.append(layer_out)
 
         return inputs[-1]

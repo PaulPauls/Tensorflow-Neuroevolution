@@ -21,11 +21,14 @@ class DirectEncodingGenome(BaseGenome):
     also offers convenience class functions to serialize, summarize or visualize the genotype.
     """
 
-    def __init__(self, genome_id, genotype, activations, trainable):
+    def __init__(self, genome_id, genotype, activations,  initializer_kernel, initializer_bias, trainable, dtype):
         self.genome_id = genome_id
         self.genotype = genotype
         self.activations = activations
+        self.initializer_kernel = initializer_kernel
+        self.initializer_bias = initializer_bias
         self.trainable = trainable
+        self.dtype = dtype
 
         self.fitness = 0
         self.phenotype_model, self.topology_levels = self._create_phenotype_model()
@@ -118,6 +121,12 @@ class DirectEncodingGenome(BaseGenome):
         return self.fitness
 
     def _create_phenotype_model(self):
-        phenotype_model = DirectEncodingModel(self.genotype, self.activations, self.trainable)
+        phenotype_model = DirectEncodingModel(genotype=self.genotype,
+                                              activations=self.activations,
+                                              initializer_kernel=self.initializer_kernel,
+                                              initializer_bias=self.initializer_bias,
+                                              trainable=self.trainable,
+                                              dtype=self.dtype,
+                                              run_eagerly=False)
         topology_levels = phenotype_model.get_topology_dependency_levels()
         return phenotype_model, topology_levels
