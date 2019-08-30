@@ -119,7 +119,60 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         return replacement_count
 
     def _create_mutated_genome(self, genome):
-        raise NotImplementedError("Should implement _create_mutated_genome()")
+        """
+        ToDo: doc
+        :param genome:
+        :return:
+        """
+        # Create the choice of weight, connection or node mutation
+        mutate_choice = random()
+
+        if mutate_choice < self.mutate_weights_prob:
+            # Create a new genome by mutating the weights of the supplied genome
+            raise NotImplementedError()
+            return weight_mutated_genome
+
+        # Assign genotype, activations and topology_levels as these are needed by both connection and node mutations
+        genotype = genome.get_genotype()
+        activations = genome.get_activations()
+        topology_levels = genome.get_topology_levels()
+
+        if mutate_choice < self.mutate_weights_prob + self.mutate_connection_prob:
+            # Create a new genome by adding a connection to the supplied genome
+            for layer_index in range(len(topology_levels) - 1):
+                possible_feedforward_nodes = set.union(*(topology_levels[layer_index + 1:]))
+                for node in topology_levels[layer_index]:
+                    for feedforward_node in possible_feedforward_nodes:
+                        if (node, feedforward_node) not in genotype.values():
+                            key = max(genotype.keys()) + 1
+                            genotype[key] = (node, feedforward_node)
+                            conn_mutated_genome = self.encoding.create_new_genome(genotype, activations,
+                                                                                  trainable=self.trainable)
+                            # ToDo: conn_mutated_genome.set_weights(...)
+                            return conn_mutated_genome
+
+        # If mutation choice fell to node mutation or it wasn't possible to add a connection, create a new genome by
+        # adding a connection node to the supplied genome
+        output_node_layer = randint(1, len(topology_levels) - 1)
+        input_node_layer = randint(0, output_node_layer - 1)
+
+        output_node = choice(tuple(topology_levels[output_node_layer]))
+        input_node = choice(tuple(topology_levels[input_node_layer]))
+        new_node = max(set.union(*topology_levels)) + 1
+
+        key = max(genotype.keys()) + 1
+        genotype[key] = (input_node, new_node)
+        genotype[key + 1] = (new_node, output_node)
+
+        node_mutated_genome = self.encoding.create_new_genome(genotype, activations, trainable=self.trainable)
+        # ToDo: node_mutated_genome.set_weights(...)
+        return node_mutated_genome
 
     def _create_recombined_genome(self, genome_1, genome_2):
+        """
+        ToDo: doc
+        :param genome_1:
+        :param genome_2:
+        :return:
+        """
         raise NotImplementedError("Should implement _create_recombined_genome()")
