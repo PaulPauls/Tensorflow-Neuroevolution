@@ -2,6 +2,7 @@ import tensorflow as tf
 from random import randint, choice
 
 from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
+from neuroevolution.encodings.direct.direct_encoding_gene import DirectEncodingGeneIDBank
 
 
 class YANA(BaseNeuroevolutionAlgorithm):
@@ -43,18 +44,15 @@ class YANA(BaseNeuroevolutionAlgorithm):
         Create a single genome of the chosen encoding with a fully connected genotype model, connecting all inputs
         to all outputs. Return this genome.
         """
-        genotype = dict()
+        genotype = list()
         # Determine if multidimensional input vector (as this is not yet implemented
         if len(input_shape) == 1:
             num_input = input_shape[0]
 
             # Create a connection from each input node to each output node
-            key_counter = 1
             for in_node in range(1, num_input + 1):
                 for out_node in range(num_input + 1, num_input + num_output + 1):
-                    conn_in_out = (in_node, out_node)
-                    genotype[key_counter] = conn_in_out
-                    key_counter += 1
+                    genotype.append((in_node, out_node))
 
             # Specify layer activation functions for genotype
             activations = {'out_activation': self.genome_out_activation,
@@ -97,6 +95,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
         """
         genotype, activations = genome.serialize()
         topology_levels = genome.get_topology_levels()
+        gene_id_bank = DirectEncodingGeneIDBank()
 
         # 50/50 chance of either adding a new connection or adding a new node to the existing genome
         add_connection = randint(0, 1)
@@ -107,7 +106,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
                 for node in topology_levels[layer_index]:
                     for feedforward_node in possible_feedforward_nodes:
                         if (node, feedforward_node) not in genotype.values():
-                            key = max(genotype.keys()) + 1
+                            key = gene_id_bank.get_id((node, feedforward_node))
                             genotype[key] = (node, feedforward_node)
                             mutated_genome = self.encoding.create_new_genome(genotype, activations,
                                                                              trainable=self.trainable)
@@ -121,9 +120,10 @@ class YANA(BaseNeuroevolutionAlgorithm):
         input_node = choice(tuple(topology_levels[input_node_layer]))
         new_node = max(set.union(*topology_levels)) + 1
 
-        key = max(genotype.keys()) + 1
-        genotype[key] = (input_node, new_node)
-        genotype[key + 1] = (new_node, output_node)
+        key_in_new = gene_id_bank.get_id((input_node, new_node))
+        key_new_out = gene_id_bank.get_id((new_node, output_node))
+        genotype[key_in_new] = (input_node, new_node)
+        genotype[key_new_out] = (new_node, output_node)
 
         mutated_genome = self.encoding.create_new_genome(genotype, activations, trainable=self.trainable)
         return mutated_genome

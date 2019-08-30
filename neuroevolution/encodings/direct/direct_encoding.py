@@ -2,22 +2,28 @@ import tensorflow as tf
 from collections import deque
 
 from neuroevolution.encodings import BaseEncoding
-from .direct_encoding_genome import DirectEncodingGenome, DirectEncodingGene
+from .direct_encoding_genome import DirectEncodingGenome
+from .direct_encoding_gene import DirectEncodingGene, DirectEncodingGeneIDBank
 
 
 def deserialize_genome(genotype, activations):
     """
-    :param genotype: dict of explicitely specified genotype
-    :param activations: dict of activation functions, possibly specified as string
-    :return: converted genotype to deque of direct-encoding Genes, converted activation functions to explicit functions
-        instead of strings
+    ToDo: doc
     """
     # Convert Key of genotype_dict to gene_id and create with specified connection the custom gene class. Then join
     # all genes in a double ended linked list
     deserialized_genotype = deque()
-    for gene_id, conns in genotype.items():
-        new_gene = DirectEncodingGene(gene_id, conns[0], conns[1])
-        deserialized_genotype.append(new_gene)
+
+    if isinstance(genotype, list):
+        gene_id_bank = DirectEncodingGeneIDBank()
+        for (conn_in, conn_out) in genotype:
+            new_gene = DirectEncodingGene(gene_id_bank.get_id((conn_in, conn_out)), conn_in, conn_out)
+            deserialized_genotype.append(new_gene)
+    elif isinstance(genotype, dict):
+        for gene_id, conns in genotype.items():
+            new_gene = DirectEncodingGene(gene_id, conns[0], conns[1])
+            deserialized_genotype.append(new_gene)
+
 
     # Convert activation functions to the actual tensorflow functions if they are supplied as strings
     if isinstance(activations['out_activation'], str):
@@ -71,19 +77,12 @@ class DirectEncoding(BaseEncoding):
 
     def create_new_genome(self, genotype, activations, trainable, check_genome_sanity=None):
         """
-        :param genotype: genome genotype either specified explicitely as a dict of connections or as a deque of direct-
-            encoding genes.
-        :param activations: dict of activation functions
-        :param trainable: flag if the direct-encoding genome's model should have trainable weights
-        :param check_genome_sanity: flag if the genotype and activation functions should be checked for errors
-        :return: DirectedEncodingGenome configured with the supplied parameters
+        ToDo: doc
         """
         check_genome_sanity = self.check_genome_sanity if check_genome_sanity is None else check_genome_sanity
 
-        # if genotype is explicitely specified in dict form it will be deserialized into a linked-List. Otherwise
-        # we assume that the genotype is in the correct form (deque of DirectEncodingGenes). If this is not the
-        # case will check_genome_sanity() throw an error
-        if isinstance(genotype, dict):
+        # ToDo: doc
+        if isinstance(genotype, list) or isinstance(genotype, dict):
             genotype, activations = deserialize_genome(genotype, activations)
 
         if check_genome_sanity:

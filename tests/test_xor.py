@@ -8,15 +8,14 @@ def test_xor():
     # Assert that TF 2.x is used
     assert tf.__version__[0] == "2"
 
-    genotype = {
-        1: (1, 2),
-        2: (1, 3),
-        3: (4, 3),
-        4: (4, 2),
-        6: (1, 5),
-        7: (4, 5),
-        8: (5, 2),
-        5: (3, 2)}
+    genotype = [(1, 2),
+                (1, 3),
+                (4, 3),
+                (4, 2),
+                (1, 5),
+                (4, 5),
+                (5, 2),
+                (3, 2)]
 
     activations = {'out_activation': tf.keras.activations.sigmoid,
                    'default_activation': tf.keras.activations.tanh}

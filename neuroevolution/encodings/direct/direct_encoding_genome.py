@@ -6,13 +6,6 @@ from neuroevolution.encodings import BaseGenome
 from .direct_encoding_model import DirectEncodingModel
 
 
-class DirectEncodingGene:
-    def __init__(self, gene_id, conn_in, conn_out):
-        self.gene_id = gene_id
-        self.conn_in = conn_in
-        self.conn_out = conn_out
-
-
 class DirectEncodingGenome(BaseGenome):
     """
     Implementation of a Neuroevolution genome, whose genotype explicitely defines each node and connection in the

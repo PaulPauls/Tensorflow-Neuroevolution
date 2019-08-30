@@ -3,6 +3,7 @@ import tensorflow as tf
 from random import randint, random, choice
 
 from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
+from neuroevolution.encodings.direct.direct_encoding_gene import DirectEncodingGeneIDBank
 
 
 class NEAT(BaseNeuroevolutionAlgorithm):
@@ -59,18 +60,15 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         Create a single direct encoded with a fully connected genotype model, connecting all inputs to all outputs.
         Return this genome.
         """
-        genotype = dict()
+        genotype = list()
         # Determine if multidimensional input vector (as this is not yet implemented
         if len(input_shape) == 1:
             num_input = input_shape[0]
 
             # Create a connection from each input node to each output node
-            key_counter = 1
             for in_node in range(1, num_input + 1):
                 for out_node in range(num_input + 1, num_input + num_output + 1):
-                    conn_in_out = (in_node, out_node)
-                    genotype[key_counter] = conn_in_out
-                    key_counter += 1
+                    genotype.append((in_node, out_node))
 
             # Specify layer activation functions for genotype
             activations = {'out_activation': self.genome_out_activation,
@@ -149,8 +147,9 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             weight_mutated_genome.set_weights(weights)
             return weight_mutated_genome
 
-        # Get topology_levels as both connection and node mutations require this info
+        # Get topology_levels and access to unique gene IDs, as both connection and node mutations require this info
         topology_levels = genome.get_topology_levels()
+        gene_id_bank = DirectEncodingGeneIDBank()
 
         if mutate_choice < self.mutate_weights_prob + self.mutate_connection_prob:
             # Create a new genome by adding a connection to the supplied genome
@@ -159,7 +158,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                 for node in topology_levels[layer_index]:
                     for feedforward_node in possible_feedforward_nodes:
                         if (node, feedforward_node) not in genotype.values():
-                            key = max(genotype.keys()) + 1
+                            key = gene_id_bank.get_id((node, feedforward_node))
                             genotype[key] = (node, feedforward_node)
                             conn_mutated_genome = self.encoding.create_new_genome(genotype, activations,
                                                                                   trainable=self.trainable)
@@ -175,9 +174,10 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         input_node = choice(tuple(topology_levels[input_node_layer]))
         new_node = max(set.union(*topology_levels)) + 1
 
-        key = max(genotype.keys()) + 1
-        genotype[key] = (input_node, new_node)
-        genotype[key + 1] = (new_node, output_node)
+        key_in_new = gene_id_bank.get_id((input_node, new_node))
+        key_new_out = gene_id_bank.get_id((new_node, output_node))
+        genotype[key_in_new] = (input_node, new_node)
+        genotype[key_new_out] = (new_node, output_node)
 
         node_mutated_genome = self.encoding.create_new_genome(genotype, activations, trainable=self.trainable)
         # ToDo: node_mutated_genome.set_weights(...)
