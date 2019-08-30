@@ -189,4 +189,12 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         :param genome_2:
         :return:
         """
-        raise NotImplementedError("Should implement _create_recombined_genome()")
+        genotype_1, activations_1 = genome_1.serialize()
+        genotype_2, activations_2 = genome_2.serialize()
+
+        genotype = {**genotype_1, **genotype_2}
+        assert activations_1 == activations_2
+
+        recombined_genome = self.encoding.create_new_genome(genotype, activations_1, trainable=self.trainable)
+        # ToDo: recombined_genome.set_weights(...)
+        return recombined_genome
