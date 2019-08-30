@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 from random import randint, random, choice
 
@@ -127,14 +128,28 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         # Create the choice of weight, connection or node mutation
         mutate_choice = random()
 
-        if mutate_choice < self.mutate_weights_prob:
-            # Create a new genome by mutating the weights of the supplied genome
-            raise NotImplementedError()
-            return weight_mutated_genome
-
-        # Assign genotype, activations and topology_levels as these are needed by both connection and node mutations
+        # Get genotype and activations, as all mutations require this info from the genome they are based on
         genotype = genome.get_genotype()
         activations = genome.get_activations()
+
+        if mutate_choice < self.mutate_weights_prob:
+            # Create a new genome by mutating the weights of the supplied genome and leaving the genotype and
+            # activations untouched
+            weights = genome.get_weights()
+            stddev = 1.0
+            for layer_weights_index in range(len(weights)):
+                layer_weights = weights[layer_weights_index]
+                shape = layer_weights.shape
+                mean = np.mean(layer_weights)
+                stddev_pre = np.std(layer_weights)
+                stddev = stddev_pre if stddev_pre != 0.0 else stddev
+                weights[layer_weights_index] = np.random.normal(loc=mean, scale=stddev, size=shape)
+
+            weight_mutated_genome = self.encoding.create_new_genome(genotype, activations, trainable=self.trainable)
+            weight_mutated_genome.set_weights(weights)
+            return weight_mutated_genome
+
+        # Get topology_levels as both connection and node mutations require this info
         topology_levels = genome.get_topology_levels()
 
         if mutate_choice < self.mutate_weights_prob + self.mutate_connection_prob:
