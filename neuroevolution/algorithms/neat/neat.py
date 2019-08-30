@@ -20,18 +20,34 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         section_name_evolvable_encoding = 'DIRECT_ENCODING_EVOLVABLE' \
             if config.has_section('DIRECT_ENCODING_EVOLVABLE') else 'ENCODING_EVOLVABLE'
         self.replacement_percentage = config.getfloat(section_name_algorithm, 'replacement_percentage')
-        self.mutate_to_recombine_prob = config.getfloat(section_name_algorithm, 'mutate_to_recombine_prob')
+        self.mutate_prob = config.getfloat(section_name_algorithm, 'mutate_prob')
+        self.recombine_prob = config.getfloat(section_name_algorithm, 'recombine_prob')
+        self.mutate_weights_prob = config.getfloat(section_name_algorithm, 'mutate_weights_prob')
+        self.mutate_connection_prob = config.getfloat(section_name_algorithm, 'mutate_connection_prob')
+        self.mutate_node_prob = config.getfloat(section_name_algorithm, 'mutate_node_prob')
         self.genome_default_activation = config.get(section_name_evolvable_encoding, 'default_activation')
         self.genome_out_activation = config.get(section_name_evolvable_encoding, 'out_activation')
 
         self.logger.debug("NEAT NE Algorithm read from config: replacement_percentage = {}"
                           .format(self.replacement_percentage))
-        self.logger.debug("NEAT NE Algorithm read from config: mutate_to_recombine_prob = {}"
-                          .format(self.mutate_to_recombine_prob))
-        self.logger.debug("NEAT NE Algorithm read from config: genome_default_activation = {}"
+        self.logger.debug("NEAT NE Algorithm read from config: mutate_prob = {}"
+                          .format(self.mutate_prob))
+        self.logger.debug("NEAT NE Algorithm read from config: recombine_prob = {}"
+                          .format(self.recombine_prob))
+        self.logger.debug("NEAT NE Algorithm read from config: mutate_weights_prob = {}"
+                          .format(self.mutate_weights_prob))
+        self.logger.debug("NEAT NE Algorithm read from config: mutate_connection_prob = {}"
+                          .format(self.mutate_connection_prob))
+        self.logger.debug("NEAT NE Algorithm read from config: mutate_node_prob = {}"
+                          .format(self.mutate_node_prob))
+        self.logger.debug("NEAT NE Algorithm read from config: default_activation = {}"
                           .format(self.genome_default_activation))
-        self.logger.debug("NEAT NE Algorithm read from config: genome_out_activation = {}"
+        self.logger.debug("NEAT NE Algorithm read from config: out_activation = {}"
                           .format(self.genome_out_activation))
+
+        # Check if mutate/recombine and different mutate probabilties are correct set and add up to 1
+        assert self.mutate_prob + self.recombine_prob == 1.0
+        assert self.mutate_weights_prob + self.mutate_connection_prob + self.mutate_node_prob == 1.0
 
         # As NEAT evolves model weights manually, set `trainable` to False as automatic weight training should not be
         # possible
@@ -81,7 +97,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         # Create a mutated or recombined genome (probability of either one determined by cfg parameter
         # 'mutate_recombine_ratio'), which are based on random genomes still in the population back to the population.
         for _ in range(replacement_count):
-            if random() < self.mutate_to_recombine_prob:
+            if random() < self.mutate_prob:
                 # Create and append mutated genome
                 genome_to_mutate = population.get_genome(randint(0, intended_pop_size - replacement_count - 1))
                 mutated_genome = self._create_mutated_genome(genome_to_mutate)
