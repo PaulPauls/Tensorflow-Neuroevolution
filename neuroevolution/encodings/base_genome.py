@@ -32,12 +32,20 @@ class BaseGenome(object, metaclass=ABCMeta):
         raise NotImplementedError("Should implement get_phenotype_model()")
 
     @abstractmethod
+    def get_weights(self):
+        raise NotImplementedError("Should implement get_weights()")
+
+    @abstractmethod
     def get_genotype(self):
         raise NotImplementedError("Should implement get_genotype()")
 
     @abstractmethod
     def get_id(self):
         raise NotImplementedError("Should implement get_id()")
+
+    @abstractmethod
+    def set_weights(self, weights):
+        raise NotImplementedError("Should implement set_weights()")
 
     @abstractmethod
     def set_fitness(self, fitness):

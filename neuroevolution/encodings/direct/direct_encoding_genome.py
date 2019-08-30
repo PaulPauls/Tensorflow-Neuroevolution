@@ -102,6 +102,9 @@ class DirectEncodingGenome(BaseGenome):
     def get_phenotype_model(self):
         return self.phenotype_model
 
+    def get_weights(self):
+        return self.phenotype_model.get_weights()
+
     def get_genotype(self):
         return self.genotype
 
@@ -113,6 +116,9 @@ class DirectEncodingGenome(BaseGenome):
 
     def get_id(self):
         return self.genome_id
+
+    def set_weights(self, weights):
+        self.phenotype_model.set_weights(weights)
 
     def set_fitness(self, fitness):
         self.fitness = fitness
