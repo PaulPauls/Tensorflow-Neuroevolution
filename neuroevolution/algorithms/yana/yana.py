@@ -67,7 +67,8 @@ class YANA(BaseNeuroevolutionAlgorithm):
         of the population and replacing them with mutated genomes, which are based on randomly chosen genomes that are
         left in the population.
         """
-        replacement_count = int(self.replacement_percentage * population.get_pop_size())
+        intended_pop_size = population.get_pop_size()
+        replacement_count = int(self.replacement_percentage * intended_pop_size)
         # Remove the in replacement_count specified amount of the worst performing members of the population
         for _ in range(replacement_count):
             worst_genome = population.get_worst_genome()
@@ -75,7 +76,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
 
         # Add the same number of mutated genomes (mutated from random genomes still in pop) back to the population
         for _ in range(replacement_count):
-            genome_to_mutate = population.get_genome(randint(0, population.get_pop_size() - replacement_count - 1))
+            genome_to_mutate = population.get_genome(randint(0, intended_pop_size - replacement_count - 1))
             mutated_genome = self._create_mutated_genome(genome_to_mutate)
             population.append_genome(mutated_genome)
 

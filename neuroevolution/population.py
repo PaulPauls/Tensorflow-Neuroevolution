@@ -63,9 +63,11 @@ class Population:
 
     def append_genome(self, genome):
         self.genomes.append(genome)
+        self.pop_size += 1
 
     def remove_genome(self, genome):
         self.genomes.remove(genome)
+        self.pop_size -= 1
 
     def get_genome(self, i):
         return self.genomes[i]
