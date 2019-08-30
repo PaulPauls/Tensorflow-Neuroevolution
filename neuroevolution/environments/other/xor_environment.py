@@ -7,11 +7,7 @@ from neuroevolution.environments import BaseEnvironment
 
 class XOREnvironment(BaseEnvironment):
     """
-    ToDo: Redo docstring
-    Environment that provides the XOR function imitation problem to the TFNE framework in a way that assumes that only
-    the genome model's topology will be evaluated. In order to reasonably determine the genomes fitness based on the
-    topology will this environment first train the weights of the model according to the neuroevolution configuration
-    and then assign a fitness score to the genome.
+    ToDo: doc
     """
 
     def __init__(self, config):
@@ -19,6 +15,7 @@ class XOREnvironment(BaseEnvironment):
 
         self.x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
         self.y = np.array([[0], [1], [1], [0]])
+        self.loss_function = tf.keras.losses.BinaryCrossentropy()
 
         self.input_shape = ast.literal_eval(config.get('ENVIRONMENT', 'input_shape', fallback='(2,)'))
         self.num_output = config.getint('ENVIRONMENT', 'num_output', fallback=1)
@@ -28,18 +25,13 @@ class XOREnvironment(BaseEnvironment):
 
     def eval_genome_fitness(self, genome):
         """
-        ToDo: Redo docstring
-        Evaluate the genome by grabbing its model and training its weights with SGD. If activated will the training
-        process stop early if no progress will take place. The genomes fitness is then determined as the inverted loss
-        of the model, multiplied by 100 to get the percentage, effectively representing the model's accuracy in
-        predicting the correct values.
+        ToDo: doc
         """
-        # Get the phenotype model from the genome and declare the loss_function
+        # Get the phenotype model from the genome
         model = genome.get_phenotype_model()
-        loss_function = tf.keras.losses.BinaryCrossentropy()
 
         # Calculate the genome fitness as the percentage of accuracy in its prediction, rounded to 3 decimal points
-        evaluated_fitness = float(100 * (1 - loss_function(self.y, model.predict(self.x))))
+        evaluated_fitness = float(100 * (1 - self.loss_function(self.y, model.predict(self.x))))
         rounded_evaluated_fitness = round(evaluated_fitness, 3)
         genome.set_fitness(rounded_evaluated_fitness)
 
@@ -48,6 +40,7 @@ class XOREnvironment(BaseEnvironment):
         print("#" * 100)
         print("Solution Values:\n{}".format(self.y))
         print("Predicted Values:\n{}".format(model.predict(self.x)))
+        print("#" * 100)
 
     def get_input_shape(self):
         return self.input_shape
@@ -58,11 +51,7 @@ class XOREnvironment(BaseEnvironment):
 
 class XORWeightTrainingEnvironment(BaseEnvironment):
     """
-    ToDo: Redo docstring
-    Environment that provides the XOR function imitation problem to the TFNE framework in a way that assumes that only
-    the genome model's topology will be evaluated. In order to reasonably determine the genomes fitness based on the
-    topology will this environment first train the weights of the model according to the neuroevolution configuration
-    and then assign a fitness score to the genome.
+    ToDo: doc
     """
 
     def __init__(self, config):
@@ -70,6 +59,7 @@ class XORWeightTrainingEnvironment(BaseEnvironment):
 
         self.x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
         self.y = np.array([[0], [1], [1], [0]])
+        self.loss_function = tf.keras.losses.BinaryCrossentropy()
 
         self.input_shape = ast.literal_eval(config.get('ENVIRONMENT', 'input_shape', fallback='(2,)'))
         self.num_output = config.getint('ENVIRONMENT', 'num_output', fallback=1)
@@ -92,19 +82,14 @@ class XORWeightTrainingEnvironment(BaseEnvironment):
 
     def eval_genome_fitness(self, genome):
         """
-        ToDo: Redo docstring
-        Evaluate the genome by grabbing its model and training its weights with SGD. If activated will the training
-        process stop early if no progress will take place. The genomes fitness is then determined as the inverted loss
-        of the model, multiplied by 100 to get the percentage, effectively representing the model's accuracy in
-        predicting the correct values.
+        ToDo: doc
         """
-        # Get the phenotype model from the genome and declare the optimizer and loss_function
+        # Get the phenotype model from the genome and declare the optimizer
         model = genome.get_phenotype_model()
         optimizer = tf.keras.optimizers.SGD(lr=self.learning_rate)
-        loss_function = tf.keras.losses.BinaryCrossentropy()
 
         # Compile and train the model
-        model.compile(optimizer=optimizer, loss=loss_function)
+        model.compile(optimizer=optimizer, loss=self.loss_function)
         if self.early_stop:
             early_stop = tf.keras.callbacks.EarlyStopping(monitor='loss', min_delta=self.early_stop_min_delta,
                                                           patience=self.early_stop_patience)
@@ -113,7 +98,7 @@ class XORWeightTrainingEnvironment(BaseEnvironment):
             model.fit(self.x, self.y, batch_size=1, epochs=self.epochs, verbose=0)
 
         # Calculate the genome fitness as the percentage of accuracy in its prediction, rounded to 3 decimal points
-        evaluated_fitness = float(100 * (1 - loss_function(self.y, model.predict(self.x))))
+        evaluated_fitness = float(100 * (1 - self.loss_function(self.y, model.predict(self.x))))
         rounded_evaluated_fitness = round(evaluated_fitness, 3)
         genome.set_fitness(rounded_evaluated_fitness)
 
