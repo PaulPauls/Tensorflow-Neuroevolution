@@ -27,19 +27,18 @@ def test_xor():
     genome.summary()
     genome.visualize()
 
-    if True:
-        x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
-        y = np.array([[0], [1], [1], [0]])
+    x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+    y = np.array([[0], [1], [1], [0]])
 
-        model = genome.get_phenotype_model()
+    model = genome.get_phenotype_model()
 
-        model.compile(optimizer=tf.keras.optimizers.SGD(lr=0.1),
-                      loss='binary_crossentropy')
+    model.compile(optimizer=tf.keras.optimizers.SGD(lr=0.1),
+                  loss='binary_crossentropy')
 
-        model.fit(x, y, batch_size=1, epochs=1000, verbose=1)
+    model.fit(x, y, batch_size=1, epochs=1000, verbose=1)
 
-        print(model.summary())
-        print(model.predict(x))
+    print(model.summary())
+    print(model.predict(x))
 
     print("FIN")
 
