@@ -11,7 +11,7 @@ def main():
 
     :return: None
     """
-    logging.set_verbosity(logging.INFO)
+    logging.set_verbosity(logging.DEBUG)
     logging.info("Using TF Version {}".format(tf.__version__))
     assert tf.__version__[0] == '2'  # Assert that TF 2.x is used
 
