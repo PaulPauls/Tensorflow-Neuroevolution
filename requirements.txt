@@ -2,7 +2,7 @@ absl-py==0.8.0
 astor==0.8.0
 cloudpickle==1.2.2
 future==0.17.1
-gast==0.3.1
+gast==0.2.2
 google-pasta==0.1.7
 graphviz==0.13
 grpcio==1.23.0
@@ -17,10 +17,10 @@ protobuf==3.9.1
 pyglet==1.3.2
 scipy==1.3.1
 six==1.12.0
-tb-nightly==1.15.0a20190806
-tensorflow==2.0.0rc0
+tb-nightly==1.14.0a20190603
+tensorflow==2.0.0b1
 termcolor==1.1.0
-tf-estimator-nightly==1.14.0.dev2019080601
+tf-estimator-nightly==1.14.0.dev2019060501
 toposort==1.5
 Werkzeug==0.15.6
 wrapt==1.11.2
