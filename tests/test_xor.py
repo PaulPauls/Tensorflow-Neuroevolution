@@ -5,8 +5,7 @@ import neuroevolution as ne
 
 
 def test_xor():
-    # Assert that TF 2.x is used
-    assert tf.__version__[0] == "2"
+    assert tf.__version__[0] == '2'  # Assert that TF 2.x is used
 
     genotype = [(1, 2),
                 (1, 3),
@@ -20,7 +19,7 @@ def test_xor():
     activations = {'out_activation': tf.keras.activations.sigmoid,
                    'default_activation': tf.keras.activations.tanh}
 
-    config = ne.load_config('../examples/xor_example_yana/example_yanaAlg_directEnc_xorEnv.cfg')
+    config = ne.load_config('../examples/xor_yana_example/xor_yana_example.cfg')
     encoding = ne.encodings.DirectEncoding(config)
 
     genome = encoding.create_new_genome(genotype, activations, trainable=True, check_genome_sanity=True)

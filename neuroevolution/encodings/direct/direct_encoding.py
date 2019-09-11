@@ -1,5 +1,6 @@
 import tensorflow as tf
 from collections import deque
+from absl import logging
 
 from neuroevolution.encodings import BaseEncoding
 from .direct_encoding_genome import DirectEncodingGenome
@@ -59,8 +60,6 @@ class DirectEncoding(BaseEncoding):
     """
 
     def __init__(self, config):
-        self.logger = tf.get_logger()
-
         self.genome_id_counter = 0
 
         # Read in config parameters for the direct genome encoding
@@ -70,10 +69,10 @@ class DirectEncoding(BaseEncoding):
         self.initializer_bias = tf.keras.initializers.deserialize(config.get(section_name, 'initializer_bias'))
         self.dtype = tf.dtypes.as_dtype(config.get(section_name, 'dtype'))
 
-        self.logger.debug("Direct Encoding read from config: check_genome_sanity = {}".format(self.check_genome_sanity))
-        self.logger.debug("Direct Encoding read from config: initializer_kernel = {}".format(self.initializer_kernel))
-        self.logger.debug("Direct Encoding read from config: initializer_bias = {}".format(self.initializer_bias))
-        self.logger.debug("Direct Encoding read from config: dtype = {}".format(self.dtype))
+        logging.debug("Direct Encoding read from config: check_genome_sanity = {}".format(self.check_genome_sanity))
+        logging.debug("Direct Encoding read from config: initializer_kernel = {}".format(self.initializer_kernel))
+        logging.debug("Direct Encoding read from config: initializer_bias = {}".format(self.initializer_bias))
+        logging.debug("Direct Encoding read from config: dtype = {}".format(self.dtype))
 
     def create_new_genome(self, genotype, activations, trainable, check_genome_sanity=None):
         """

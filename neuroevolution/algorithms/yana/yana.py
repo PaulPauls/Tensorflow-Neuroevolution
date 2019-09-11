@@ -1,4 +1,5 @@
 import tensorflow as tf
+from absl import logging
 from random import randint, choice
 
 from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
@@ -15,8 +16,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
     """
 
     def __init__(self, encoding, config):
-        self.logger = tf.get_logger()
-
         self.encoding = encoding
 
         # Read in config parameters for the YANA neuroevolution algorithm and the evolvable config parameters of the
@@ -28,12 +27,12 @@ class YANA(BaseNeuroevolutionAlgorithm):
         self.genome_default_activation = config.get(section_name_evolvable_encoding, 'default_activation')
         self.genome_out_activation = config.get(section_name_evolvable_encoding, 'out_activation')
 
-        self.logger.debug("YANA NE Algorithm read from config: replacement_percentage = {}"
-                          .format(self.replacement_percentage))
-        self.logger.debug("YANA NE Algorithm read from config: genome_default_activation = {}"
-                          .format(self.genome_default_activation))
-        self.logger.debug("YANA NE Algorithm read from config: genome_out_activation = {}"
-                          .format(self.genome_out_activation))
+        logging.debug("YANA NE Algorithm read from config: replacement_percentage = {}"
+                      .format(self.replacement_percentage))
+        logging.debug("YANA NE Algorithm read from config: genome_default_activation = {}"
+                      .format(self.genome_default_activation))
+        logging.debug("YANA NE Algorithm read from config: genome_out_activation = {}"
+                      .format(self.genome_out_activation))
 
         # As YANA uses SGD to optimize the weights of the topology (and as of now only evolves topology, not weights),
         # set  trainable variable to true

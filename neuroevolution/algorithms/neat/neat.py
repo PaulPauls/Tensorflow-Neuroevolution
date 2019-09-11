@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+from absl import logging
 from random import randint, random, choice
 
 from neuroevolution.algorithms import BaseNeuroevolutionAlgorithm
@@ -12,8 +13,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
     """
 
     def __init__(self, encoding, config):
-        self.logger = tf.get_logger()
-
         self.encoding = encoding
 
         # Read in config parameters for the NEAT neuroevolution algorithm and the evolvable config parameters of the
@@ -30,22 +29,22 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.genome_default_activation = config.get(section_name_evolvable_encoding, 'default_activation')
         self.genome_out_activation = config.get(section_name_evolvable_encoding, 'out_activation')
 
-        self.logger.debug("NEAT NE Algorithm read from config: replacement_percentage = {}"
-                          .format(self.replacement_percentage))
-        self.logger.debug("NEAT NE Algorithm read from config: mutate_prob = {}"
-                          .format(self.mutate_prob))
-        self.logger.debug("NEAT NE Algorithm read from config: recombine_prob = {}"
-                          .format(self.recombine_prob))
-        self.logger.debug("NEAT NE Algorithm read from config: mutate_weights_prob = {}"
-                          .format(self.mutate_weights_prob))
-        self.logger.debug("NEAT NE Algorithm read from config: mutate_connection_prob = {}"
-                          .format(self.mutate_connection_prob))
-        self.logger.debug("NEAT NE Algorithm read from config: mutate_node_prob = {}"
-                          .format(self.mutate_node_prob))
-        self.logger.debug("NEAT NE Algorithm read from config: default_activation = {}"
-                          .format(self.genome_default_activation))
-        self.logger.debug("NEAT NE Algorithm read from config: out_activation = {}"
-                          .format(self.genome_out_activation))
+        logging.debug("NEAT NE Algorithm read from config: replacement_percentage = {}"
+                      .format(self.replacement_percentage))
+        logging.debug("NEAT NE Algorithm read from config: mutate_prob = {}"
+                      .format(self.mutate_prob))
+        logging.debug("NEAT NE Algorithm read from config: recombine_prob = {}"
+                      .format(self.recombine_prob))
+        logging.debug("NEAT NE Algorithm read from config: mutate_weights_prob = {}"
+                      .format(self.mutate_weights_prob))
+        logging.debug("NEAT NE Algorithm read from config: mutate_connection_prob = {}"
+                      .format(self.mutate_connection_prob))
+        logging.debug("NEAT NE Algorithm read from config: mutate_node_prob = {}"
+                      .format(self.mutate_node_prob))
+        logging.debug("NEAT NE Algorithm read from config: default_activation = {}"
+                      .format(self.genome_default_activation))
+        logging.debug("NEAT NE Algorithm read from config: out_activation = {}"
+                      .format(self.genome_out_activation))
 
         # Check if mutate/recombine and different mutate probabilties are correct set and add up to 1
         assert self.mutate_prob + self.recombine_prob == 1.0

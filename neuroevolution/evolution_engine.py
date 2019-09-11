@@ -1,5 +1,5 @@
 import os
-import tensorflow as tf
+from absl import logging
 
 
 class EvolutionEngine:
@@ -10,8 +10,6 @@ class EvolutionEngine:
     """
 
     def __init__(self, population, environment, config, batch_size=None):
-        self.logger = tf.get_logger()
-
         self.population = population
         self.environment = environment
 
@@ -25,10 +23,10 @@ class EvolutionEngine:
         self.max_generations_config = config.getint('EVOLUTION_ENGINE', 'max_generations')
         self.fitness_threshold_config = config.getfloat('EVOLUTION_ENGINE', 'fitness_threshold')
 
-        self.logger.debug("EvolutionEngine read from config: max_generations_config = {}"
-                          .format(self.max_generations_config))
-        self.logger.debug("EvolutionEngine read from config: fitness_threshold_config = {}"
-                          .format(self.fitness_threshold_config))
+        logging.debug("EvolutionEngine read from config: max_generations_config = {}"
+                      .format(self.max_generations_config))
+        logging.debug("EvolutionEngine read from config: fitness_threshold_config = {}"
+                      .format(self.fitness_threshold_config))
 
     def train(self, max_generations=None, fitness_threshold=None, render_best_genome_each_gen=False, render_dir=None):
         """
@@ -40,8 +38,8 @@ class EvolutionEngine:
         """
         max_generations = self.max_generations_config if max_generations is None else max_generations
         fitness_threshold = self.fitness_threshold_config if fitness_threshold is None else fitness_threshold
-        self.logger.info("EvolutionEngine will train population for {} generations or until fitness threshold of {} "
-                         "is reached".format(max_generations, fitness_threshold))
+        logging.info("EvolutionEngine will train population for {} generations or until fitness threshold of {} "
+                     "is reached".format(max_generations, fitness_threshold))
 
         # Determine directory for renders of the best genome if not supplied
         if render_best_genome_each_gen and render_dir is None:
@@ -51,23 +49,23 @@ class EvolutionEngine:
             render_dir_name = "best_genome_each_generation_-_run_{}".format(render_dir_nr)
             os.mkdir(render_dir_name)
             render_dir = os.path.abspath(render_dir_name)
-            self.logger.info("Directory for rendered best genomes of each gen: {}".format(render_dir))
+            logging.info("Directory for rendered best genomes of each gen: {}".format(render_dir))
 
         # If population not yet initialized, do so. This is unnecessary if an already evolved population is supplied.
         if self.population.get_generation_counter() is None:
             # Determine and supply the parameters for the input and output layers when initially creating genomes
             input_shape = self.environment.get_input_shape()
             num_output = self.environment.get_num_output()
-            self.logger.info("Initializing new population...")
+            logging.info("Initializing new population...")
             self.population.initialize(input_shape, num_output)
         else:
-            self.logger.info("Evolving already initialized population. Initial state of the population:")
+            logging.info("Evolving already initialized population. Initial state of the population:")
             self.population.summary()
 
         # Create an initial evaluation before entering the loop to check if exit conditions already met and summarize it
         genome_evaluation_function = self.environment.eval_genome_fitness
         self.population.evaluate(genome_evaluation_function)
-        self.logger.info("Summary of the population after the initial evaluation:")
+        logging.info("Summary of the population after the initial evaluation:")
         self.population.summary()
 
         # Evaluate and evolve population in possibly endless loop. Exit conditions:

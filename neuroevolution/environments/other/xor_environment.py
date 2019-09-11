@@ -1,6 +1,7 @@
 import ast
 import numpy as np
 import tensorflow as tf
+from absl import logging
 
 from neuroevolution.environments import BaseEnvironment
 
@@ -11,8 +12,6 @@ class XOREnvironment(BaseEnvironment):
     """
 
     def __init__(self, config):
-        self.logger = tf.get_logger()
-
         self.x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
         self.y = np.array([[0], [1], [1], [0]])
         self.loss_function = tf.keras.losses.BinaryCrossentropy()
@@ -22,8 +21,8 @@ class XOREnvironment(BaseEnvironment):
         self.input_shape = ast.literal_eval(config.get(section_name, 'input_shape', fallback='(2,)'))
         self.num_output = config.getint(section_name, 'num_output', fallback=1)
 
-        self.logger.debug("XOR Environment read from config: input_shape = {}".format(self.input_shape))
-        self.logger.debug("XOR Environment read from config: num_output = {}".format(self.num_output))
+        logging.debug("XOR Environment read from config: input_shape = {}".format(self.input_shape))
+        logging.debug("XOR Environment read from config: num_output = {}".format(self.num_output))
 
     def eval_genome_fitness(self, genome):
         """
@@ -57,8 +56,6 @@ class XORWeightTrainingEnvironment(BaseEnvironment):
     """
 
     def __init__(self, config):
-        self.logger = tf.get_logger()
-
         self.x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
         self.y = np.array([[0], [1], [1], [0]])
         self.loss_function = tf.keras.losses.BinaryCrossentropy()
@@ -74,15 +71,15 @@ class XORWeightTrainingEnvironment(BaseEnvironment):
             self.early_stop_min_delta = config.getfloat(section_name, 'early_stop_min_delta')
             self.early_stop_patience = config.getint(section_name, 'early_stop_patience')
 
-        self.logger.debug("Environment read from config: input_shape = {}".format(self.input_shape))
-        self.logger.debug("Environment read from config: num_output = {}".format(self.num_output))
-        self.logger.debug("Environment read from config: learning_rate = {}".format(self.learning_rate))
-        self.logger.debug("Environment read from config: epochs = {}".format(self.epochs))
-        self.logger.debug("Environment read from config: early_stop = {}".format(self.early_stop))
+        logging.debug("Environment read from config: input_shape = {}".format(self.input_shape))
+        logging.debug("Environment read from config: num_output = {}".format(self.num_output))
+        logging.debug("Environment read from config: learning_rate = {}".format(self.learning_rate))
+        logging.debug("Environment read from config: epochs = {}".format(self.epochs))
+        logging.debug("Environment read from config: early_stop = {}".format(self.early_stop))
         if self.early_stop:
-            self.logger.debug("Environment read from config: early_stop_min_delta = {}"
-                              .format(self.early_stop_min_delta))
-            self.logger.debug("Environment read from config: early_stop_patience = {}".format(self.early_stop_patience))
+            logging.debug("Environment read from config: early_stop_min_delta = {}"
+                          .format(self.early_stop_min_delta))
+            logging.debug("Environment read from config: early_stop_patience = {}".format(self.early_stop_patience))
 
     def eval_genome_fitness(self, genome):
         """
