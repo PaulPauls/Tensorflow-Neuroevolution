@@ -1,4 +1,3 @@
-import tensorflow as tf
 from collections import deque
 from absl import logging
 
