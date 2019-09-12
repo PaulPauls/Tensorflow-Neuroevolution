@@ -1,23 +1,14 @@
-class DirectEncodingGene:
-    def __init__(self, gene_id, conn_in, conn_out):
+class DirectEncodingConnection:
+    def __init__(self, gene_id, conn_in, conn_out, conn_weight):
         self.gene_id = gene_id
         self.conn_in = conn_in
         self.conn_out = conn_out
+        self.conn_weight = conn_weight
 
 
-class DirectEncodingGeneIDBank:
-    gene_id_counter = 0
-    connection_tuple_to_id_mapping = dict()
-
-    def __init__(self):
-        pass
-
-    def get_id(self, connection_tuple):
-        connection_tuple = frozenset(connection_tuple)
-        if connection_tuple in DirectEncodingGeneIDBank.connection_tuple_to_id_mapping:
-            return DirectEncodingGeneIDBank.connection_tuple_to_id_mapping[connection_tuple]
-
-        DirectEncodingGeneIDBank.gene_id_counter += 1
-        DirectEncodingGeneIDBank.connection_tuple_to_id_mapping[connection_tuple] = \
-            DirectEncodingGeneIDBank.gene_id_counter
-        return DirectEncodingGeneIDBank.gene_id_counter
+class DirectEncodingNode:
+    def __init__(self, gene_id, node, bias, activation):
+        self.gene_id = gene_id
+        self.node = node
+        self.bias = bias
+        self.activation = activation
