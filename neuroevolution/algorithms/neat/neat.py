@@ -18,8 +18,8 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.mutate_weights_prob = None
         self.mutate_connection_prob = None
         self.mutate_node_prob = None
-        self.genome_default_activation = None
-        self.genome_out_activation = None
+        self.activation_default = None
+        self.activation_out = None
         self._read_config_parameters(config)
 
         # Check if mutate/recombine and different mutate probabilties are correct set and add up to 1
@@ -40,8 +40,8 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.mutate_weights_prob = config.getfloat(section_name_algorithm, 'mutate_weights_prob')
         self.mutate_connection_prob = config.getfloat(section_name_algorithm, 'mutate_connection_prob')
         self.mutate_node_prob = config.getfloat(section_name_algorithm, 'mutate_node_prob')
-        self.genome_default_activation = config.get(section_name_evolvable_encoding, 'default_activation')
-        self.genome_out_activation = config.get(section_name_evolvable_encoding, 'out_activation')
+        self.activation_default = config.get(section_name_evolvable_encoding, 'activation_default')
+        self.activation_out = config.get(section_name_evolvable_encoding, 'activation_out')
 
         logging.debug("NEAT NE Algorithm read from config: replacement_percentage = {}"
                       .format(self.replacement_percentage))
@@ -51,9 +51,8 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         logging.debug("NEAT NE Algorithm read from config: mutate_connection_prob = {}"
                       .format(self.mutate_connection_prob))
         logging.debug("NEAT NE Algorithm read from config: mutate_node_prob = {}".format(self.mutate_node_prob))
-        logging.debug("NEAT NE Algorithm read from config: default_activation = {}"
-                      .format(self.genome_default_activation))
-        logging.debug("NEAT NE Algorithm read from config: out_activation = {}".format(self.genome_out_activation))
+        logging.debug("NEAT NE Algorithm read from config: activation_default = {}".format(self.activation_default))
+        logging.debug("NEAT NE Algorithm read from config: activation_out = {}".format(self.activation_out))
 
     def create_initial_genome(self, input_shape, num_output):
         genotype = list()
@@ -67,8 +66,8 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                     genotype.append((in_node, out_node))
 
             # Specify layer activation functions for genotype
-            activations = {'out_activation': self.genome_out_activation,
-                           'default_activation': self.genome_default_activation}
+            activations = {'out_activation': self.activation_out,
+                           'default_activation': self.activation_default}
 
         else:
             raise NotImplementedError("Multidimensional Input vector not yet supported")
