@@ -24,8 +24,8 @@ class Population:
         logging.debug("Population read from config: pop_size_fixed = {}".format(self.pop_size_fixed))
 
     def initialize(self, input_shape, num_output):
-        logging.info("Initializing population to size {}...".format(self.supplied_pop_size))
-        for _ in range(self.supplied_pop_size):
+        logging.info("Initializing population to size {}...".format(self.initial_pop_size))
+        for _ in range(self.initial_pop_size):
             new_initialized_genome = self.ne_algorithm.create_initial_genome(input_shape, num_output)
             self.genomes.append(new_initialized_genome)
         self.generation_counter = 0
