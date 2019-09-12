@@ -8,11 +8,6 @@ from .direct_encoding_gene import DirectEncodingGene, DirectEncodingGeneIDBank
 
 
 def deserialize_genome(genotype, activations):
-    """
-    ToDo: doc
-    """
-    # Convert Key of genotype_dict to gene_id and create with specified connection the custom gene class. Then join
-    # all genes in a double ended linked list
     deserialized_genotype = deque()
 
     if isinstance(genotype, list):
@@ -38,31 +33,21 @@ def deserialize_genome(genotype, activations):
 
 
 def check_genome_sanity_function(genotype, activations):
-    """
-    ToDo: Possible aspects to check for:
-    - All genes in genotype are valid and have all required fields
-    - genotype encoding a feed-forward network
-    - unique gene_ids
-    - if layer_activations implemented, check if it actually specifies an activation function for each layer
-    - etc
-    :param genotype:
-    :param activations:
-    :return:
-    """
     pass
 
 
 class DirectEncoding(BaseEncoding):
-    """
-    Factory wrapper for direct-encoding genomes that creates new genomes after deserializing possibly explicitely
-    specified genotypes, checking the genotype and activation functions for errors and assigning the newly created
-    genome a continuing ID.
-    """
-
     def __init__(self, config):
         self.genome_id_counter = 0
 
-        # Read in config parameters for the direct genome encoding
+        # Declare and read in config parameters for the Direct encoding
+        self.check_genome_sanity = None
+        self.initializer_kernel = None
+        self.initializer_bias = None
+        self.dtype = None
+        self._read_config_parameters(config)
+
+    def _read_config_parameters(self, config):
         section_name = 'DIRECT_ENCODING' if config.has_section('DIRECT_ENCODING') else 'ENCODING'
         self.check_genome_sanity = config.getboolean(section_name, 'check_genome_sanity')
         self.initializer_kernel = tf.keras.initializers.deserialize(config.get(section_name, 'initializer_kernel'))
@@ -75,9 +60,6 @@ class DirectEncoding(BaseEncoding):
         logging.debug("Direct Encoding read from config: dtype = {}".format(self.dtype))
 
     def create_new_genome(self, genotype, activations, trainable, check_genome_sanity=None):
-        """
-        ToDo: doc
-        """
         check_genome_sanity = self.check_genome_sanity if check_genome_sanity is None else check_genome_sanity
 
         # ToDo: doc

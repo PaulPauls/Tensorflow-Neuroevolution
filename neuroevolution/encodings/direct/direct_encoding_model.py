@@ -3,16 +3,11 @@ from toposort import toposort
 
 
 class CustomArbitraryInputNodeFunction(tf.keras.layers.Layer):
-    """
-    ToDo doc
-    """
-
     def __init__(self, units, input_node_coords, activation, initializer_kernel, initializer_bias,
                  trainable, dtype, dynamic):
         super(CustomArbitraryInputNodeFunction, self).__init__(trainable=trainable, dtype=dtype, dynamic=dynamic)
         self.activation = activation
 
-        # ToDo doc
         self.kernel = self.add_weight(shape=(len(input_node_coords), units),
                                       dtype=self.dtype,
                                       initializer=initializer_kernel,
@@ -43,10 +38,6 @@ class CustomArbitraryInputNodeFunction(tf.keras.layers.Layer):
 
 
 class DirectEncodingModel(tf.keras.Model):
-    """
-    ToDo doc
-    """
-
     def __init__(self, genotype, activations, initializer_kernel, initializer_bias, trainable, dtype, run_eagerly):
         super(DirectEncodingModel, self).__init__(trainable=trainable, dtype=dtype)
         self.run_eagerly = run_eagerly
@@ -113,12 +104,6 @@ class DirectEncodingModel(tf.keras.Model):
                 self.custom_layers[layer_index - 1].append(new_nodes_function)
 
     def call(self, inputs, **kwargs):
-        """
-        ToDo doc
-        :param inputs:
-        :param kwargs:
-        :return:
-        """
         # tf.print("Model inputs: ", inputs)
         inputs = [tf.cast(x=inputs, dtype=self.dtype)]
         for layers in self.custom_layers:

@@ -8,15 +8,29 @@ from neuroevolution.encodings.direct.direct_encoding_gene import DirectEncodingG
 
 
 class NEAT(BaseNeuroevolutionAlgorithm):
-    """
-    ToDo: Class docstring
-    """
-
     def __init__(self, encoding, config):
         self.encoding = encoding
 
-        # Read in config parameters for the NEAT neuroevolution algorithm and the evolvable config parameters of the
-        # Direct encoding
+        # Declare and read in config parameters for the NEAT NE algorithm
+        self.replacement_percentage = None
+        self.mutate_prob = None
+        self.recombine_prob = None
+        self.mutate_weights_prob = None
+        self.mutate_connection_prob = None
+        self.mutate_node_prob = None
+        self.genome_default_activation = None
+        self.genome_out_activation = None
+        self._read_config_parameters(config)
+
+        # Check if mutate/recombine and different mutate probabilties are correct set and add up to 1
+        assert self.mutate_prob + self.recombine_prob == 1.0
+        assert self.mutate_weights_prob + self.mutate_connection_prob + self.mutate_node_prob == 1.0
+
+        # As NEAT evolves model weights manually, set `trainable` to False as automatic weight training should not be
+        # possible
+        self.trainable = False
+
+    def _read_config_parameters(self, config):
         section_name_algorithm = 'NEAT' if config.has_section('NEAT') else 'NE_ALGORITHM'
         section_name_evolvable_encoding = 'DIRECT_ENCODING_EVOLVABLE' \
             if config.has_section('DIRECT_ENCODING_EVOLVABLE') else 'ENCODING_EVOLVABLE'
@@ -31,34 +45,17 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
         logging.debug("NEAT NE Algorithm read from config: replacement_percentage = {}"
                       .format(self.replacement_percentage))
-        logging.debug("NEAT NE Algorithm read from config: mutate_prob = {}"
-                      .format(self.mutate_prob))
-        logging.debug("NEAT NE Algorithm read from config: recombine_prob = {}"
-                      .format(self.recombine_prob))
-        logging.debug("NEAT NE Algorithm read from config: mutate_weights_prob = {}"
-                      .format(self.mutate_weights_prob))
+        logging.debug("NEAT NE Algorithm read from config: mutate_prob = {}".format(self.mutate_prob))
+        logging.debug("NEAT NE Algorithm read from config: recombine_prob = {}".format(self.recombine_prob))
+        logging.debug("NEAT NE Algorithm read from config: mutate_weights_prob = {}".format(self.mutate_weights_prob))
         logging.debug("NEAT NE Algorithm read from config: mutate_connection_prob = {}"
                       .format(self.mutate_connection_prob))
-        logging.debug("NEAT NE Algorithm read from config: mutate_node_prob = {}"
-                      .format(self.mutate_node_prob))
+        logging.debug("NEAT NE Algorithm read from config: mutate_node_prob = {}".format(self.mutate_node_prob))
         logging.debug("NEAT NE Algorithm read from config: default_activation = {}"
                       .format(self.genome_default_activation))
-        logging.debug("NEAT NE Algorithm read from config: out_activation = {}"
-                      .format(self.genome_out_activation))
-
-        # Check if mutate/recombine and different mutate probabilties are correct set and add up to 1
-        assert self.mutate_prob + self.recombine_prob == 1.0
-        assert self.mutate_weights_prob + self.mutate_connection_prob + self.mutate_node_prob == 1.0
-
-        # As NEAT evolves model weights manually, set `trainable` to False as automatic weight training should not be
-        # possible
-        self.trainable = False
+        logging.debug("NEAT NE Algorithm read from config: out_activation = {}".format(self.genome_out_activation))
 
     def create_initial_genome(self, input_shape, num_output):
-        """
-        Create a single direct encoded with a fully connected genotype model, connecting all inputs to all outputs.
-        Return this genome.
-        """
         genotype = list()
         # Determine if multidimensional input vector (as this is not yet implemented
         if len(input_shape) == 1:
@@ -80,11 +77,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         return new_initialized_genome
 
     def create_new_generation(self, population):
-        """
-        Create a new generation in the population by removing X percent (specified in 'self.replacement_percentage')
-        of the population and replacing them with mutated or recombined genomes, which are based on randomly chosen
-        genomes that are left in the population.
-        """
         intended_pop_size = population.get_pop_size()
         replacement_count = int(self.replacement_percentage * intended_pop_size)
         # Remove the in replacement_count specified amount of the worst performing members of the population
@@ -117,11 +109,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         return replacement_count
 
     def _create_mutated_genome(self, genome):
-        """
-        ToDo: doc
-        :param genome:
-        :return:
-        """
         # Create the choice of weight, connection or node mutation
         mutate_choice = random()
 
@@ -182,12 +169,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         return node_mutated_genome
 
     def _create_recombined_genome(self, genome_1, genome_2):
-        """
-        ToDo: doc
-        :param genome_1:
-        :param genome_2:
-        :return:
-        """
         genotype_1, activations_1 = genome_1.serialize()
         genotype_2, activations_2 = genome_2.serialize()
 

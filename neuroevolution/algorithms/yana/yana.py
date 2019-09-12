@@ -7,19 +7,20 @@ from neuroevolution.encodings.direct.direct_encoding_gene import DirectEncodingG
 
 
 class YANA(BaseNeuroevolutionAlgorithm):
-    """
-    Implementation of a _dummy_ neuroevolution algorithm, named 'Yet Another Neuroevolution Algorithm'. This
-    neuroevolution algorithm is designed to work with the direct encoding and direct-encoding genomes. The algorithm
-    does all required neuroevolution tasks in the most basic way, only creating minimal fully connected genotype models
-    when creating an initial genome and only adding nodes or connections to the best genome when evolving the
-    population..
-    """
-
     def __init__(self, encoding, config):
         self.encoding = encoding
 
-        # Read in config parameters for the YANA neuroevolution algorithm and the evolvable config parameters of the
-        # Direct encoding
+        # Declare and read in config parameters for the YANA NE algorithm
+        self.replacement_percentage = None
+        self.genome_default_activation = None
+        self.genome_out_activation = None
+        self._read_config_parameters(config)
+
+        # As YANA uses SGD to optimize the weights of the topology (and as of now only evolves topology, not weights),
+        # set  trainable variable to true
+        self.trainable = True
+
+    def _read_config_parameters(self, config):
         section_name_algorithm = 'YANA' if config.has_section('YANA') else 'NE_ALGORITHM'
         section_name_evolvable_encoding = 'DIRECT_ENCODING_EVOLVABLE' \
             if config.has_section('DIRECT_ENCODING_EVOLVABLE') else 'ENCODING_EVOLVABLE'
@@ -34,15 +35,7 @@ class YANA(BaseNeuroevolutionAlgorithm):
         logging.debug("YANA NE Algorithm read from config: genome_out_activation = {}"
                       .format(self.genome_out_activation))
 
-        # As YANA uses SGD to optimize the weights of the topology (and as of now only evolves topology, not weights),
-        # set  trainable variable to true
-        self.trainable = True
-
     def create_initial_genome(self, input_shape, num_output):
-        """
-        Create a single genome of the chosen encoding with a fully connected genotype model, connecting all inputs
-        to all outputs. Return this genome.
-        """
         genotype = list()
         # Determine if multidimensional input vector (as this is not yet implemented
         if len(input_shape) == 1:
@@ -64,11 +57,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
         return new_initialized_genome
 
     def create_new_generation(self, population):
-        """
-        Create a new generation in the population by removing X percent (specified in 'self.replacement_percentage')
-        of the population and replacing them with mutated genomes, which are based on randomly chosen genomes that are
-        left in the population.
-        """
         intended_pop_size = population.get_pop_size()
         replacement_count = int(self.replacement_percentage * intended_pop_size)
         # Remove the in replacement_count specified amount of the worst performing members of the population
@@ -86,12 +74,6 @@ class YANA(BaseNeuroevolutionAlgorithm):
         return replacement_count
 
     def _create_mutated_genome(self, genome):
-        """
-        Create a mutated genome based on the supplied genome by copying its genotype and activations and having a
-        50/50 chance of either adding a new node or a new connection to its genotype. If no new connection is possible
-        because the genotype is fully connected, add a new node to the genotype. Then create a new genome from this
-        adjusted genotype and the copied over activations and return it.
-        """
         genotype, activations = genome.serialize()
         topology_levels = genome.get_topology_levels()
         gene_id_bank = DirectEncodingGeneIDBank()

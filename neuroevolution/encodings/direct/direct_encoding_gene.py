@@ -6,9 +6,6 @@ class DirectEncodingGene:
 
 
 class DirectEncodingGeneIDBank:
-    """
-    ToDo: doc
-    """
     gene_id_counter = 0
     connection_tuple_to_id_mapping = dict()
 
@@ -16,9 +13,6 @@ class DirectEncodingGeneIDBank:
         pass
 
     def get_id(self, connection_tuple):
-        """
-        ToDo: doc
-        """
         connection_tuple = frozenset(connection_tuple)
         if connection_tuple in DirectEncodingGeneIDBank.connection_tuple_to_id_mapping:
             return DirectEncodingGeneIDBank.connection_tuple_to_id_mapping[connection_tuple]

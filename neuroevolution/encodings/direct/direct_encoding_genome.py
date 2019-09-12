@@ -7,14 +7,7 @@ from .direct_encoding_model import DirectEncodingModel
 
 
 class DirectEncodingGenome(BaseGenome):
-    """
-    Implementation of a Neuroevolution genome, whose genotype explicitely defines each node and connection in the
-    corresponding phenotype topology (= Direct-Encoding genome). The corresponding phenotype of the genome is created
-    in the constructor by using a direct-encoding model and the supplied genotype and activations. This implementation
-    also offers convenience class functions to serialize, summarize or visualize the genotype.
-    """
-
-    def __init__(self, genome_id, genotype, activations,  initializer_kernel, initializer_bias, trainable, dtype):
+    def __init__(self, genome_id, genotype, activations, initializer_kernel, initializer_bias, trainable, dtype):
         self.genome_id = genome_id
         self.genotype = genotype
         self.activations = activations
@@ -36,10 +29,6 @@ class DirectEncodingGenome(BaseGenome):
         return string_repr
 
     def serialize(self):
-        """
-        Converts genotype from direct-encoding gene deque to explicitely specified genotype dict and converts
-        activation functions to the according activation strings. Returns both.
-        """
         # Convert genome into the explicit genotype and activation dicts that can also be supplied directly
         serialized_genotype = dict()
         for gene in self.genotype:
@@ -58,13 +47,6 @@ class DirectEncodingGenome(BaseGenome):
         # Possibly print the phenotype.summary() in this function as well
 
     def visualize(self, filename=None, directory=None, view=True):
-        """
-        Visualize genotype as a directed acyclic graph in png format. Both Input and Output layers are highlighted.
-        :param filename: filename of rendered genome graph png. If not specified, using "graph_genome_<ID>"
-        :param directory: directory to save rendered genome graph file into. If not specified, using temporary directory
-        :param view: flag if rendered genome should be shown after saving it.
-        :return: None
-        """
         filename = "graph_genome_{}".format(self.genome_id) if filename is None else filename
         directory = tempfile.mkdtemp() if directory is None else directory
 

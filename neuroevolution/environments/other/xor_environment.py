@@ -7,16 +7,18 @@ from neuroevolution.environments import BaseEnvironment
 
 
 class XOREnvironment(BaseEnvironment):
-    """
-    ToDo: doc
-    """
-
     def __init__(self, config):
         self.x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
         self.y = np.array([[0], [1], [1], [0]])
+
         self.loss_function = tf.keras.losses.BinaryCrossentropy()
 
-        # Read in config parameters for the xor environment
+        # Declare and read in config parameters for the XOR environment
+        self.input_shape = None
+        self.num_output = None
+        self._read_config_parameters(config)
+
+    def _read_config_parameters(self, config):
         section_name = 'XOR_ENVIRONMENT' if config.has_section('XOR_ENVIRONMENT') else 'ENVIRONMENT'
         self.input_shape = ast.literal_eval(config.get(section_name, 'input_shape', fallback='(2,)'))
         self.num_output = config.getint(section_name, 'num_output', fallback=1)
@@ -25,9 +27,6 @@ class XOREnvironment(BaseEnvironment):
         logging.debug("XOR Environment read from config: num_output = {}".format(self.num_output))
 
     def eval_genome_fitness(self, genome):
-        """
-        ToDo: doc
-        """
         # Get the phenotype model from the genome
         model = genome.get_phenotype_model()
 
@@ -51,16 +50,23 @@ class XOREnvironment(BaseEnvironment):
 
 
 class XORWeightTrainingEnvironment(BaseEnvironment):
-    """
-    ToDo: doc
-    """
-
     def __init__(self, config):
         self.x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
         self.y = np.array([[0], [1], [1], [0]])
+
         self.loss_function = tf.keras.losses.BinaryCrossentropy()
 
-        # Read in config parameters for the xor environment
+        # Declare and read in config parameters for the XOR environment
+        self.input_shape = None
+        self.num_output = None
+        self.learning_rate = None
+        self.epochs = None
+        self.early_stop = None
+        self.early_stop_min_delta = None
+        self.early_stop_patience = None
+        self._read_config_parameters(config)
+
+    def _read_config_parameters(self, config):
         section_name = 'XOR_ENVIRONMENT' if config.has_section('XOR_ENVIRONMENT') else 'ENVIRONMENT'
         self.input_shape = ast.literal_eval(config.get(section_name, 'input_shape', fallback='(2,)'))
         self.num_output = config.getint(section_name, 'num_output', fallback=1)
@@ -77,14 +83,10 @@ class XORWeightTrainingEnvironment(BaseEnvironment):
         logging.debug("Environment read from config: epochs = {}".format(self.epochs))
         logging.debug("Environment read from config: early_stop = {}".format(self.early_stop))
         if self.early_stop:
-            logging.debug("Environment read from config: early_stop_min_delta = {}"
-                          .format(self.early_stop_min_delta))
+            logging.debug("Environment read from config: early_stop_min_delta = {}".format(self.early_stop_min_delta))
             logging.debug("Environment read from config: early_stop_patience = {}".format(self.early_stop_patience))
 
     def eval_genome_fitness(self, genome):
-        """
-        ToDo: doc
-        """
         # Get the phenotype model from the genome and declare the optimizer
         model = genome.get_phenotype_model()
         optimizer = tf.keras.optimizers.SGD(lr=self.learning_rate)

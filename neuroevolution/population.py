@@ -3,27 +3,26 @@ from absl import logging
 
 
 class Population:
-    """
-    Implementation of the central interface between the evolution engine driving the neuroevolution on the specified
-    environment and the collection of genomes and the way they are created, evolved and summarized in the specific way
-    dictated by the NE-algorithm.
-    """
-
     def __init__(self, ne_algorithm, config):
         self.ne_algorithm = ne_algorithm
 
-        # Read in config parameters for the population
-        self.supplied_pop_size = config.getint('POPULATION', 'pop_size')
-        self.limited_pop_size = config.getboolean('POPULATION', 'limited_pop_size')
-
-        logging.debug("Population read from config: supplied_pop_size = {}".format(self.supplied_pop_size))
-        logging.debug("Population read from config: limited_pop_size = {}".format(self.limited_pop_size))
+        # Declare and read in config parameters for the population
+        self.supplied_pop_size = None
+        self.limited_pop_size = None
+        self._read_config_parameters(config)
 
         # create flexible pop_size, genome container that is the actual population and set generation_counter to
         # uninitialized
         self.pop_size = self.supplied_pop_size
         self.genomes = deque(maxlen=self.supplied_pop_size) if self.limited_pop_size else deque()
         self.generation_counter = None
+
+    def _read_config_parameters(self, config):
+        self.supplied_pop_size = config.getint('POPULATION', 'pop_size')
+        self.limited_pop_size = config.getboolean('POPULATION', 'limited_pop_size')
+
+        logging.debug("Population read from config: supplied_pop_size = {}".format(self.supplied_pop_size))
+        logging.debug("Population read from config: limited_pop_size = {}".format(self.limited_pop_size))
 
     def initialize(self, input_shape, num_output):
         logging.info("Initializing population to size {}".format(self.supplied_pop_size))
@@ -51,7 +50,7 @@ class Population:
         best_fitness = self.get_best_genome().get_fitness()
         average_fitness = self.get_average_fitness()
         logging.info("#### GENERATION: {} #### BEST_FITNESS: {} #### AVERAGE_FITNESS: {} #### POP_SIZE: {} ####".
-                         format(self.generation_counter, best_fitness, average_fitness, self.pop_size))
+                     format(self.generation_counter, best_fitness, average_fitness, self.pop_size))
         for i in range(self.pop_size):
             logging.info(self.genomes[i])
         logging.info("#" * 100 + "\n")
