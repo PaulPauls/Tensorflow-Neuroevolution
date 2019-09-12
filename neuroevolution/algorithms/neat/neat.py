@@ -1,5 +1,4 @@
 import numpy as np
-import tensorflow as tf
 from absl import logging
 from random import randint, random, choice
 
@@ -26,8 +25,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         assert self.mutate_prob + self.recombine_prob == 1.0
         assert self.mutate_weights_prob + self.mutate_connection_prob + self.mutate_node_prob == 1.0
 
-        # As NEAT evolves model weights manually, set `trainable` to False as automatic weight training should not be
-        # possible
+        # As NEAT evolves model weights manually, disable automatic weight training
         self.trainable = False
 
     def _read_config_parameters(self, config):
