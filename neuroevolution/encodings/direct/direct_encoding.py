@@ -16,6 +16,7 @@ class DirectEncoding(BaseEncoding):
         self.initializer_kernel = None
         self.initializer_bias = None
         self.dtype = None
+        self.run_eagerly = None
         self._read_config_parameters(config)
 
     def _read_config_parameters(self, config):
@@ -23,10 +24,12 @@ class DirectEncoding(BaseEncoding):
         self.initializer_kernel = tf.keras.initializers.deserialize(config.get(section_name, 'initializer_kernel'))
         self.initializer_bias = tf.keras.initializers.deserialize(config.get(section_name, 'initializer_bias'))
         self.dtype = tf.dtypes.as_dtype(config.get(section_name, 'dtype'))
+        self.run_eagerly = config.getboolean(section_name, 'run_eagerly')
 
         logging.debug("Direct Encoding read from config: initializer_kernel = {}".format(self.initializer_kernel))
         logging.debug("Direct Encoding read from config: initializer_bias = {}".format(self.initializer_bias))
         logging.debug("Direct Encoding read from config: dtype = {}".format(self.dtype))
+        logging.debug("Direct Encoding read from config: run_eagerly = {}".format(self.run_eagerly))
 
     def create_gene_connection(self, conn_in, conn_out):
         # Determine unique gene_id by checking if the supplied (conn_in, conn_out) pair already created a gene.
@@ -63,4 +66,4 @@ class DirectEncoding(BaseEncoding):
 
     def create_genome(self, genotype, trainable):
         self.genome_id_counter += 1
-        return DirectEncodingGenome(self.genome_id_counter, genotype, trainable, self.dtype)
+        return DirectEncodingGenome(self.genome_id_counter, genotype, trainable, self.dtype, self.run_eagerly)
