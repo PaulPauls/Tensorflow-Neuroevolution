@@ -49,7 +49,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         logging.debug("NEAT NE Algorithm read from config: activation_default = {}".format(self.activation_default))
         logging.debug("NEAT NE Algorithm read from config: activation_out = {}".format(self.activation_out))
 
-    def create_initial_genome(self, input_shape, num_output):
+    def initialize_population(self, population, initial_pop_size, input_shape, num_output):
         raise NotImplementedError()
 
     def evolve_population(self, population):
