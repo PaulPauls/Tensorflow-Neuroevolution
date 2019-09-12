@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from absl import logging
 
-from neuroevolution.environments import BaseEnvironment
+from ..base_environment import BaseEnvironment
 
 
 class XOREnvironment(BaseEnvironment):
@@ -27,20 +27,16 @@ class XOREnvironment(BaseEnvironment):
         logging.debug("XOR Environment read from config: num_output = {}".format(self.num_output))
 
     def eval_genome_fitness(self, genome):
-        # Get the phenotype model from the genome
-        model = genome.get_phenotype_model()
-
         # Calculate the genome fitness as the percentage of accuracy in its prediction, rounded to 3 decimal points
+        model = genome.get_model()
         evaluated_fitness = float(100 * (1 - self.loss_function(self.y, model.predict(self.x))))
-        rounded_evaluated_fitness = round(evaluated_fitness, 3)
-        genome.set_fitness(rounded_evaluated_fitness)
+        return round(evaluated_fitness, 3)
 
     def replay_genome(self, genome):
-        model = genome.get_phenotype_model()
-        print("#" * 100)
-        print("Solution Values:\n{}".format(self.y))
-        print("Predicted Values:\n{}".format(model.predict(self.x)))
-        print("#" * 100)
+        model = genome.get_model()
+        logging.info("Replaying Genome {}...".format(genome.get_id()))
+        logging.info("Solution Values:\n{}".format(self.y))
+        logging.info("Predicted Values:\n{}".format(model.predict(self.x)))
 
     def get_input_shape(self):
         return self.input_shape
