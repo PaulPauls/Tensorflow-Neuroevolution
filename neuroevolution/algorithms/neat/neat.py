@@ -52,5 +52,5 @@ class NEAT(BaseNeuroevolutionAlgorithm):
     def create_initial_genome(self, input_shape, num_output):
         raise NotImplementedError()
 
-    def create_new_generation(self, population):
+    def evolve_population(self, population):
         raise NotImplementedError()

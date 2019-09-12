@@ -7,53 +7,52 @@ class Population:
         self.ne_algorithm = ne_algorithm
 
         # Declare and read in config parameters for the population
-        self.supplied_pop_size = None
-        self.limited_pop_size = None
+        self.initial_pop_size = None
+        self.pop_size_fixed = None
         self._read_config_parameters(config)
 
-        # create flexible pop_size, genome container that is the actual population and set generation_counter to
-        # uninitialized
-        self.pop_size = self.supplied_pop_size
-        self.genomes = deque(maxlen=self.supplied_pop_size) if self.limited_pop_size else deque()
+        # create flexible pop_size, container for the genome population and set generation_counter to uninitialized
+        self.pop_size = self.initial_pop_size
+        self.genomes = deque(maxlen=self.initial_pop_size) if self.pop_size_fixed else deque()
         self.generation_counter = None
 
     def _read_config_parameters(self, config):
-        self.supplied_pop_size = config.getint('POPULATION', 'pop_size')
-        self.limited_pop_size = config.getboolean('POPULATION', 'limited_pop_size')
+        self.initial_pop_size = config.getint('POPULATION', 'initial_pop_size')
+        self.pop_size_fixed = config.getboolean('POPULATION', 'pop_size_fixed')
 
-        logging.debug("Population read from config: supplied_pop_size = {}".format(self.supplied_pop_size))
-        logging.debug("Population read from config: limited_pop_size = {}".format(self.limited_pop_size))
+        logging.debug("Population read from config: initial_pop_size = {}".format(self.initial_pop_size))
+        logging.debug("Population read from config: pop_size_fixed = {}".format(self.pop_size_fixed))
 
     def initialize(self, input_shape, num_output):
-        logging.info("Initializing population to size {}".format(self.supplied_pop_size))
+        logging.info("Initializing population to size {}...".format(self.supplied_pop_size))
         for _ in range(self.supplied_pop_size):
             new_initialized_genome = self.ne_algorithm.create_initial_genome(input_shape, num_output)
             self.genomes.append(new_initialized_genome)
         self.generation_counter = 0
 
-    def evaluate(self, genome_evaluation_function):
-        # Evaluate each genome that has so far not been evaluated (effectively having a fitness_score of 0)
-        logging.debug("Evaluating {} genomes in generation {} ...".format(self.pop_size, self.generation_counter))
+    def evaluate(self, genome_eval_function):
+        logging.info("Evaluating {} genomes from generation {} ...".format(self.pop_size, self.generation_counter))
         for genome in self.genomes:
             if genome.get_fitness() == 0:
-                genome_evaluation_function(genome)
-                # logging.debug('Genome {} scored fitness {}'.format(genome.get_id(), genome.get_fitness()))
+                scored_fitness = genome_eval_function(genome)
+                genome.set_fitness(scored_fitness)
+
+    def speciate(self):
+        raise NotImplementedError()
 
     def evolve(self):
-        replacement_count = self.ne_algorithm.create_new_generation(self)
-        self.pop_size = len(self.genomes)
+        replacement_count = self.ne_algorithm.evolve_population(self)
         self.generation_counter += 1
-        logging.info("Evolving the population from generation {} to {} replaced {} genomes.".format(
-            self.generation_counter - 1, self.generation_counter, replacement_count))
+        logging.info("Evolution of the population from generation {} to generation {} replaced {} genomes."
+                     .format(self.generation_counter - 1, self.generation_counter, replacement_count))
 
     def summary(self):
         best_fitness = self.get_best_genome().get_fitness()
         average_fitness = self.get_average_fitness()
-        logging.info("#### GENERATION: {} #### BEST_FITNESS: {} #### AVERAGE_FITNESS: {} #### POP_SIZE: {} ####".
-                     format(self.generation_counter, best_fitness, average_fitness, self.pop_size))
+        logging.info("#### GENERATION: {} #### BEST_FITNESS: {} #### AVERAGE_FITNESS: {} #### POP_SIZE: {} ####"
+                     .format(self.generation_counter, best_fitness, average_fitness, self.pop_size))
         for i in range(self.pop_size):
             logging.info(self.genomes[i])
-        logging.info("#" * 100 + "\n")
 
     def check_extinction(self):
         return self.pop_size == 0
@@ -87,7 +86,7 @@ class Population:
         return average_fitness
 
     def load_population(self):
-        raise NotImplementedError("load_population() not yet implemented")
+        raise NotImplementedError()
 
     def save_population(self):
-        raise NotImplementedError("save_population() not yet implemented")
+        raise NotImplementedError()
