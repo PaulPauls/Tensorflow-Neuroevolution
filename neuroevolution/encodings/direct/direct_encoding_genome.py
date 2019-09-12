@@ -1,8 +1,6 @@
-import tempfile
-from graphviz import Digraph
-
 from ..base_genome import BaseGenome
 from .direct_encoding_model import DirectEncodingModel
+from .direct_encoding_visualization import visualize_genome
 
 
 class DirectEncodingGenome(BaseGenome):
