@@ -7,20 +7,8 @@ class EvolutionEngine:
         self.environment = environment
 
     def train(self, max_generations=None, fitness_threshold=None, genome_render_agent=None, pop_backup_agent=None):
-
         # Log if max_generations, fitness_threshold or reporting agents are supplied and what that means
-        if max_generations is not None and fitness_threshold is not None:
-            logging.info("TODO")
-        elif max_generations is not None:
-            logging.info("TODO")
-        elif fitness_threshold is not None:
-            logging.info("TODO")
-        else:
-            logging.info("TODO")
-        if genome_render_agent is not None:
-            logging.info("TODO")
-        if pop_backup_agent is not None:
-            logging.info("TODO")
+        self._log_parameters(max_generations, fitness_threshold, genome_render_agent, pop_backup_agent)
 
         # If population not yet initialized, do so. This is unnecessary if an already evolved population is supplied.
         if self.population.get_generation_counter() is None:
@@ -41,7 +29,7 @@ class EvolutionEngine:
         logging.info("Summary of the population after the initial evaluation:")
         self.population.summary()
 
-        while not self._check_exit_conditions(max_generations, fitness_threshold):
+        while self._check_exit_conditions(max_generations, fitness_threshold):
             # Create the next generation of the population by evolving it
             self.population.evolve()
 
@@ -58,11 +46,32 @@ class EvolutionEngine:
         best_genome = self.population.get_best_genome() if not self.population.check_extinction() else None
         return best_genome
 
-
     def _check_exit_conditions(self, max_generations, fitness_threshold):
-        '''
-        self.population.check_extinction() and \
-        self.population.get_generation_counter() < max_generations and \
-        self.population.get_best_genome().get_fitness() < fitness_threshold
-        '''
-        pass
+        if self.population.check_extinction():
+            logging.info("Population extinct. Exiting evolutionary training loop...")
+            return False
+        if max_generations is not None and self.population.get_generation_counter() >= max_generations:
+            logging.info("Population reached specified maximum number of generations. " 
+                         "Exiting evolutionary training loop...")
+            return False
+        if fitness_threshold is not None and self.population.get_best_genome().get_fitness >= fitness_threshold:
+            logging.info("Population's best genome reached specified fitness threshold. " 
+                         "Exiting evolutionary training loop...")
+            return False
+        return True
+
+    @staticmethod
+    def _log_parameters(max_generations, fitness_threshold, genome_render_agent, pop_backup_agent):
+        if max_generations is not None and fitness_threshold is not None:
+            logging.info("Evolution will progress for a maximum of {} generations or until a fitness of {} is reached"
+                         .format(max_generations, fitness_threshold))
+        elif max_generations is not None:
+            logging.info("Evolution will progress for a maximum of {} generations".format(max_generations))
+        elif fitness_threshold is not None:
+            logging.info("Evolution will progress until a fitness of {} is reached".format(fitness_threshold))
+        else:
+            logging.info("Evolution will progress indefinitely")
+        if genome_render_agent is not None:
+            logging.info("TODO")
+        if pop_backup_agent is not None:
+            logging.info("TODO")
