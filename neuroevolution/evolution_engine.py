@@ -51,11 +51,11 @@ class EvolutionEngine:
             logging.info("Population extinct. Exiting evolutionary training loop...")
             return False
         if max_generations is not None and self.population.get_generation_counter() >= max_generations:
-            logging.info("Population reached specified maximum number of generations. " 
+            logging.info("Population reached specified maximum number of generations. "
                          "Exiting evolutionary training loop...")
             return False
         if fitness_threshold is not None and self.population.get_best_genome().get_fitness >= fitness_threshold:
-            logging.info("Population's best genome reached specified fitness threshold. " 
+            logging.info("Population's best genome reached specified fitness threshold. "
                          "Exiting evolutionary training loop...")
             return False
         return True
