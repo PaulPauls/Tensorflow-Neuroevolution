@@ -54,3 +54,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
     def evolve_population(self, population):
         raise NotImplementedError()
+
+    def speciate_population(self, population):
+        raise NotImplementedError()

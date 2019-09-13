@@ -36,6 +36,9 @@ class EvolutionEngine:
             # Evaluate population and assign each genome a fitness score
             self.population.evaluate(genome_eval_function)
 
+            # Speciate population if NE algorithm supports it
+            self.population.speciate()
+
             # Give summary of population after each evaluation and call the reporting agents if supplied
             self.population.summary()
             if genome_render_agent is not None:
