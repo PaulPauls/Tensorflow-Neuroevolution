@@ -18,16 +18,26 @@ def test_direct_encoding():
     activation_out = tf.keras.activations.deserialize("sigmoid")
 
     genotype = deque([
-        encoding.create_gene_connection(4, 6),
-        encoding.create_gene_connection(3, 5),
-        encoding.create_gene_connection(1, 5),
-        encoding.create_gene_connection(5, 6),
+        encoding.create_gene_connection(6, 8),
+        encoding.create_gene_connection(5, 7),
+        encoding.create_gene_connection(4, 7),
+        encoding.create_gene_connection(3, 7),
+        encoding.create_gene_connection(3, 8),
+        encoding.create_gene_connection(2, 4),
+        encoding.create_gene_connection(1, 3),
         encoding.create_gene_connection(1, 4),
-        encoding.create_gene_connection(2, 6),
-        encoding.create_gene_connection(3, 4),
-        encoding.create_gene_node(5, activation_default),
+        encoding.create_gene_connection(2, 5),
+        encoding.create_gene_connection(3, 6),
+        encoding.create_gene_connection(4, 6),
+        encoding.create_gene_connection(5, 6),
+        encoding.create_gene_connection(5, 8),
+        encoding.create_gene_connection(7, 8),
+        encoding.create_gene_node(6, activation_default),
         encoding.create_gene_node(4, activation_default),
-        encoding.create_gene_node(6, activation_out)
+        encoding.create_gene_node(3, activation_default),
+        encoding.create_gene_node(5, activation_default),
+        encoding.create_gene_node(7, activation_default),
+        encoding.create_gene_node(8, activation_out)
     ])
 
     genome = encoding.create_genome(genotype, trainable=False)
