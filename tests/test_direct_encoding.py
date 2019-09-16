@@ -42,8 +42,6 @@ def test_direct_encoding():
 
     genome = encoding.create_genome(genotype, trainable=False)
 
-    print(genome.model.custom_layers)
-
 
 if __name__ == '__main__':
     test_direct_encoding()
