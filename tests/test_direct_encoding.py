@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 from absl import logging
 from collections import deque
@@ -41,6 +42,13 @@ def test_direct_encoding():
     ])
 
     genome = encoding.create_genome(genotype, trainable=False)
+
+    x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+    y = np.array([[0], [1], [1], [0]])
+
+    model = genome.get_model()
+
+    print(model.predict(x))
 
 
 if __name__ == '__main__':

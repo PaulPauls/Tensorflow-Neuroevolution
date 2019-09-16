@@ -2,22 +2,39 @@ import numpy as np
 import tensorflow as tf
 from toposort import toposort
 
-from .direct_encoding_gene import DirectEncodingConnection, DirectEncodingNode
+from .direct_encoding_gene import DirectEncodingConnection
 
 
 class CustomWeightInputLayer(tf.keras.layers.Layer):
-    def __init__(self, units, activation, weights, input_node_coords, trainable, dtype, dynamic):
+    def __init__(self, units, activation, kernel_weights, bias_weights, input_node_coords, trainable, dtype, dynamic):
         super(CustomWeightInputLayer, self).__init__(trainable=trainable, dtype=dtype, dynamic=dynamic)
         self.activation = activation
-        self.kernel = self.add_weight(shape=(len(input_node_coords), units),
+        self.kernel = self.add_weight(shape=kernel_weights.shape,
                                       dtype=self.dtype,
                                       initializer=tf.keras.initializers.deserialize('zeros'),
                                       trainable=self.trainable)
-        self.bias = self.add_weight(shape=(units,),
+        self.bias = self.add_weight(shape=bias_weights.shape,
                                     dtype=self.dtype,
                                     initializer=tf.keras.initializers.deserialize('zeros'),
                                     trainable=self.trainable)
+        self.set_weights([kernel_weights, bias_weights])
         self.built = True
+
+        if len(input_node_coords) >= 2:
+            self.input_node_coords = input_node_coords
+            self.call = self._call_multiple_inputs
+        else:
+            (self.layer_index, self.node_index) = input_node_coords[0]
+            self.call = self._call_single_inputs
+
+    def _call_single_inputs(self, inputs, **kwargs):
+        selected_inputs = inputs[self.layer_index][:, self.node_index:self.node_index + 1]
+        return self.activation(tf.matmul(selected_inputs, self.kernel) + self.bias)
+
+    def _call_multiple_inputs(self, inputs, **kwargs):
+        selected_inputs = tf.concat(values=[inputs[layer_index][:, node_index:node_index + 1]
+                                            for (layer_index, node_index) in self.input_node_coords], axis=1)
+        return self.activation(tf.matmul(selected_inputs, self.kernel) + self.bias)
 
 
 class DirectEncodingModel(tf.keras.Model):
@@ -60,25 +77,25 @@ class DirectEncodingModel(tf.keras.Model):
                     weight = nodes[joined_nodes[node_index]][0]
                     bias_weights[node_index] = weight
 
-                weights = [kernel_weights, bias_weights]
-
                 nodes_function = CustomWeightInputLayer(units=len(joined_nodes),
                                                         activation=activation,
-                                                        weights=weights,
+                                                        kernel_weights=kernel_weights,
+                                                        bias_weights=bias_weights,
                                                         input_node_coords=input_node_coords,
                                                         trainable=trainable,
                                                         dtype=dtype,
                                                         dynamic=run_eagerly)
-
-                tf.print(nodes_function.get_weights())
-                tf.print(weights)
-
                 self.custom_layers[layer_index].append(nodes_function)
-        tf.print(connections)
-        tf.print(nodes)
 
     def call(self, inputs):
-        raise NotImplementedError()
+        inputs = [tf.cast(x=inputs, dtype=self.dtype)]
+        for layers in self.custom_layers:
+            layer_out = None
+            for nodes_function in layers:
+                out = nodes_function(inputs)
+                layer_out = out if layer_out is None else tf.concat(values=[layer_out, out], axis=1)
+            inputs.append(layer_out)
+        return inputs[-1]
 
     @staticmethod
     def _create_gene_dicts(genotype):
