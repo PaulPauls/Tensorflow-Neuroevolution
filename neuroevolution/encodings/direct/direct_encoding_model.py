@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 from toposort import toposort
 
@@ -6,7 +7,17 @@ from .direct_encoding_gene import DirectEncodingConnection, DirectEncodingNode
 
 class CustomWeightInputLayer(tf.keras.layers.Layer):
     def __init__(self, units, activation, weights, input_node_coords, trainable, dtype, dynamic):
-        pass
+        super(CustomWeightInputLayer, self).__init__(trainable=trainable, dtype=dtype, dynamic=dynamic)
+        self.activation = activation
+        self.kernel = self.add_weight(shape=(len(input_node_coords), units),
+                                      dtype=self.dtype,
+                                      initializer=tf.keras.initializers.deserialize('zeros'),
+                                      trainable=self.trainable)
+        self.bias = self.add_weight(shape=(units,),
+                                    dtype=self.dtype,
+                                    initializer=tf.keras.initializers.deserialize('zeros'),
+                                    trainable=self.trainable)
+        self.built = True
 
 
 class DirectEncodingModel(tf.keras.Model):
@@ -36,9 +47,20 @@ class DirectEncodingModel(tf.keras.Model):
                 activation = nodes[joined_nodes[0]][1]
                 assert all(nodes[node][1] == activation for node in joined_nodes)
 
-                weights = None
-
                 input_node_coords = [node_to_topology[node] for node in joined_nodes_input]
+
+                kernel_weights = np.empty(shape=(len(input_node_coords), len(joined_nodes)), dtype=dtype.as_numpy_dtype)
+                for column_index in range(kernel_weights.shape[1]):
+                    for row_index in range(kernel_weights.shape[0]):
+                        weight = connections[joined_nodes[column_index]][joined_nodes_input[row_index]]
+                        kernel_weights[row_index, column_index] = weight
+
+                bias_weights = np.empty(shape=(len(joined_nodes),), dtype=dtype.as_numpy_dtype)
+                for node_index in range(len(joined_nodes)):
+                    weight = nodes[joined_nodes[node_index]][0]
+                    bias_weights[node_index] = weight
+
+                weights = [kernel_weights, bias_weights]
 
                 nodes_function = CustomWeightInputLayer(units=len(joined_nodes),
                                                         activation=activation,
@@ -48,7 +70,12 @@ class DirectEncodingModel(tf.keras.Model):
                                                         dtype=dtype,
                                                         dynamic=run_eagerly)
 
+                tf.print(nodes_function.get_weights())
+                tf.print(weights)
+
                 self.custom_layers[layer_index].append(nodes_function)
+        tf.print(connections)
+        tf.print(nodes)
 
     def call(self, inputs):
         raise NotImplementedError()
@@ -63,10 +90,10 @@ class DirectEncodingModel(tf.keras.Model):
                 conn_out = gene.conn_out
                 conn_in = gene.conn_in
                 if conn_out in connections:
-                    connections[conn_out].append((conn_in, gene.conn_weight))
+                    connections[conn_out][conn_in] = gene.conn_weight
                     node_dependencies[conn_out].add(conn_in)
                 else:
-                    connections[conn_out] = [(conn_in, gene.conn_weight)]
+                    connections[conn_out] = {conn_in: gene.conn_weight}
                     node_dependencies[conn_out] = {conn_in}
             else:  # else gene is instance of DirectEncodingNode
                 nodes[gene.node] = [gene.bias, gene.activation]
@@ -91,4 +118,4 @@ class DirectEncodingModel(tf.keras.Model):
                 values_to_keys[frozen_v].add(k)
             else:
                 values_to_keys[frozen_v] = {k}
-        return {frozenset(v): set(k) for k, v in values_to_keys.items()}
+        return {frozenset(v): list(k) for k, v in values_to_keys.items()}
