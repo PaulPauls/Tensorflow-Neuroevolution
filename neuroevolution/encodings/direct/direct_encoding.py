@@ -44,7 +44,8 @@ class DirectEncoding(BaseEncoding):
 
         # Create an initial connection weight by using the supplied kernel initializer (which determines the initial
         # connection weights) to create a single random value
-        conn_weight = tf.Variable(initial_value=self.initializer_kernel((1,)), dtype=self.dtype, shape=(1,)).numpy()[0]
+        init_value = self.initializer_kernel(shape=(1,), dtype=self.dtype)
+        conn_weight = tf.Variable(initial_value=init_value, dtype=self.dtype, shape=(1,)).numpy()[0]
 
         return DirectEncodingConnection(gene_id, conn_in, conn_out, conn_weight)
 
@@ -60,7 +61,8 @@ class DirectEncoding(BaseEncoding):
             self.gene_to_gene_id_mapping[gene_key] = gene_id
 
         # Create a bias value by using the supplied bias initializer to create a single random value
-        bias = tf.Variable(initial_value=self.initializer_bias((1,)), dtype=self.dtype, shape=(1,)).numpy()[0]
+        init_value = self.initializer_bias(shape=(1,), dtype=self.dtype)
+        bias = tf.Variable(initial_value=init_value, dtype=self.dtype, shape=(1,)).numpy()[0]
 
         return DirectEncodingNode(gene_id, node, bias, activation)
 
