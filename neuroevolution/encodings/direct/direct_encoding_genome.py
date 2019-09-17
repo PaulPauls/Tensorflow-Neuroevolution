@@ -20,7 +20,15 @@ class DirectEncodingGenome(BaseGenome):
         return string_repr
 
     def serialize(self):
-        raise NotImplementedError()
+        serialized_dict = {
+            "genome_id": self.genome_id,
+            "fitness": self.fitness,
+            "trainable": self.trainable,
+            "dtype": str(self.dtype),
+            "run_eagerly": self.run_eagerly,
+            "genotype": [gene.serialize() for gene in self.genotype]
+        }
+        return serialized_dict
 
     def visualize(self, view=True, render_file_path=None):
         raise NotImplementedError()

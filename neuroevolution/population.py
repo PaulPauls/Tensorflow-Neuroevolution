@@ -1,3 +1,4 @@
+import json
 from collections import deque
 from absl import logging
 
@@ -87,4 +88,10 @@ class Population:
         raise NotImplementedError()
 
     def save_population(self, backup_file_path):
-        raise NotImplementedError()
+        serialized_population = {
+            "generation_counter": self.generation_counter,
+            "pop_size": self.pop_size,
+            "genomes": [genome.serialize() for genome in self.genomes]
+        }
+        with open(backup_file_path, 'w') as backup_file:
+            json.dump(serialized_population, backup_file, indent=4)
