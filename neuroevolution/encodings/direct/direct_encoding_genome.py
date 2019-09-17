@@ -21,6 +21,7 @@ class DirectEncodingGenome(BaseGenome):
 
     def serialize(self):
         serialized_dict = {
+            "encoding": "DirectEncodingGenome",
             "genome_id": self.genome_id,
             "fitness": self.fitness,
             "trainable": self.trainable,
