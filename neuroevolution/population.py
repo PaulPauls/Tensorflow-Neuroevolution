@@ -48,10 +48,10 @@ class Population:
     def summary(self):
         best_fitness = self.get_best_genome().get_fitness()
         average_fitness = self.get_average_fitness()
-        logging.info("#### GENERATION: {} #### BEST_FITNESS: {} #### AVERAGE_FITNESS: {} #### POP_SIZE: {} ####"
+        logging.info("#### GENERATION: {:>4} ## BEST_FITNESS: {:>8} ## AVERAGE_FITNESS: {:>8} ## POP_SIZE: {:>4} ####"
                      .format(self.generation_counter, best_fitness, average_fitness, self.pop_size))
         for i in range(self.pop_size):
-            logging.info(self.genomes[i])
+            logging.debug(self.genomes[i])
 
     def check_extinction(self):
         return self.pop_size == 0
@@ -84,14 +84,19 @@ class Population:
         average_fitness = round(fitness_sum / self.pop_size, 3)
         return average_fitness
 
-    def load_population(self):
-        raise NotImplementedError()
+    def load_population(self, load_file_path):
+        with open(load_file_path, 'r') as load_file:
+            loaded_population = json.load(load_file)
+        self.generation_counter = loaded_population['generation_counter']
+        self.pop_size = loaded_population['pop_size']
 
-    def save_population(self, backup_file_path):
+        # Check if pop_size_limited
+
+    def save_population(self, save_file_path):
         serialized_population = {
-            "generation_counter": self.generation_counter,
-            "pop_size": self.pop_size,
-            "genomes": [genome.serialize() for genome in self.genomes]
+            'generation_counter': self.generation_counter,
+            'pop_size': self.pop_size,
+            'genomes': [genome.serialize() for genome in self.genomes]
         }
-        with open(backup_file_path, 'w') as backup_file:
-            json.dump(serialized_population, backup_file, indent=4)
+        with open(save_file_path, 'w') as save_file:
+            json.dump(serialized_population, save_file, indent=4)
