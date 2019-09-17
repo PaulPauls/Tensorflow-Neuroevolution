@@ -13,7 +13,7 @@ class DirectEncodingConnection:
             "gene_id": self.gene_id,
             "conn_in": self.conn_in,
             "conn_out": self.conn_out,
-            "conn_weight": str(self.conn_weight)
+            "conn_weight": float(self.conn_weight)
         }
         return serialized_dict
 
@@ -29,7 +29,7 @@ class DirectEncodingNode:
         serialized_dict = {
             "gene_id": self.gene_id,
             "node": self.node,
-            "bias": str(self.bias),
+            "bias": float(self.bias),
             "activation": tf.keras.activations.serialize(self.activation)
         }
         return serialized_dict
