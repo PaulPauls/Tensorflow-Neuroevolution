@@ -23,7 +23,7 @@ class DirectEncodingGenome(BaseGenome):
     def summary(self):
         raise NotImplementedError()
 
-    def visualize(self):
+    def visualize(self, view=True, render_file_path=None):
         raise NotImplementedError()
 
     def get_model(self):

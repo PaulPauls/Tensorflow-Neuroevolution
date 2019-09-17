@@ -25,7 +25,7 @@ def main():
     population = ne.Population(ne_algorithm, config)
 
     engine = ne.EvolutionEngine(population, environment)
-    genome_render_agent = ne.GenomeRenderAgent()
+    genome_render_agent = ne.GenomeRenderAgent(True, './best_genome_graphs/')
     pop_backup_agent = ne.PopulationBackupAgent(5, './population_backups/')
 
     best_genome = engine.train(genome_render_agent=genome_render_agent, pop_backup_agent=pop_backup_agent)

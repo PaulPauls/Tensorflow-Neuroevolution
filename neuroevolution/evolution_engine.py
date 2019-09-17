@@ -75,6 +75,12 @@ class EvolutionEngine:
         else:
             logging.info("Evolution will progress indefinitely")
         if genome_render_agent is not None:
-            logging.info("TODO")
+            if genome_render_agent.view:
+                logging.info("Evolution will show the graph of the best genome after each generation and save the "
+                             "rendering to the directory '{}'".format(genome_render_agent.render_dir_path))
+            else:
+                logging.info("Evolution will _not_ show the graph of the best genome after each generation but save "
+                             "the rendering to the directory '{}'".format(genome_render_agent.render_dir_path))
         if pop_backup_agent is not None:
-            logging.info("TODO")
+            logging.info("Evolution will backup the population every {} generations to the directory '{}'"
+                         .format(pop_backup_agent.backup_periodicity, pop_backup_agent.backup_dir_path))
