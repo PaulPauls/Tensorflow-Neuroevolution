@@ -86,5 +86,5 @@ class Population:
     def load_population(self):
         raise NotImplementedError()
 
-    def save_population(self):
+    def save_population(self, save_path):
         raise NotImplementedError()
