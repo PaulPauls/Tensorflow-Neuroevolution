@@ -15,14 +15,11 @@ class DirectEncodingGenome(BaseGenome):
         self.model = self._create_model()
 
     def __str__(self):
-        string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>4}"\
-                      .format(self.genome_id, self.fitness)
+        string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>4} || Gene Count: {:>4}" \
+            .format(self.genome_id, self.fitness, len(self.genotype))
         return string_repr
 
     def serialize(self):
-        raise NotImplementedError()
-
-    def summary(self):
         raise NotImplementedError()
 
     def visualize(self, view=True, render_file_path=None):
