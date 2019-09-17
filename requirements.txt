@@ -18,7 +18,7 @@ pyglet==1.3.2
 scipy==1.3.1
 six==1.12.0
 tb-nightly==1.15.0a20190806
-tensorflow==2.0.0rc0
+tensorflow==2.0.0rc1
 termcolor==1.1.0
 tf-estimator-nightly==1.14.0.dev2019080601
 toposort==1.5
