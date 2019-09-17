@@ -15,8 +15,8 @@ class DirectEncodingGenome(BaseGenome):
         self.model = self._create_model()
 
     def __str__(self):
-        string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>4} || Genotype: {}..."\
-                      .format(self.genome_id, self.fitness, str(self.genotype)[:100])
+        string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>4}"\
+                      .format(self.genome_id, self.fitness)
         return string_repr
 
     def serialize(self):
