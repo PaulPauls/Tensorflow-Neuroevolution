@@ -43,6 +43,8 @@ def test_direct_encoding():
 
     genome = encoding.create_genome(genotype, trainable=False)
 
+    print(genome)
+
     x = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
     y = np.array([[0], [1], [1], [0]])
 

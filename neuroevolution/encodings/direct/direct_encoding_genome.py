@@ -15,7 +15,9 @@ class DirectEncodingGenome(BaseGenome):
         self.model = self._create_model()
 
     def __str__(self):
-        raise NotImplementedError()
+        string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>4} || Genotype: {}..."\
+                      .format(self.genome_id, self.fitness, str(self.genotype)[:100])
+        return string_repr
 
     def serialize(self):
         raise NotImplementedError()
