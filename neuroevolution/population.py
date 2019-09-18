@@ -90,7 +90,8 @@ class Population:
         self.generation_counter = loaded_population['generation_counter']
         self.pop_size = loaded_population['pop_size']
 
-        # Check if pop_size_limited
+        # Check if pop_size_limited and throw error if genome size is longer than initially supplied pop size
+        raise NotImplementedError()
 
     def save_population(self, save_file_path):
         serialized_population = {
@@ -100,3 +101,4 @@ class Population:
         }
         with open(save_file_path, 'w') as save_file:
             json.dump(serialized_population, save_file, indent=4)
+        logging.info("Saved population to file '{}'".format(save_file_path))
