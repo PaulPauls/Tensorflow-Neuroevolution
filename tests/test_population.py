@@ -41,9 +41,11 @@ def test_population():
     population.append_genome(genome_1)
     population.append_genome(genome_2)
 
+    population.generation_counter = 0
+
     serialization_path = os.path.abspath("test_serialization.json")
     population.save_population(serialization_path)
-    population.load_population(serialization_path)
+    population.load_population(encoding, serialization_path)
 
 
 if __name__ == '__main__':

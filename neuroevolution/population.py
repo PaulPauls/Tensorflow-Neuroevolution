@@ -13,7 +13,7 @@ class Population:
         self._read_config_parameters(config)
 
         # create flexible pop_size, container for the genome population and set generation_counter to uninitialized
-        self.pop_size = self.initial_pop_size
+        self.pop_size = 0
         self.genomes = deque(maxlen=self.initial_pop_size) if self.pop_size_fixed else deque()
         self.generation_counter = None
 

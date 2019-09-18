@@ -1,4 +1,4 @@
-from .direct_encoding_serialization import serialize_connection_gene, serialize_node_gene
+import tensorflow as tf
 
 
 class DirectEncodingConnection:
@@ -9,7 +9,14 @@ class DirectEncodingConnection:
         self.conn_weight = conn_weight
 
     def serialize(self):
-        serialize_connection_gene(self)
+        serialized_gene = {
+            'gene_encoding': 'DirectEncodingConnection',
+            'gene_id': self.gene_id,
+            'conn_in': self.conn_in,
+            'conn_out': self.conn_out,
+            'conn_weight': str(self.conn_weight)
+        }
+        return serialized_gene
 
 
 class DirectEncodingNode:
@@ -20,4 +27,11 @@ class DirectEncodingNode:
         self.activation = activation
 
     def serialize(self):
-        serialize_node_gene(self)
+        serialized_gene = {
+            'gene_encoding': 'DirectEncodingNode',
+            'gene_id': self.gene_id,
+            'node': self.node,
+            'bias': str(self.bias),
+            'activation': tf.keras.activations.serialize(self.activation)
+        }
+        return serialized_gene

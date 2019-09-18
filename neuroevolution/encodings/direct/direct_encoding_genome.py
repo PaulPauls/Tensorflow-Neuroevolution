@@ -1,6 +1,5 @@
 from ..base_genome import BaseGenome
 from .direct_encoding_model import DirectEncodingModel
-from .direct_encoding_serialization import serialize_genome
 from .direct_encoding_visualization import visualize_genome
 
 
@@ -21,7 +20,16 @@ class DirectEncodingGenome(BaseGenome):
         return string_repr
 
     def serialize(self):
-        return serialize_genome(self)
+        serialized_genome = {
+            'genome_encoding': 'DirectEncodingGenome',
+            'genome_id': self.genome_id,
+            'fitness': self.fitness,
+            'trainable': self.trainable,
+            'dtype': self.dtype.name,
+            'run_eagerly': self.run_eagerly,
+            'genotype': [gene.serialize() for gene in self.genotype]
+        }
+        return serialized_genome
 
     def visualize(self, view=True, render_file_path=None):
         raise NotImplementedError()
