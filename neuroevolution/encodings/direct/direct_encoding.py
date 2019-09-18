@@ -4,6 +4,7 @@ from absl import logging
 from ..base_encoding import BaseEncoding
 from .direct_encoding_genome import DirectEncodingGenome
 from .direct_encoding_gene import DirectEncodingConnection, DirectEncodingNode
+from .direct_encoding_serialization import deserialize_genome_list
 
 
 class DirectEncoding(BaseEncoding):
@@ -70,3 +71,7 @@ class DirectEncoding(BaseEncoding):
     def create_genome(self, genotype, trainable):
         self.genome_id_counter += 1
         return DirectEncodingGenome(self.genome_id_counter, genotype, trainable, self.dtype, self.run_eagerly)
+
+    @staticmethod
+    def deserialize_genome_list(genome_list):
+        return deserialize_genome_list(genome_list)

@@ -84,14 +84,23 @@ class Population:
         average_fitness = round(fitness_sum / self.pop_size, 3)
         return average_fitness
 
-    def load_population(self, load_file_path):
+    def load_population(self, encoding, load_file_path):
         with open(load_file_path, 'r') as load_file:
             loaded_population = json.load(load_file)
         self.generation_counter = loaded_population['generation_counter']
         self.pop_size = loaded_population['pop_size']
 
-        # Check if pop_size_limited and throw error if genome size is longer than initially supplied pop size
-        raise NotImplementedError()
+        genome_list = loaded_population['genomes']
+        assert not self.pop_size_fixed or len(genome_list) == self.initial_pop_size
+        deserialized_genome_list = encoding.deserialize_genome_list(genome_list)
+        if self.pop_size_fixed:
+            self.genomes = deque(deserialized_genome_list, maxlen=self.initial_pop_size)
+        else:
+            self.genomes = deque(deserialized_genome_list)
+
+        logging.info("Loaded population of encoding '{}' from file '{}'. Summary of the population:"
+                     .format(encoding.__class__.__name__, load_file_path))
+        self.summary()
 
     def save_population(self, save_file_path):
         serialized_population = {
