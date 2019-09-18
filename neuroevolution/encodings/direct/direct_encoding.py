@@ -7,7 +7,7 @@ from .direct_encoding_gene import DirectEncodingConnection, DirectEncodingNode
 
 
 class DirectEncoding(BaseEncoding):
-    def __init__(self, config):
+    def __init__(self, config, dtype=tf.float32, run_eagerly=False):
         self.gene_id_counter = 0
         self.genome_id_counter = 0
         self.gene_to_gene_id_mapping = dict()
@@ -15,21 +15,22 @@ class DirectEncoding(BaseEncoding):
         # Declare and read in config parameters for the Direct encoding
         self.initializer_kernel = None
         self.initializer_bias = None
-        self.dtype = None
-        self.run_eagerly = None
         self._read_config_parameters(config)
+        self.dtype = dtype
+        self.run_eagerly = run_eagerly
+        self._log_class_parameters()
 
     def _read_config_parameters(self, config):
         section_name = 'DIRECT_ENCODING' if config.has_section('DIRECT_ENCODING') else 'ENCODING'
         self.initializer_kernel = tf.keras.initializers.deserialize(config.get(section_name, 'initializer_kernel'))
         self.initializer_bias = tf.keras.initializers.deserialize(config.get(section_name, 'initializer_bias'))
-        self.dtype = tf.dtypes.as_dtype(config.get(section_name, 'dtype'))
-        self.run_eagerly = config.getboolean(section_name, 'run_eagerly')
 
         logging.debug("Direct Encoding read from config: initializer_kernel = {}".format(self.initializer_kernel))
         logging.debug("Direct Encoding read from config: initializer_bias = {}".format(self.initializer_bias))
-        logging.debug("Direct Encoding read from config: dtype = {}".format(self.dtype))
-        logging.debug("Direct Encoding read from config: run_eagerly = {}".format(self.run_eagerly))
+
+    def _log_class_parameters(self):
+        logging.debug("Direct Encoding parameter: dtype = {}".format(self.dtype))
+        logging.debug("Direct Encoding parameter: run_eagerly = {}".format(self.run_eagerly))
 
     def create_gene_connection(self, conn_in, conn_out):
         # Determine unique gene_id by checking if the supplied (conn_in, conn_out) pair already created a gene.

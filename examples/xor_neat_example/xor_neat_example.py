@@ -17,9 +17,9 @@ def main():
 
     config = ne.load_config('./xor_neat_example.cfg')
 
-    environment = ne.environments.XOREnvironment(config)
+    environment = ne.environments.XOREnvironment()
 
-    encoding = ne.encodings.DirectEncoding(config)
+    encoding = ne.encodings.DirectEncoding(config, dtype=tf.float32, run_eagerly=False)
     ne_algorithm = ne.algorithms.NEAT(encoding, config)
 
     population = ne.Population(ne_algorithm, config)
