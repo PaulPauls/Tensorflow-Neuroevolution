@@ -13,7 +13,7 @@ def test_direct_encoding():
 
     config = ne.load_config('./test_config.cfg')
 
-    encoding = ne.encodings.DirectEncoding(config)
+    encoding = ne.encodings.DirectEncoding(config, dtype=tf.float32, run_eagerly=False)
 
     activation_default = tf.keras.activations.deserialize("tanh")
     activation_out = tf.keras.activations.deserialize("sigmoid")
