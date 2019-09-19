@@ -7,15 +7,18 @@ class Population:
     def __init__(self, ne_algorithm, config):
         self.ne_algorithm = ne_algorithm
 
-        # Declare and read in config parameters for the population
         self.initial_pop_size = None
         self.pop_size_fixed = None
         self._read_config_parameters(config)
 
-        # create flexible pop_size, container for the genome population and set generation_counter to uninitialized
         self.pop_size = 0
-        self.genomes = deque(maxlen=self.initial_pop_size) if self.pop_size_fixed else deque()
         self.generation_counter = None
+
+        if self.ne_algorithm.uses_speciation():
+            self.species_counter = 1
+            self.genomes = {self.species_counter: deque()}
+        else:
+            self.genomes = deque()
 
     def _read_config_parameters(self, config):
         self.initial_pop_size = config.getint('POPULATION', 'initial_pop_size')
@@ -37,7 +40,8 @@ class Population:
                 genome.set_fitness(scored_fitness)
 
     def speciate(self):
-        raise NotImplementedError()
+        if self.ne_algorithm.uses_speciation():
+            self.ne_algorithm.speciate_population(self)
 
     def evolve(self):
         replacement_count = self.ne_algorithm.evolve_population(self)
