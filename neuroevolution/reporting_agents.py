@@ -10,6 +10,7 @@ class GenomeRenderAgent:
             self.render_dir_path += "/"
 
     def __call__(self, population):
+        raise NotImplementedError()
         best_genome = population.get_best_genome()
         file_name = "graph_best_genome_gen_" + str(population.get_generation_counter())
         render_file_path = self.render_dir_path + file_name
@@ -24,6 +25,7 @@ class PopulationBackupAgent:
             self.backup_dir_path += "/"
 
     def __call__(self, population):
+        raise NotImplementedError()
         generation = population.get_generation_counter()
         if generation % self.backup_periodicity == 0:
             logging.info("Automatically backing up population in generation {}...".format(generation))

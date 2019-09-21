@@ -7,6 +7,8 @@ import neuroevolution as ne
 
 
 def test_population():
+    raise NotImplementedError()
+
     logging.set_verbosity(logging.DEBUG)
     logging.info("Using TF Version {}".format(tf.__version__))
     assert tf.__version__[0] == '2'  # Assert that TF 2.x is used

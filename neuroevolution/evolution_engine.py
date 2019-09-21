@@ -22,10 +22,11 @@ class EvolutionEngine:
             self.population.summary()
 
         # Declare the genome evaluation function from the environment
+        environment_name = self.environment.__class__.__name__
         genome_eval_function = self.environment.eval_genome_fitness
 
         # Create an initial evaluation before entering the loop to check if exit conditions already met and summarize it
-        self.population.evaluate(genome_eval_function)
+        self.population.evaluate(environment_name, genome_eval_function)
         logging.info("Summary of the population after the initial evaluation:")
         self.population.summary()
 
