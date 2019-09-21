@@ -127,32 +127,33 @@ class Population:
     def get_pop_size(self):
         return self.pop_size
 
-    def load_population(self, encoding, load_file_path):
-        raise NotImplementedError()
-        with open(load_file_path, 'r') as load_file:
-            loaded_population = json.load(load_file)
-        self.generation_counter = loaded_population['generation_counter']
-        self.pop_size = loaded_population['pop_size']
-
-        genome_list = loaded_population['genomes']
-        assert not self.pop_size_fixed or len(genome_list) == self.initial_pop_size
-        deserialized_genome_list = encoding.deserialize_genome_list(genome_list)
-        if self.pop_size_fixed:
-            self.genomes = deque(deserialized_genome_list, maxlen=self.initial_pop_size)
-        else:
-            self.genomes = deque(deserialized_genome_list)
-
-        logging.info("Loaded population of encoding '{}' from file '{}'. Summary of the population:"
-                     .format(encoding.__class__.__name__, load_file_path))
-        self.summary()
-
     def save_population(self, save_file_path):
-        raise NotImplementedError()
+        serialized_genomes = {species_id: [genome.serialize() for genome in species_genomes]
+                              for species_id, species_genomes in self.genomes.items()}
         serialized_population = {
             'generation_counter': self.generation_counter,
             'pop_size': self.pop_size,
-            'genomes': [genome.serialize() for genome in self.genomes]
+            'species_count': self.species_count,
+            'genomes': serialized_genomes
         }
         with open(save_file_path, 'w') as save_file:
             json.dump(serialized_population, save_file, indent=4)
         logging.info("Saved population to file '{}'".format(save_file_path))
+
+    def load_population(self, encoding, load_file_path):
+        with open(load_file_path, 'r') as load_file:
+            loaded_population = json.load(load_file)
+        self.generation_counter = loaded_population['generation_counter']
+        self.pop_size = loaded_population['pop_size']
+        self.species_count = loaded_population['species_count']
+        self.species_id_counter = max(loaded_population['genomes'])
+        assert not self.pop_size_fixed or self.pop_size == self.initial_pop_size
+
+        self.genomes = dict()
+        for species_id, species_genomes in loaded_population['genomes'].items():
+            deserialized_genome_list = encoding.deserialize_genome_list(species_genomes)
+            self.genomes[species_id] = deque(deserialized_genome_list)
+
+        logging.info("Loaded population of encoding '{}' from file '{}'. Summary of the population:"
+                     .format(encoding.__class__.__name__, load_file_path))
+        self.summary()

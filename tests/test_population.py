@@ -6,9 +6,12 @@ from collections import deque
 import neuroevolution as ne
 
 
-def test_population():
-    raise NotImplementedError()
+class DummyNEAlgorithm():
+    def uses_speciation(self):
+        return True
 
+
+def test_population():
     logging.set_verbosity(logging.DEBUG)
     logging.info("Using TF Version {}".format(tf.__version__))
     assert tf.__version__[0] == '2'  # Assert that TF 2.x is used
@@ -16,6 +19,7 @@ def test_population():
     config = ne.load_config('./test_config.cfg')
 
     encoding = ne.encodings.DirectEncoding(config)
+    dummy_ne_algorithm = DummyNEAlgorithm()
 
     activation_out = tf.keras.activations.deserialize("sigmoid")
 
@@ -36,12 +40,12 @@ def test_population():
     genome_1 = encoding.create_genome(genotype_1, trainable=False)
     genome_2 = encoding.create_genome(genotype_2, trainable=False)
 
-    population = ne.Population(None, config)
+    population = ne.Population(dummy_ne_algorithm, config)
 
-    population.append_genome(genome_1)
-    population.append_genome(genome_2)
-    population.append_genome(genome_1)
-    population.append_genome(genome_2)
+    population.add_genome(1, genome_1)
+    population.add_genome(1, genome_2)
+    population.add_genome(1, genome_1)
+    population.add_genome(1, genome_2)
 
     population.generation_counter = 0
 
