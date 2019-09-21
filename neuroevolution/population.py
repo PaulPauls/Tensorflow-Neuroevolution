@@ -13,14 +13,12 @@ class Population:
         self._read_config_parameters(config)
 
         self.pop_size = 0
+        self.species_count = 1
         self.generation_counter = None
+        self.species_id_counter = 1
         self.speciated_population = self.ne_algorithm.uses_speciation()
 
-        if self.speciated_population:
-            self.species_counter = 1
-            self.genomes = {self.species_counter: deque()}
-        else:
-            self.genomes = deque()
+        self.genomes = {self.species_id_counter: deque()}
 
     def _read_config_parameters(self, config):
         self.initial_pop_size = config.getint('POPULATION', 'initial_pop_size')
@@ -30,23 +28,15 @@ class Population:
         logging.debug("Population read from config: pop_size_fixed = {}".format(self.pop_size_fixed))
 
     def initialize(self, input_shape, num_output):
+        logging.info("Initializing population to size {}...".format(self.initial_pop_size))
         self.ne_algorithm.initialize_population(self, self.initial_pop_size, input_shape, num_output)
         self.generation_counter = 0
-        logging.info("Initialized population to size {}".format(self.pop_size))
 
-    def evaluate(self, env_name, genome_eval_function):
-        if self.speciated_population:
-            logging.info("Evaluating {} genomes in {} species from generation {} on the environment '{}'..."
-                         .format(self.pop_size, len(self.genomes), self.generation_counter, env_name))
-            for species in self.genomes.values():
-                for genome in species:
-                    if genome.get_fitness() == 0:
-                        scored_fitness = genome_eval_function(genome)
-                        genome.set_fitness(scored_fitness)
-        else:
-            logging.info("Evaluating {} genomes from generation {} on the environment '{}'..."
-                         .format(self.pop_size, self.generation_counter, env_name))
-            for genome in self.genomes:
+    def evaluate(self, environment_name, genome_eval_function):
+        logging.info("Evaluating {} genomes in {} species from generation {} on the environment '{}'..."
+                     .format(self.pop_size, self.species_count, self.generation_counter, environment_name))
+        for species in self.genomes.values():
+            for genome in species:
                 if genome.get_fitness() == 0:
                     scored_fitness = genome_eval_function(genome)
                     genome.set_fitness(scored_fitness)
@@ -54,7 +44,7 @@ class Population:
     def speciate(self):
         if self.speciated_population:
             logging.info("Speciating the population of {} genomes divided in {} species from generation {}..."
-                         .format(self.pop_size, len(self.genomes), self.generation_counter))
+                         .format(self.pop_size, self.species_count, self.generation_counter))
             self.ne_algorithm.speciate_population(self)
 
     def evolve(self):
@@ -66,70 +56,76 @@ class Population:
     def summary(self):
         best_fitness = self.get_best_genome().get_fitness()
         average_fitness = self.get_average_fitness()
-        species_count = len(self.genomes) if self.speciated_population else 1
         logging.info("#### GENERATION: {:>4} ## BEST_FITNESS: {:>8} ## AVERAGE_FITNESS: {:>8} "
                      "## POP_SIZE: {:>4} ## SPECIES_COUNT: {:>4} ####"
-                     .format(self.generation_counter, best_fitness, average_fitness, self.pop_size, species_count))
-        if self.speciated_population:
-            for species_nr, species_genomes in self.genomes.items():
-                species_best_fitness = max(species_genomes, key=lambda x: x.get_fitness())
-                species_size = len(species_genomes)
-                species_avg_fitness = round(sum(genome.get_fitness() for genome in species_genomes) / species_size, 3)
-                logging.info("---- SPECIES_NR: {:>4} -- SPECIES_BEST_FITNESS: {:>4} -- "
-                             "SPECIES_AVERAGE_FITNESS: {:>8} -- SPECIES_SIZE: {:>4} ----"
-                             .format(species_nr, species_best_fitness, species_avg_fitness, species_size))
-                for genome in species_genomes:
-                    logging.debug(genome)
-        else:
-            for genome in self.genomes:
+                     .format(self.generation_counter, best_fitness, average_fitness, self.pop_size, self.species_count))
+        for species_id, species_genomes in self.genomes.items():
+            species_best_fitness = self.get_species_best_genome(species_id).get_fitness()
+            species_avg_fitness = self.get_species_average_fitness(species_id)
+            species_size = len(species_genomes)
+            logging.info("---- SPECIES_ID: {:>4} -- SPECIES_BEST_FITNESS: {:>4} -- "
+                         "SPECIES_AVERAGE_FITNESS: {:>8} -- SPECIES_SIZE: {:>4} ----"
+                         .format(species_id, species_best_fitness, species_avg_fitness, species_size))
+            for genome in species_genomes:
                 logging.debug(genome)
 
     def check_extinction(self):
         return self.pop_size == 0
 
-    def append_genome(self, genome):
-        raise NotImplementedError()
-        self.genomes.append(genome)
+    def add_species(self, genomes):
+        assert isinstance(genomes, deque)
+        self.species_id_counter += 1
+        self.genomes[self.species_id_counter] = genomes
+        self.species_count += 1
+        self.pop_size += len(genomes)
+
+    def add_genome(self, species_id, genome):
+        self.genomes[species_id].append(genome)
         self.pop_size += 1
 
-    def remove_genome(self, genome):
-        raise NotImplementedError()
-        self.genomes.remove(genome)
+    def remove_species(self, species_id):
+        self.pop_size -= len(self.genomes[species_id])
+        self.species_count -= 1
+        del self.genomes[species_id]
+
+    def remove_genome(self, species_id, genome):
+        self.genomes[species_id].remove(genome)
         self.pop_size -= 1
 
-    def get_genome(self, i):
-        raise NotImplementedError()
-        return self.genomes[i]
+    def get_species(self, species_id):
+        return self.genomes[species_id]
+
+    def get_genome(self, species_id, i):
+        return self.genomes[species_id][i]
 
     def get_best_genome(self):
-        if self.speciated_population:
-            flattened_genome_list = itertools.chain.from_iterable(self.genomes.values())
-            return max(flattened_genome_list, key=lambda x: x.get_fitness())
-        else:
-            return max(self.genomes, key=lambda x: x.get_fitness())
+        genomes_flattened = itertools.chain.from_iterable(self.genomes.values())
+        return max(genomes_flattened, key=lambda x: x.get_fitness())
+
+    def get_species_best_genome(self, species_id):
+        return max(self.genomes[species_id], key=lambda x: x.get_fitness())
 
     def get_worst_genome(self):
-        if self.speciated_population:
-            flattened_genome_list = itertools.chain.from_iterable(self.genomes.values())
-            return min(flattened_genome_list, key=lambda x: x.get_fitness())
-        else:
-            return max(self.genomes, key=lambda x: x.get_fitness())
-        return min(self.genomes, key=lambda x: x.get_fitness())
+        genomes_flattened = itertools.chain.from_iterable(self.genomes.values())
+        return min(genomes_flattened, key=lambda x: x.get_fitness())
+
+    def get_species_worst_genome(self, species_id):
+        return min(self.genomes[species_id], key=lambda x: x.get_fitness())
+
+    def get_average_fitness(self):
+        genomes_flattened = itertools.chain.from_iterable(self.genomes.values())
+        fitness_sum = sum(genome.get_fitness() for genome in genomes_flattened)
+        return round(fitness_sum / self.pop_size, 3)
+
+    def get_species_average_fitness(self, species_id):
+        fitness_sum = sum(genome.get_fitness() for genome in self.genomes[species_id])
+        return round(fitness_sum / len(self.genomes[species_id]), 3)
 
     def get_generation_counter(self):
         return self.generation_counter
 
     def get_pop_size(self):
         return self.pop_size
-
-    def get_average_fitness(self):
-        if self.speciated_population:
-            genome_list = itertools.chain.from_iterable(self.genomes.values())
-        else:
-            genome_list = self.genomes
-        fitness_sum = sum(genome.get_fitness() for genome in genome_list)
-        average_fitness = round(fitness_sum / self.pop_size, 3)
-        return average_fitness
 
     def load_population(self, encoding, load_file_path):
         raise NotImplementedError()
