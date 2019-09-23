@@ -37,8 +37,14 @@ def test_population():
         encoding.create_gene_node(4, activation_out)
     ])
 
-    genome_1 = encoding.create_genome(genotype_1, trainable=False)
-    genome_2 = encoding.create_genome(genotype_2, trainable=False)
+    genome_1 = encoding.create_genome(genotype=genotype_1,
+                                      trainable=False,
+                                      associated_species=1,
+                                      originated_generation=1)
+    genome_2 = encoding.create_genome(genotype=genotype_2,
+                                      trainable=False,
+                                      associated_species=1,
+                                      originated_generation=1)
 
     population = ne.Population(dummy_ne_algorithm, config)
 

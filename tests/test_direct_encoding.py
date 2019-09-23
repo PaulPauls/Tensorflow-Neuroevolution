@@ -41,7 +41,7 @@ def test_direct_encoding():
         encoding.create_gene_node(8, activation_out)
     ])
 
-    genome = encoding.create_genome(genotype, trainable=False)
+    genome = encoding.create_genome(genotype=genotype, trainable=False, associated_species=1, originated_generation=1)
 
     print(genome)
 

@@ -68,9 +68,15 @@ class DirectEncoding(BaseEncoding):
 
         return DirectEncodingNode(gene_id, node, bias, activation)
 
-    def create_genome(self, genotype, trainable):
+    def create_genome(self, genotype, trainable, associated_species, originated_generation):
         self.genome_id_counter += 1
-        return DirectEncodingGenome(self.genome_id_counter, genotype, trainable, self.dtype, self.run_eagerly)
+        return DirectEncodingGenome(genome_id=self.genome_id_counter,
+                                    genotype=genotype,
+                                    trainable=trainable,
+                                    species=associated_species,
+                                    generation=originated_generation,
+                                    dtype=self.dtype,
+                                    run_eagerly=self.run_eagerly)
 
     def deserialize_genome_list(self, genome_list):
         deserialized_genome_list = []
@@ -78,6 +84,8 @@ class DirectEncoding(BaseEncoding):
             genome_id = genome['genome_id']
             fitness = genome['fitness']
             trainable = genome['trainable']
+            species = genome['associated_species']
+            generation = genome['originating_generation']
             dtype = tf.dtypes.as_dtype(genome['dtype'])
             run_eagerly = genome['run_eagerly']
             assert dtype == self.dtype
@@ -99,7 +107,13 @@ class DirectEncoding(BaseEncoding):
                     deserialized_gene = DirectEncodingNode(gene_id, node, bias, activation)
                 genotype.append(deserialized_gene)
 
-            deserialized_genome = DirectEncodingGenome(genome_id, genotype, trainable, dtype, run_eagerly)
+            deserialized_genome = DirectEncodingGenome(genome_id=genome_id,
+                                                       genotype=genotype,
+                                                       trainable=trainable,
+                                                       species=species,
+                                                       generation=generation,
+                                                       dtype=dtype,
+                                                       run_eagerly=run_eagerly)
             deserialized_genome.set_fitness(fitness)
 
             deserialized_genome_list.append(deserialized_genome)
