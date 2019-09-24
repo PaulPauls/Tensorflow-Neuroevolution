@@ -20,7 +20,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.species_min_size = None
         self.species_max_size = None
         self.species_max_stagnation = None
-        self.species_max_fallback = None
         self.species_clustering = None
         self.species_interbreeding = None
         self.activation_default = None
@@ -46,8 +45,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.species_elitism = config.getint(section_name_algorithm, 'species_elitism')
         self.species_min_size = config.getint(section_name_algorithm, 'species_min_size')
         self.species_max_size = config.getint(section_name_algorithm, 'species_max_size')
-        self.species_max_stagnation = config.getint(section_name_algorithm, 'species_max_stagnation')
-        self.species_max_fallback = config.getfloat(section_name_algorithm, 'species_max_fallback')
+        self.species_max_stagnation = config.get(section_name_algorithm, 'species_max_stagnation')
         self.species_clustering = config.get(section_name_algorithm, 'species_clustering')
         self.species_interbreeding = config.getboolean(section_name_algorithm, 'species_interbreeding')
         self.activation_default = config.get(section_name_evolvable_encoding, 'activation_default')
@@ -57,6 +55,11 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             species_clustering_alg = self.species_clustering[:self.species_clustering.find(',')]
             species_clustering_val = float(self.species_clustering[self.species_clustering.find(',') + 2:])
             self.species_clustering = (species_clustering_alg, species_clustering_val)
+
+        if ',' in self.species_max_stagnation:
+            species_max_stagnation_duration = int(self.species_max_stagnation[:self.species_max_stagnation.find(',')])
+            species_max_stagnation_perc = float(self.species_max_stagnation[self.species_max_stagnation.find(',') + 2:])
+            self.species_max_stagnation = (species_max_stagnation_duration, species_max_stagnation_perc)
 
         self.activation_default = tf.keras.activations.deserialize(self.activation_default)
         self.activation_out = tf.keras.activations.deserialize(self.activation_out)
@@ -72,7 +75,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         logging.debug("NEAT NE Algorithm read from config: species_max_size = {}".format(self.species_max_size))
         logging.debug("NEAT NE Algorithm read from config: species_max_stagnation = {}"
                       .format(self.species_max_stagnation))
-        logging.debug("NEAT NE Algorithm read from config: species_max_fallback = {}".format(self.species_max_fallback))
         logging.debug("NEAT NE Algorithm read from config: species_clustering = {}".format(self.species_clustering))
         logging.debug("NEAT NE Algorithm read from config: species_interbreeding = {}"
                       .format(self.species_interbreeding))
@@ -106,25 +108,28 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         else:
             raise NotImplementedError("Multidimensional input vectors not yet supported")
 
-    def evolve_population(self, population):
+    def evolve_population(self, population, pop_size_fixed):
 
         '''
-        relevant variables:
+        # ToDo: Remove stagnating species
+        self.species_max_stagnation
+        self.species_elitism
+        self.species_max_size
+        pop_size_fixed
+        '''
+
+        '''
+        # ToDo: Recombine genomes
         self.genome_elitism
         self.recombine_prob
         self.mutate_weights_prob
         self.add_conn_prob
         self.add_node_prob
-        self.initial_connection
         self.species_elitism
         self.species_min_size
         self.species_max_size
-        self.species_max_stagnation
-        self.species_max_fallback
-        self.species_clustering
         self.species_interbreeding
         self.activation_default
-        self.activation_out
         '''
         raise NotImplementedError()
 
@@ -142,7 +147,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.species_min_size
         self.species_max_size
         self.species_max_stagnation
-        self.species_max_fallback
         self.species_clustering
         self.species_interbreeding
         self.activation_default

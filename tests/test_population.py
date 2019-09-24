@@ -18,6 +18,10 @@ def test_population():
 
     config = ne.load_config('./test_config.cfg')
 
+    environment = ne.environments.XOREnvironment()
+    environment_name = environment.__class__.__name__
+    genome_eval_function = environment.eval_genome_fitness
+
     encoding = ne.encodings.DirectEncoding(config)
     dummy_ne_algorithm = DummyNEAlgorithm()
 
@@ -54,6 +58,8 @@ def test_population():
     population.add_genome(1, genome_2)
 
     population.generation_counter = 0
+
+    population.evaluate(environment_name, genome_eval_function)
 
     serialization_path = os.path.abspath("test_serialization.json")
     population.save_population(serialization_path)
