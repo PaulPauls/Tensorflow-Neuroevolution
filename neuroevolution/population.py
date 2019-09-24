@@ -146,8 +146,11 @@ class Population:
     def get_generation_counter(self):
         return self.generation_counter
 
-    def get_species_id_list(self):
-        return self.genomes.keys()
+    def get_sorted_species_avg_fitness_log(self, reverse=False):
+        return sorted(self.species_avg_fitness_log.items(), key=lambda x: x[1][-1], reverse=reverse)
+
+    def get_sorted_species_best_fitness_log(self, reverse=False):
+        return sorted(self.species_best_fitness_log.items(), key=lambda x: x[1][-1], reverse=reverse)
 
     def get_species_count(self):
         return self.species_count

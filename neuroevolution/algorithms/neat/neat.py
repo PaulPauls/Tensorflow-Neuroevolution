@@ -110,13 +110,21 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
     def evolve_population(self, population, pop_size_fixed):
 
-        '''
-        # ToDo: Remove stagnating species
-        self.species_max_stagnation
-        self.species_elitism
-        self.species_max_size
-        pop_size_fixed
-        '''
+        original_pop_size = population.get_pop_size() if pop_size_fixed else None
+        max_stagnation_duration = self.species_max_stagnation[0]
+        non_stagnation_improve_rate = 1 + self.species_max_stagnation[1]
+
+        for species_id, species_avg_fitness_log in population.get_sorted_species_avg_fitness_log():
+            if population.get_species_count() <= self.species_elitism:
+                break
+
+            if len(species_avg_fitness_log) >= max_stagnation_duration:
+                average_avg_fitness = sum(species_avg_fitness_log[-max_stagnation_duration:]) / max_stagnation_duration
+                non_stagnation_fitness = species_avg_fitness_log[-max_stagnation_duration] * non_stagnation_improve_rate
+                if average_avg_fitness < non_stagnation_fitness:
+                    logging.debug("Removing species {} as stagnating for {} generations..."
+                                  .format(species_id, max_stagnation_duration))
+                    population.remove_species(species_id)
 
         '''
         # ToDo: Recombine genomes
