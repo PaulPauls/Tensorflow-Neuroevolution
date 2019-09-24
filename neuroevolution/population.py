@@ -45,18 +45,14 @@ class Population:
                     genome.set_fitness(scored_fitness)
 
             if species_id in self.species_avg_fitness_log:
-                self.species_avg_fitness_log[species_id][self.generation_counter] = \
-                    self.get_species_average_fitness(species_id)
+                self.species_avg_fitness_log[species_id].append(self.get_species_average_fitness(species_id))
             else:
-                self.species_avg_fitness_log[species_id] = \
-                    {self.generation_counter: self.get_species_average_fitness(species_id)}
+                self.species_avg_fitness_log[species_id] = [self.get_species_average_fitness(species_id)]
 
             if species_id in self.species_best_fitness_log:
-                self.species_best_fitness_log[species_id][self.generation_counter] = \
-                    self.get_species_best_genome(species_id).get_fitness()
+                self.species_best_fitness_log[species_id].append(self.get_species_best_genome(species_id).get_fitness())
             else:
-                self.species_best_fitness_log[species_id] = \
-                    {self.generation_counter: self.get_species_best_genome(species_id).get_fitness()}
+                self.species_best_fitness_log[species_id] = [self.get_species_best_genome(species_id).get_fitness()]
 
     def speciate(self):
         if self.speciated_population:
@@ -78,8 +74,8 @@ class Population:
                      .format(self.generation_counter, best_fitness, average_fitness, self.pop_size, self.species_count))
 
         for species_id, species_genomes in self.genomes.items():
-            species_best_fitness = self.species_best_fitness_log[species_id][self.generation_counter]
-            species_avg_fitness = self.species_avg_fitness_log[species_id][self.generation_counter]
+            species_best_fitness = self.species_best_fitness_log[species_id][-1]
+            species_avg_fitness = self.species_avg_fitness_log[species_id][-1]
             species_size = len(species_genomes)
             logging.info("---- SPECIES_ID: {:>4} -- SPECIES_BEST_FITNESS: {:>4} -- "
                          "SPECIES_AVERAGE_FITNESS: {:>8} -- SPECIES_SIZE: {:>4} ----"
@@ -150,6 +146,12 @@ class Population:
     def get_generation_counter(self):
         return self.generation_counter
 
+    def get_species_id_list(self):
+        return self.genomes.keys()
+
+    def get_species_count(self):
+        return self.species_count
+
     def get_pop_size(self):
         return self.pop_size
 
@@ -188,15 +190,9 @@ class Population:
         # of the deserialized json back to integers.
         for key, value in self.species_avg_fitness_log.items():
             del self.species_avg_fitness_log[key]
-            for key_2, value_2 in value.items():
-                del value[key_2]
-                value[int(key_2)] = value_2
             self.species_avg_fitness_log[int(key)] = value
         for key, value in self.species_best_fitness_log.items():
             del self.species_best_fitness_log[key]
-            for key_2, value_2 in value.items():
-                del value[key_2]
-                value[int(key_2)] = value_2
             self.species_best_fitness_log[int(key)] = value
         for key, value in self.genomes.items():
             del self.genomes[key]
