@@ -29,8 +29,8 @@ class Population:
 
     def initialize(self, input_shape, num_output):
         logging.info("Initializing population to size {}...".format(self.initial_pop_size))
-        self.ne_algorithm.initialize_population(self, self.initial_pop_size, input_shape, num_output)
         self.generation_counter = 0
+        self.ne_algorithm.initialize_population(self, self.initial_pop_size, input_shape, num_output)
 
     def evaluate(self, environment_name, genome_eval_function):
         logging.info("Evaluating {} genomes in {} species from generation {} on the environment '{}'..."

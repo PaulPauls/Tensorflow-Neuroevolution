@@ -1,5 +1,6 @@
 import tensorflow as tf
 from absl import logging
+from collections import deque
 
 from ..base_algorithm import BaseNeuroevolutionAlgorithm
 
@@ -79,12 +80,74 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         logging.debug("NEAT NE Algorithm read from config: activation_out = {}".format(self.activation_out))
 
     def initialize_population(self, population, initial_pop_size, input_shape, num_output):
-        raise NotImplementedError()
+        if len(input_shape) == 1:
+            num_input = input_shape[0]
+            generation = population.get_generation_counter()
+            genotype = deque()
+
+            if self.initial_connection == 'full':
+                for _ in range(initial_pop_size):
+                    genotype.clear()
+
+                    for conn_in in range(1, num_input + 1):
+                        for conn_out in range(num_input + 1, num_input + num_output + 1):
+                            new_gene_conn = self.encoding.create_gene_connection(conn_in, conn_out)
+                            genotype.append(new_gene_conn)
+
+                    for node in range(num_input + 1, num_input + num_output + 1):
+                        new_gene_node = self.encoding.create_gene_node(node, self.activation_out)
+                        genotype.append(new_gene_node)
+
+                    new_genome = self.encoding.create_genome(genotype, self.trainable, 1, generation)
+                    population.add_genome(1, new_genome)
+
+            else:
+                raise NotImplementedError("Non-'full' initial connection not yet supported")
+        else:
+            raise NotImplementedError("Multidimensional input vectors not yet supported")
 
     def evolve_population(self, population):
+
+        '''
+        relevant variables:
+        self.genome_elitism
+        self.recombine_prob
+        self.mutate_weights_prob
+        self.add_conn_prob
+        self.add_node_prob
+        self.initial_connection
+        self.species_elitism
+        self.species_min_size
+        self.species_max_size
+        self.species_max_stagnation
+        self.species_max_fallback
+        self.species_clustering
+        self.species_interbreeding
+        self.activation_default
+        self.activation_out
+        '''
         raise NotImplementedError()
 
     def speciate_population(self, population):
+
+        '''
+        relevant variables:
+        self.genome_elitism
+        self.recombine_prob
+        self.mutate_weights_prob
+        self.add_conn_prob
+        self.add_node_prob
+        self.initial_connection
+        self.species_elitism
+        self.species_min_size
+        self.species_max_size
+        self.species_max_stagnation
+        self.species_max_fallback
+        self.species_clustering
+        self.species_interbreeding
+        self.activation_default
+        self.activation_out
+        '''
         raise NotImplementedError()
 
     def uses_speciation(self):

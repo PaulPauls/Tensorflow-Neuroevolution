@@ -17,7 +17,7 @@ class DirectEncodingGenome(BaseGenome):
         self.model = self._create_model()
 
     def __str__(self):
-        string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>4} || Associated Species: {:>4} || " \
+        string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>8} || Associated Species: {:>4} || " \
                       "Originating Generation: {:>4} || Gene Count: {:>4}" \
             .format(self.genome_id, self.fitness, self.associated_species, self.originating_generation,
                     len(self.genotype))
