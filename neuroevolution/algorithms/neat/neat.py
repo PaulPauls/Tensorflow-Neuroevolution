@@ -11,6 +11,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
         # Declare and read in config parameters for the NEAT NE algorithm
         self.genome_elitism = None
+        self.reproduction_survival_perc = None
         self.recombine_prob = None
         self.mutate_weights_prob = None
         self.add_conn_prob = None
@@ -37,6 +38,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             if config.has_section('DIRECT_ENCODING_EVOLVABLE') else 'ENCODING_EVOLVABLE'
 
         self.genome_elitism = config.getint(section_name_algorithm, 'genome_elitism')
+        self.reproduction_survival_perc = config.getfloat(section_name_algorithm, 'reproduction_survival_perc')
         self.recombine_prob = config.getfloat(section_name_algorithm, 'recombine_prob')
         self.mutate_weights_prob = config.getfloat(section_name_algorithm, 'mutate_weights_prob')
         self.add_conn_prob = config.getfloat(section_name_algorithm, 'add_conn_prob')
@@ -65,6 +67,8 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.activation_out = tf.keras.activations.deserialize(self.activation_out)
 
         logging.debug("NEAT NE Algorithm read from config: genome_elitism = {}".format(self.genome_elitism))
+        logging.debug("NEAT NE Algorithm read from config: reproduction_survival_perc = {}"
+                      .format(self.reproduction_survival_perc))
         logging.debug("NEAT NE Algorithm read from config: recombine_prob = {}".format(self.recombine_prob))
         logging.debug("NEAT NE Algorithm read from config: mutate_weights_prob = {}".format(self.mutate_weights_prob))
         logging.debug("NEAT NE Algorithm read from config: add_conn_prob = {}".format(self.add_conn_prob))
@@ -129,12 +133,11 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         '''
         # ToDo: Recombine genomes
         self.genome_elitism
+        self.reproduction_survival_perc
         self.recombine_prob
         self.mutate_weights_prob
         self.add_conn_prob
         self.add_node_prob
-        self.species_elitism
-        self.species_min_size
         self.species_max_size
         self.species_interbreeding
         self.activation_default
@@ -146,6 +149,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         '''
         relevant variables:
         self.genome_elitism
+        self.reproduction_survival_perc
         self.recombine_prob
         self.mutate_weights_prob
         self.add_conn_prob
