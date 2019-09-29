@@ -1,6 +1,7 @@
 import tensorflow as tf
 from absl import logging
 from collections import deque
+from random import choice, random
 
 from ..base_algorithm import BaseNeuroevolutionAlgorithm
 
@@ -132,49 +133,44 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                                   .format(species_id, max_stagnation_duration))
                     population.remove_species(species_id)
 
-
-        # ToDo
-
         if pop_size_fixed:
-            genomes_to_add_min = int(original_pop_size / population.get_species_count()) - self.genome_elitism
+            genomes_to_add = int(original_pop_size / population.get_species_count()) - self.genome_elitism
         else:
-            genomes_to_add_min = self.species_max_size - self.genome_elitism
+            genomes_to_add = self.species_max_size - self.genome_elitism
 
-        reproduction_indexes = dict()
-        genomes_to_add = dict()
+        species_reproduction_indices = dict()
+        species_genomes_to_add = dict()
 
         for species_id in population.get_species_ids():
-            species = population.get_species(species_id)
 
-            reproduction_cutoff_abs = int(self.reproduction_cutoff * len(species))
+            reproduction_cutoff_abs = int(self.reproduction_cutoff * population.get_species_length(species_id))
             if reproduction_cutoff_abs < self.genome_elitism:
                 reproduction_cutoff_abs = self.genome_elitism
 
-            reproduction_genome_indices = get_genome_indices_in_species_sorted_by_fitness(species)[-reproduction_cutoff_abs:]
+            species_reproduction_indices[species_id] = \
+                population.get_fitness_sorted_indices_of_species_genomes(species_id)[-reproduction_cutoff_abs:]
 
-            reproduction_indexes[species_id] = reproduction_genome_indices
-
-            genomes_to_add[species_id] = genomes_to_add_min
-            if pop_size_fixed and population.get_species_count() * genomes_to_add_min + len(genomes_to_add) < original_pop_size:
-                genomes_to_add[species_id] += 1
-
+            species_genomes_to_add[species_id] = genomes_to_add
+            if pop_size_fixed:
+                if population.get_species_count() * genomes_to_add + len(species_genomes_to_add) < original_pop_size:
+                    species_genomes_to_add[species_id] += 1
 
         new_genomes = dict()
+        mutate_weights_val = self.recombine_prob + self.mutate_weights_prob
+        add_conn_val = mutate_weights_val + self.add_conn_prob
         for species_id in population.get_species_ids():
-            for _ in range(genomes_to_add[species_id]):
-                genome_to_mutate = population.get_genome(species_id, choice(reproduction_indexes))
-
+            for _ in range(species_genomes_to_add[species_id]):
+                genome_to_mutate = population.get_genome(species_id, choice(species_reproduction_indices[species_id]))
                 random_val = random()
-
-                mutate_weights_val = self.recombine_prob + self.mutate_weights_prob
-                add_conn_val = mutate_weights_val + self.add_conn_prob
 
                 if random_val < self.recombine_prob:
                     if self.species_interbreeding:
-                        genome_to_recombine = choice(reproduction_indexes[choice(...)])
+                        species_id_recombination = choice(population.get_species_ids())
                     else:
-                        genome_to_recombine = choice(reproduction_indexes[species_id])
+                        species_id_recombination = species_id
 
+                    genome_index_recombination = choice(species_reproduction_indices[species_id_recombination])
+                    genome_to_recombine = population.get_genome(species_id_recombination, genome_index_recombination)
                     new_genome = self._create_recombined_genome(genome_to_mutate, genome_to_recombine)
                 elif random_val < mutate_weights_val:
                     new_genome = self._create_mutated_weights_genome(genome_to_mutate)
@@ -186,24 +182,13 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                 new_genomes[species_id] = new_genome
 
         for species_id in population.get_species_ids():
-            population.preserve_x_genomes_and_replace_rest_with_y_genomes(species_id, self.genome_elitism, new_genomes[species_id])
+            genomes_to_delete = \
+                population.get_fitness_sorted_indices_of_species_genomes(species_id)[:-self.genome_elitism]
+            for genome_index_to_delete in genomes_to_delete:
+                population.remove_genome(species_id, genome_index_to_delete)
 
-        '''
-        # ToDo: Recombine genomes
-        self.genome_elitism: # of unaltered genomes for the next generation
-        self.reproduction_cutoff: # the x fittest genomes are the basis for reproduction, mutation for the next gen
-                                  Consider special cases of '0' and 'cutoff higher than genome elitism'
-        self.recombine_prob: Prob of recombining chosen genome
-        self.species_interbreeding: (if recombining)
-        self.mutate_weights_prob: Prob of mutating weights of chosen genome
-        self.add_conn_prob: Prob of add conn to chosen genome
-        self.add_node_prob: Prob of adding node to chosen genome
-        self.activation_default: (if adding node)
-        self.species_max_size: If pop size not fixed, fill up species with mutations up to this point.
-                               If pop size fixed: fill up #(genomes_removed/species_count) and add the extra genomes
-                                    to the best performing species
-        '''
-        raise NotImplementedError()
+            for genome_to_add in new_genomes[species_id]:
+                population.add_genome(species_id, genome_to_add)
 
     def speciate_population(self, population):
 
@@ -227,5 +212,18 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         '''
         raise NotImplementedError()
 
-    def uses_speciation(self):
+    @staticmethod
+    def uses_speciation():
         return True
+
+    def _create_recombined_genome(self, genome_1, genome_2):
+        raise NotImplementedError()
+
+    def _create_mutated_weights_genome(self, genome):
+        raise NotImplementedError()
+
+    def _create_added_conn_genome(self, genome):
+        raise NotImplementedError()
+
+    def _create_added_node_genome(self, genome, activation):
+        raise NotImplementedError()

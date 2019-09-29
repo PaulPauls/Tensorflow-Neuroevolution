@@ -158,6 +158,16 @@ class Population:
     def get_pop_size(self):
         return self.pop_size
 
+    def get_species_ids(self):
+        return self.genomes.keys()
+
+    def get_species_length(self, species_id):
+        return len(self.genomes[species_id])
+
+    def get_fitness_sorted_indices_of_species_genomes(self, species_id, reverse=False):
+        species = self.genomes[species_id]
+        return sorted(range(len(species)), key=lambda x: species[x].get_fitness(), reverse=reverse)
+
     def save_population(self, save_file_path):
         serialized_genomes = {species_id: [genome.serialize() for genome in species_genomes]
                               for species_id, species_genomes in self.genomes.items()}
