@@ -132,6 +132,62 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                                   .format(species_id, max_stagnation_duration))
                     population.remove_species(species_id)
 
+
+        # ToDo
+
+        if pop_size_fixed:
+            genomes_to_add_min = int(original_pop_size / population.get_species_count()) - self.genome_elitism
+        else:
+            genomes_to_add_min = self.species_max_size - self.genome_elitism
+
+        reproduction_indexes = dict()
+        genomes_to_add = dict()
+
+        for species_id in population.get_species_ids():
+            species = population.get_species(species_id)
+
+            reproduction_cutoff_abs = int(self.reproduction_cutoff * len(species))
+            if reproduction_cutoff_abs < self.genome_elitism:
+                reproduction_cutoff_abs = self.genome_elitism
+
+            reproduction_genome_indices = get_genome_indices_in_species_sorted_by_fitness(species)[-reproduction_cutoff_abs:]
+
+            reproduction_indexes[species_id] = reproduction_genome_indices
+
+            genomes_to_add[species_id] = genomes_to_add_min
+            if pop_size_fixed and population.get_species_count() * genomes_to_add_min + len(genomes_to_add) < original_pop_size:
+                genomes_to_add[species_id] += 1
+
+
+        new_genomes = dict()
+        for species_id in population.get_species_ids():
+            for _ in range(genomes_to_add[species_id]):
+                genome_to_mutate = population.get_genome(species_id, choice(reproduction_indexes))
+
+                random_val = random()
+
+                mutate_weights_val = self.recombine_prob + self.mutate_weights_prob
+                add_conn_val = mutate_weights_val + self.add_conn_prob
+
+                if random_val < self.recombine_prob:
+                    if self.species_interbreeding:
+                        genome_to_recombine = choice(reproduction_indexes[choice(...)])
+                    else:
+                        genome_to_recombine = choice(reproduction_indexes[species_id])
+
+                    new_genome = self._create_recombined_genome(genome_to_mutate, genome_to_recombine)
+                elif random_val < mutate_weights_val:
+                    new_genome = self._create_mutated_weights_genome(genome_to_mutate)
+                elif random_val < add_conn_val:
+                    new_genome = self._create_added_conn_genome(genome_to_mutate)
+                else:
+                    new_genome = self._create_added_node_genome(genome_to_mutate, self.activation_default)
+
+                new_genomes[species_id] = new_genome
+
+        for species_id in population.get_species_ids():
+            population.preserve_x_genomes_and_replace_rest_with_y_genomes(species_id, self.genome_elitism, new_genomes[species_id])
+
         '''
         # ToDo: Recombine genomes
         self.genome_elitism: # of unaltered genomes for the next generation
