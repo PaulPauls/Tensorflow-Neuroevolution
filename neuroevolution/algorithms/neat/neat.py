@@ -3,7 +3,7 @@ import tensorflow as tf
 from absl import logging
 from copy import deepcopy
 from collections import deque
-from random import choice, random, shuffle
+from random import choice, random, randint, shuffle
 
 from ..base_algorithm import BaseNeuroevolutionAlgorithm
 
@@ -256,21 +256,21 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             except AttributeError:
                 pass
 
-        highest_index_origin_node = len(topology_levels) - 1
-        possible_origin_nodes = list(set.union(*topology_levels[:highest_index_origin_node]))
-        shuffle(possible_origin_nodes)
+        highest_index_conn_in = len(topology_levels) - 1
+        possible_conn_ins = list(set.union(*topology_levels[:highest_index_conn_in]))
+        shuffle(possible_conn_ins)
 
         new_gene_conn = None
-        for origin_node in possible_origin_nodes:
-            min_index_forward_node = None
-            for layer_index in range(highest_index_origin_node):
-                if origin_node in topology_levels[layer_index]:
-                    min_index_forward_node = layer_index + 1
-            possible_forward_nodes = list(set.union(*topology_levels[min_index_forward_node:]))
-            shuffle(possible_forward_nodes)
-            for forward_node in possible_forward_nodes:
-                if (origin_node, forward_node) not in existing_genotype_connections:
-                    new_gene_conn = self.encoding.create_gene_connection(origin_node, forward_node)
+        for conn_in in possible_conn_ins:
+            min_index_conn_out = None
+            for layer_index in range(highest_index_conn_in):
+                if conn_in in topology_levels[layer_index]:
+                    min_index_conn_out = layer_index
+            possible_conn_outs = list(set.union(*topology_levels[min_index_conn_out:]))
+            shuffle(possible_conn_outs)
+            for conn_out in possible_conn_outs:
+                if (conn_in, conn_out) not in existing_genotype_connections:
+                    new_gene_conn = self.encoding.create_gene_connection(conn_in, conn_out)
                     new_genotype.append(new_gene_conn)
                     break
             if new_gene_conn is not None:
@@ -279,4 +279,20 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         return new_genotype
 
     def _create_added_node_genotype(self, genome, activation):
-        raise NotImplementedError()
+        topology_levels = genome.get_topology_levels()
+        new_genotype = deepcopy(genome.get_genotype())
+
+        new_node = max(set.union(*topology_levels)) + 1
+        index_new_conn_in = randint(0, len(topology_levels) - 2)
+        index_new_conn_out = randint(index_new_conn_in + 1, len(topology_levels) - 1)
+        new_conn_in = choice(tuple(topology_levels[index_new_conn_in]))
+        new_conn_out = choice(tuple(topology_levels[index_new_conn_out]))
+
+        new_gene_node = self.encoding.create_gene_node(new_node, activation)
+        new_gene_conn_in_node = self.encoding.create_gene_connection(new_conn_in, new_node)
+        new_gene_conn_node_out = self.encoding.create_gene_connection(new_node, new_conn_out)
+        new_genotype.append(new_gene_node)
+        new_genotype.append(new_gene_conn_in_node)
+        new_genotype.append(new_gene_conn_node_out)
+
+        return new_genotype
