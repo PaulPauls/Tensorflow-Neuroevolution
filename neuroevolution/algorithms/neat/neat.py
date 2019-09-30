@@ -1,5 +1,6 @@
 import tensorflow as tf
 from absl import logging
+from copy import deepcopy
 from collections import deque
 from random import choice, random
 
@@ -156,6 +157,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                     species_genomes_to_add[species_id] += 1
 
         new_genomes = dict()
+        generation = population.get_generation_counter()
         mutate_weights_val = self.recombine_prob + self.mutate_weights_prob
         add_conn_val = mutate_weights_val + self.add_conn_prob
         for species_id in population.get_species_ids():
@@ -171,14 +173,15 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
                     genome_index_recombination = choice(species_reproduction_indices[species_id_recombination])
                     genome_to_recombine = population.get_genome(species_id_recombination, genome_index_recombination)
-                    new_genome = self._create_recombined_genome(genome_to_mutate, genome_to_recombine)
+                    new_genotype = self._create_recombined_genome(genome_to_mutate, genome_to_recombine)
                 elif random_val < mutate_weights_val:
-                    new_genome = self._create_mutated_weights_genome(genome_to_mutate)
+                    new_genotype = self._create_mutated_weights_genome(genome_to_mutate)
                 elif random_val < add_conn_val:
-                    new_genome = self._create_added_conn_genome(genome_to_mutate)
+                    new_genotype = self._create_added_conn_genome(genome_to_mutate)
                 else:
-                    new_genome = self._create_added_node_genome(genome_to_mutate, self.activation_default)
+                    new_genotype = self._create_added_node_genome(genome_to_mutate, self.activation_default)
 
+                new_genome = self.encoding.create_genome(new_genotype, self.trainable, species_id, generation)
                 new_genomes[species_id] = new_genome
 
         for species_id in population.get_species_ids():
@@ -216,14 +219,26 @@ class NEAT(BaseNeuroevolutionAlgorithm):
     def uses_speciation():
         return True
 
-    def _create_recombined_genome(self, genome_1, genome_2):
+    def _create_recombined_genotype(self, genome_1, genome_2):
+        genotype_1 = genome_1.get_genotype()
+        genotype_2 = genome_2.get_genotype()
+
+        genotype_1_gene_ids = []
+        for gene in genotype_1:
+            genotype_1_gene_ids.append(gene.gene_id)
+
+        new_genotype = deepcopy(genotype_1)
+        for gene in genotype_2:
+            if gene.gene_id not in genotype_1_gene_ids:
+                new_genotype.append(deepcopy(gene))
+
+        return new_genotype
+
+    def _create_mutated_weights_genotype(self, genome):
         raise NotImplementedError()
 
-    def _create_mutated_weights_genome(self, genome):
+    def _create_added_conn_genotype(self, genome):
         raise NotImplementedError()
 
-    def _create_added_conn_genome(self, genome):
-        raise NotImplementedError()
-
-    def _create_added_node_genome(self, genome, activation):
+    def _create_added_node_genotype(self, genome, activation):
         raise NotImplementedError()
