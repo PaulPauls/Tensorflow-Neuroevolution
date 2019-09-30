@@ -113,7 +113,7 @@ class DirectEncodingModel(tf.keras.Model):
                     connections[conn_out] = {conn_in: gene.conn_weight}
                     node_dependencies[conn_out] = {conn_in}
             else:  # else gene is instance of DirectEncodingNode
-                nodes[gene.node] = [gene.bias, gene.activation]
+                nodes[gene.node] = (gene.bias, gene.activation)
         return nodes, connections, node_dependencies
 
     @staticmethod
