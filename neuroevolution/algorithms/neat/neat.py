@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 from absl import logging
 from copy import deepcopy
@@ -173,13 +174,13 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
                     genome_index_recombination = choice(species_reproduction_indices[species_id_recombination])
                     genome_to_recombine = population.get_genome(species_id_recombination, genome_index_recombination)
-                    new_genotype = self._create_recombined_genome(genome_to_mutate, genome_to_recombine)
+                    new_genotype = self._create_recombined_genotype(genome_to_mutate, genome_to_recombine)
                 elif random_val < mutate_weights_val:
-                    new_genotype = self._create_mutated_weights_genome(genome_to_mutate)
+                    new_genotype = self._create_mutated_weights_genotype(genome_to_mutate)
                 elif random_val < add_conn_val:
-                    new_genotype = self._create_added_conn_genome(genome_to_mutate)
+                    new_genotype = self._create_added_conn_genotype(genome_to_mutate)
                 else:
-                    new_genotype = self._create_added_node_genome(genome_to_mutate, self.activation_default)
+                    new_genotype = self._create_added_node_genotype(genome_to_mutate, self.activation_default)
 
                 new_genome = self.encoding.create_genome(new_genotype, self.trainable, species_id, generation)
                 new_genomes[species_id] = new_genome
@@ -235,7 +236,14 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         return new_genotype
 
     def _create_mutated_weights_genotype(self, genome):
-        raise NotImplementedError()
+        new_genotype = deepcopy(genome.get_genotype())
+        for gene in new_genotype:
+            try:
+                gene.conn_weight = np.random.normal(loc=gene.conn_weight, scale=np.abs(gene.conn_weight) / 2)
+            except AttributeError:
+                gene.bias = np.random.normal(loc=gene.bias, scale=np.abs(gene.bias) / 2)
+
+        return new_genotype
 
     def _create_added_conn_genotype(self, genome):
         raise NotImplementedError()
