@@ -162,7 +162,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         mutate_weights_val = self.recombine_prob + self.mutate_weights_prob
         add_conn_val = mutate_weights_val + self.add_conn_prob
         for species_id in population.get_species_ids():
-            for _ in range(species_genomes_to_add[species_id]):
+            for _ in range(species_genomes_to_add[species_id] - 1):
                 genome_to_mutate = population.get_genome(species_id, choice(species_reproduction_indices[species_id]))
                 random_val = random()
 
@@ -199,7 +199,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                 population.add_genome(species_id, genome_to_add)
 
     def speciate_population(self, population):
-
         '''
         relevant variables:
         self.genome_elitism
