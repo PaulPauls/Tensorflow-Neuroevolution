@@ -265,7 +265,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             min_index_conn_out = None
             for layer_index in range(highest_index_conn_in):
                 if conn_in in topology_levels[layer_index]:
-                    min_index_conn_out = layer_index
+                    min_index_conn_out = layer_index + 1
             possible_conn_outs = list(set.union(*topology_levels[min_index_conn_out:]))
             shuffle(possible_conn_outs)
             for conn_out in possible_conn_outs:
