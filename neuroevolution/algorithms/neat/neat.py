@@ -183,13 +183,17 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                     new_genotype = self._create_added_node_genotype(genome_to_mutate, self.activation_default)
 
                 new_genome = self.encoding.create_genome(new_genotype, self.trainable, species_id, generation)
-                new_genomes[species_id] = new_genome
+                if species_id not in new_genomes:
+                    new_genomes[species_id] = [new_genome]
+                else:
+                    new_genomes[species_id].append(new_genome)
 
         for species_id in population.get_species_ids():
             genomes_to_delete = \
                 population.get_fitness_sorted_indices_of_species_genomes(species_id)[:-self.genome_elitism]
+            genomes_to_delete = sorted(genomes_to_delete, reverse=True)
             for genome_index_to_delete in genomes_to_delete:
-                population.remove_genome(species_id, genome_index_to_delete)
+                population.remove_genome_by_index(species_id, genome_index_to_delete)
 
             for genome_to_add in new_genomes[species_id]:
                 population.add_genome(species_id, genome_to_add)

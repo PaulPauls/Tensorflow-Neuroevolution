@@ -108,6 +108,10 @@ class Population:
         self.genomes[species_id].remove(genome)
         self.pop_size -= 1
 
+    def remove_genome_by_index(self, species_id, genome_index):
+        del self.genomes[species_id][genome_index]
+        self.pop_size -= 1
+
     def get_species(self, species_id):
         return self.genomes[species_id]
 
