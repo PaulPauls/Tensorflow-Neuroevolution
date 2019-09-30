@@ -44,17 +44,17 @@ class DirectEncodingModel(tf.keras.Model):
 
         nodes, connections, node_dependencies = self._create_gene_dicts(genotype)
 
-        topology_dependency_levels = list(toposort(node_dependencies))
+        self.topology_dependency_levels = list(toposort(node_dependencies))
 
-        node_to_topology = self._create_node_to_topology_mapping(topology_dependency_levels)
+        node_to_topology = self._create_node_to_topology_mapping(self.topology_dependency_levels)
 
         self.custom_layers = []
-        for _ in range(len(topology_dependency_levels) - 1):
+        for _ in range(len(self.topology_dependency_levels) - 1):
             self.custom_layers.append([])
 
         for layer_index in range(len(self.custom_layers)):
             layer_node_dependencies = {node: node_dependencies[node]
-                                       for node in topology_dependency_levels[layer_index + 1]}
+                                       for node in self.topology_dependency_levels[layer_index + 1]}
 
             joined_layer_node_dependencies = self._join_keys_with_same_values(layer_node_dependencies)
 
