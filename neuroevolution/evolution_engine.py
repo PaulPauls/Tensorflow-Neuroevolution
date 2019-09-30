@@ -35,7 +35,7 @@ class EvolutionEngine:
             self.population.evolve()
 
             # Evaluate population and assign each genome a fitness score
-            self.population.evaluate(genome_eval_function)
+            self.population.evaluate(environment_name, genome_eval_function)
 
             # Speciate population if NE algorithm supports it
             self.population.speciate()
