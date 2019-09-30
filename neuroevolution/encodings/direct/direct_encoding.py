@@ -36,7 +36,7 @@ class DirectEncoding(BaseEncoding):
     def create_gene_connection(self, conn_in, conn_out):
         # Determine unique gene_id by checking if the supplied (conn_in, conn_out) pair already created a gene.
         # If not, increment gene_id_counter and register this new unique gene_id to the supplied connection pair.
-        gene_key = frozenset((conn_in, conn_out))
+        gene_key = (conn_in, conn_out)
         if gene_key in self.gene_to_gene_id_mapping:
             gene_id = self.gene_to_gene_id_mapping[gene_key]
         else:
@@ -54,7 +54,7 @@ class DirectEncoding(BaseEncoding):
     def create_gene_node(self, node, activation):
         # Determine unique gene_id by checking if the supplied node already created a gene.
         # If not, increment gene_id_counter and register this new unique gene_id to the supplied node.
-        gene_key = frozenset((node,))
+        gene_key = (node,)
         if gene_key in self.gene_to_gene_id_mapping:
             gene_id = self.gene_to_gene_id_mapping[gene_key]
         else:
