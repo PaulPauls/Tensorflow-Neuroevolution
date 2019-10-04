@@ -2,7 +2,6 @@ import numpy as np
 import tensorflow as tf
 from absl import logging
 from copy import deepcopy
-from collections import deque
 from random import choice, random, randint, shuffle
 
 from ..base_algorithm import BaseNeuroevolutionAlgorithm
@@ -21,7 +20,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.add_node_prob = None
         self.initial_connection = None
         self.species_elitism = None
-        self.species_min_size = None
         self.species_max_size = None
         self.species_max_stagnation = None
         self.species_clustering = None
@@ -29,11 +27,15 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.activation_default = None
         self.activation_out = None
         self._read_config_parameters(config)
+        self._log_class_parameters()
 
         assert self.recombine_prob + self.mutate_weights_prob + self.add_conn_prob + self.add_node_prob == 1.0
 
         # As NEAT evolves model weights manually, disable automatic weight training
         self.trainable = False
+        self.species_id_counter = 0
+        self.species_representatives = dict()
+        self.species_assignment = dict()
 
     def _read_config_parameters(self, config):
         section_name_algorithm = 'NEAT' if config.has_section('NEAT') else 'NE_ALGORITHM'
@@ -48,7 +50,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.add_node_prob = config.getfloat(section_name_algorithm, 'add_node_prob')
         self.initial_connection = config.get(section_name_algorithm, 'initial_connection')
         self.species_elitism = config.getint(section_name_algorithm, 'species_elitism')
-        self.species_min_size = config.getint(section_name_algorithm, 'species_min_size')
         self.species_max_size = config.getint(section_name_algorithm, 'species_max_size')
         self.species_max_stagnation = config.get(section_name_algorithm, 'species_max_stagnation')
         self.species_clustering = config.get(section_name_algorithm, 'species_clustering')
@@ -69,6 +70,8 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.activation_default = tf.keras.activations.deserialize(self.activation_default)
         self.activation_out = tf.keras.activations.deserialize(self.activation_out)
 
+    def _log_class_parameters(self):
+        logging.debug("NEAT NE Algorithm parameter: encoding = {}".format(self.encoding.__class__.__name__))
         logging.debug("NEAT NE Algorithm read from config: genome_elitism = {}".format(self.genome_elitism))
         logging.debug("NEAT NE Algorithm read from config: reproduction_cutoff = {}".format(self.reproduction_cutoff))
         logging.debug("NEAT NE Algorithm read from config: recombine_prob = {}".format(self.recombine_prob))
@@ -77,7 +80,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         logging.debug("NEAT NE Algorithm read from config: add_node_prob = {}".format(self.add_node_prob))
         logging.debug("NEAT NE Algorithm read from config: initial_connection = {}".format(self.initial_connection))
         logging.debug("NEAT NE Algorithm read from config: species_elitism = {}".format(self.species_elitism))
-        logging.debug("NEAT NE Algorithm read from config: species_min_size = {}".format(self.species_min_size))
         logging.debug("NEAT NE Algorithm read from config: species_max_size = {}".format(self.species_max_size))
         logging.debug("NEAT NE Algorithm read from config: species_max_stagnation = {}"
                       .format(self.species_max_stagnation))
@@ -87,6 +89,87 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         logging.debug("NEAT NE Algorithm read from config: activation_default = {}".format(self.activation_default))
         logging.debug("NEAT NE Algorithm read from config: activation_out = {}".format(self.activation_out))
 
+    def initialize_population(self, population, initial_pop_size, input_shape, num_output):
+        if len(input_shape) == 1:
+            num_input = input_shape[0]
+            genotype = list()
+
+            if self.initial_connection == 'full':
+                for _ in range(initial_pop_size):
+                    genotype.clear()
+
+                    for conn_in in range(1, num_input + 1):
+                        for conn_out in range(num_input + 1, num_input + num_output + 1):
+                            new_gene_conn = self.encoding.create_gene_connection(conn_in, conn_out)
+                            genotype.append(new_gene_conn)
+
+                    for node in range(num_input + 1, num_input + num_output + 1):
+                        new_gene_node = self.encoding.create_gene_node(node, self.activation_out)
+                        genotype.append(new_gene_node)
+
+                    new_genome = self.encoding.create_genome(genotype, self.trainable)
+                    population.add_genome(new_genome)
+
+            else:
+                raise NotImplementedError("Non-'full' initial connection not yet supported")
+        else:
+            raise NotImplementedError("Multidimensional input vectors not yet supported")
+
+    def evolve_population(self, population, pop_size_fixed):
+        raise NotImplementedError()
+
+    def evaluate_population(self, population, genome_eval_function):
+        for i in range(population.get_pop_size()):
+            genome = population.get_genome(i)
+            if genome.get_fitness() == 0:
+                scored_fitness = genome_eval_function(genome)
+                genome.set_fitness(scored_fitness)
+
+        # Speciate population by first clustering it and then applying fitness sharing
+        self._cluster_population(population)
+        self._apply_fitness_sharing(population)
+
+    def _cluster_population(self, population):
+        # If no species exist, set the first genome in the population as the representative of the first species
+        if not self.species_representatives:
+            self.species_id_counter += 1
+            self.species_representatives[self.species_id_counter] = 0
+
+        self.species_assignment = dict()
+        for species_id in self.species_representatives:
+            self.species_assignment[species_id] = []
+
+        distance = dict()
+        distance_threshold = self.species_clustering[1]
+        assert self.species_clustering[0] == 'threshold-fixed'
+
+        for i in range(population.get_pop_size()):
+            genome = population.get_genome(i)
+            for species_id, repr_genome_index in self.species_representatives.items():
+                repr_genome = population.get_genome(repr_genome_index)
+                distance[species_id] = self._calculate_genome_distance(genome, repr_genome)
+            closest_species_id = min(distance, key=distance.get)
+            smallest_distance = distance[closest_species_id]
+
+            if smallest_distance <= distance_threshold:
+                self.species_assignment[closest_species_id].append(i)
+            else:
+                self.species_id_counter += 1
+                self.species_representatives[self.species_id_counter] = i
+                self.species_assignment[self.species_id_counter] = [i]
+
+    def _calculate_genome_distance(self, genome_1, genome_2):
+        gene_ids_1 = genome_1.get_gene_ids()
+        gene_ids_2 = genome_2.get_gene_ids()
+        return len(gene_ids_1.symmetric_difference(gene_ids_2))
+
+    def _apply_fitness_sharing(self, population):
+        raise NotImplementedError()
+
+    def summarize_population(self, population):
+        raise NotImplementedError()
+
+    '''
     def initialize_population(self, population, initial_pop_size, input_shape, num_output):
         if len(input_shape) == 1:
             num_input = input_shape[0]
@@ -198,31 +281,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             for genome_to_add in new_genomes[species_id]:
                 population.add_genome(species_id, genome_to_add)
 
-    def speciate_population(self, population):
-        '''
-        relevant variables:
-        self.genome_elitism
-        self.reproduction_cutoff
-        self.recombine_prob
-        self.mutate_weights_prob
-        self.add_conn_prob
-        self.add_node_prob
-        self.initial_connection
-        self.species_elitism
-        self.species_min_size
-        self.species_max_size
-        self.species_max_stagnation
-        self.species_clustering
-        self.species_interbreeding
-        self.activation_default
-        self.activation_out
-        '''
-        raise NotImplementedError()
-
-    @staticmethod
-    def uses_speciation():
-        return True
-
     def _create_recombined_genotype(self, genome_1, genome_2):
         genotype_1 = genome_1.get_genotype()
         genotype_2 = genome_2.get_genotype()
@@ -299,3 +357,41 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         new_genotype.append(new_gene_conn_node_out)
 
         return new_genotype
+
+    def speciate_population(self, population):
+        
+        self._cluster_population(population)
+        self._apply_fitness_sharing_to_population(population)
+
+    def _cluster_population(self, population):
+        threshold_delta = self.species_clustering[1]
+
+        slice(1, 5, 2)
+
+        species_representative_genomes = dict()
+        for species_id in population.get_species_ids():
+            species_representative_genomes[species_id] = population.get_genome(species_id, 0)
+
+        distance_to_species_representative = dict()
+        for species_id in population.get_species_ids():
+            species_length = population.get_species_length(species_id)
+            for genome_index in range(1, species_length):
+                genome = population.get_genome(species_id, genome_index)
+                for species_id, species_repr_genome in species_representative_genomes.items():
+                    distance_to_species_representative[species_id] = \
+                        self._calculate_genome_distance(species_repr_genome, genome)
+                species_id_with_smallest_distance = min(distance_to_species_representative,
+                                                        key=distance_to_species_representative.get)
+                smallest_distance_to_species = distance_to_species_representative[species_id_with_smallest_distance]
+                if smallest_distance_to_species <= threshold_delta:
+                # ToDo: change species of genome to 'species_id_with_smallest_distance'
+                else:
+            # ToDo: Create new species with this species as its representative
+
+    def _apply_fitness_sharing_to_population(self, population):
+        raise NotImplementedError()
+
+    @staticmethod
+    def uses_speciation():
+        return True
+    '''

@@ -18,7 +18,7 @@ def test_direct_encoding():
     activation_default = tf.keras.activations.deserialize("tanh")
     activation_out = tf.keras.activations.deserialize("sigmoid")
 
-    genotype = deque([
+    genotype = [
         encoding.create_gene_connection(6, 8),
         encoding.create_gene_connection(5, 7),
         encoding.create_gene_connection(4, 7),
@@ -39,7 +39,7 @@ def test_direct_encoding():
         encoding.create_gene_node(5, activation_default),
         encoding.create_gene_node(7, activation_default),
         encoding.create_gene_node(8, activation_out)
-    ])
+    ]
 
     genome = encoding.create_genome(genotype=genotype, trainable=False, associated_species=1, originated_generation=1)
 

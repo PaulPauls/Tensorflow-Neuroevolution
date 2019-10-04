@@ -27,19 +27,19 @@ def test_population():
 
     activation_out = tf.keras.activations.deserialize("sigmoid")
 
-    genotype_1 = deque([
+    genotype_1 = [
         encoding.create_gene_connection(1, 3),
         encoding.create_gene_connection(2, 3),
         encoding.create_gene_node(3, activation_out)
-    ])
-    genotype_2 = deque([
+    ]
+    genotype_2 = [
         encoding.create_gene_connection(1, 3),
         encoding.create_gene_connection(1, 4),
         encoding.create_gene_connection(2, 3),
         encoding.create_gene_connection(2, 4),
         encoding.create_gene_node(3, activation_out),
         encoding.create_gene_node(4, activation_out)
-    ])
+    ]
 
     genome_1 = encoding.create_genome(genotype=genotype_1,
                                       trainable=False,

@@ -25,16 +25,13 @@ def main():
     population = ne.Population(ne_algorithm, config)
 
     engine = ne.EvolutionEngine(population, environment)
-    #genome_render_agent = ne.GenomeRenderAgent(True, './best_genome_graphs/')
-    genome_render_agent = None
-    #pop_backup_agent = ne.PopulationBackupAgent(5, './population_backups/')
-    pop_backup_agent = None
 
-    best_genome = engine.train(genome_render_agent=genome_render_agent, pop_backup_agent=pop_backup_agent)
+    best_genome = engine.train()
 
     if best_genome is not None:
         environment.replay_genome(best_genome)
-        best_genome.summary()
+        logging.info("Best Genome returned by evolution:\n{}".format(best_genome))
+        logging.info("Visualizing best genome returned by evolution...")
         best_genome.visualize()
     else:
         logging.info("Evolution of population did not return a valid genome")

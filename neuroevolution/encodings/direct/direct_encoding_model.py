@@ -42,7 +42,7 @@ class DirectEncodingModel(tf.keras.Model):
         super(DirectEncodingModel, self).__init__(trainable=trainable, dtype=dtype)
         self.run_eagerly = run_eagerly
 
-        nodes, connections, node_dependencies = self._create_gene_dicts(genotype)
+        self.gene_ids, nodes, connections, node_dependencies = self._create_gene_dicts(genotype)
 
         self.topology_dependency_levels = list(toposort(node_dependencies))
 
@@ -99,10 +99,12 @@ class DirectEncodingModel(tf.keras.Model):
 
     @staticmethod
     def _create_gene_dicts(genotype):
+        gene_ids = set()
         nodes = dict()
         connections = dict()
         node_dependencies = dict()
         for gene in genotype:
+            gene_ids.add(gene.gene_id)
             if isinstance(gene, DirectEncodingConnection):
                 conn_out = gene.conn_out
                 conn_in = gene.conn_in
@@ -114,7 +116,7 @@ class DirectEncodingModel(tf.keras.Model):
                     node_dependencies[conn_out] = {conn_in}
             else:  # else gene is instance of DirectEncodingNode
                 nodes[gene.node] = (gene.bias, gene.activation)
-        return nodes, connections, node_dependencies
+        return gene_ids, nodes, connections, node_dependencies
 
     @staticmethod
     def _create_node_to_topology_mapping(topology_dependency_levels):
