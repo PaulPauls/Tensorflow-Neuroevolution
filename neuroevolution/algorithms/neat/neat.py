@@ -12,7 +12,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.encoding = encoding
 
         # Declare and read in config parameters for the NEAT NE algorithm
-        self.genome_elitism = None
         self.reproduction_cutoff = None
         self.recombine_prob = None
         self.mutate_weights_prob = None
@@ -20,7 +19,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.add_node_prob = None
         self.initial_connection = None
         self.species_elitism = None
-        self.species_max_size = None
         self.species_max_stagnation = None
         self.species_clustering = None
         self.species_interbreeding = None
@@ -34,15 +32,15 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         # As NEAT evolves model weights manually, disable automatic weight training
         self.trainable = False
         self.species_id_counter = 0
-        self.species_representatives = dict()
         self.species_assignment = dict()
+        self.species_representatives = dict()
+        self.species_avg_fitness_history = dict()
 
     def _read_config_parameters(self, config):
         section_name_algorithm = 'NEAT' if config.has_section('NEAT') else 'NE_ALGORITHM'
         section_name_evolvable_encoding = 'DIRECT_ENCODING_EVOLVABLE' \
             if config.has_section('DIRECT_ENCODING_EVOLVABLE') else 'ENCODING_EVOLVABLE'
 
-        self.genome_elitism = config.getint(section_name_algorithm, 'genome_elitism')
         self.reproduction_cutoff = config.getfloat(section_name_algorithm, 'reproduction_cutoff')
         self.recombine_prob = config.getfloat(section_name_algorithm, 'recombine_prob')
         self.mutate_weights_prob = config.getfloat(section_name_algorithm, 'mutate_weights_prob')
@@ -50,7 +48,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.add_node_prob = config.getfloat(section_name_algorithm, 'add_node_prob')
         self.initial_connection = config.get(section_name_algorithm, 'initial_connection')
         self.species_elitism = config.getint(section_name_algorithm, 'species_elitism')
-        self.species_max_size = config.getint(section_name_algorithm, 'species_max_size')
         self.species_max_stagnation = config.get(section_name_algorithm, 'species_max_stagnation')
         self.species_clustering = config.get(section_name_algorithm, 'species_clustering')
         self.species_interbreeding = config.getboolean(section_name_algorithm, 'species_interbreeding')
@@ -72,7 +69,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
     def _log_class_parameters(self):
         logging.debug("NEAT NE Algorithm parameter: encoding = {}".format(self.encoding.__class__.__name__))
-        logging.debug("NEAT NE Algorithm read from config: genome_elitism = {}".format(self.genome_elitism))
         logging.debug("NEAT NE Algorithm read from config: reproduction_cutoff = {}".format(self.reproduction_cutoff))
         logging.debug("NEAT NE Algorithm read from config: recombine_prob = {}".format(self.recombine_prob))
         logging.debug("NEAT NE Algorithm read from config: mutate_weights_prob = {}".format(self.mutate_weights_prob))
@@ -80,7 +76,6 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         logging.debug("NEAT NE Algorithm read from config: add_node_prob = {}".format(self.add_node_prob))
         logging.debug("NEAT NE Algorithm read from config: initial_connection = {}".format(self.initial_connection))
         logging.debug("NEAT NE Algorithm read from config: species_elitism = {}".format(self.species_elitism))
-        logging.debug("NEAT NE Algorithm read from config: species_max_size = {}".format(self.species_max_size))
         logging.debug("NEAT NE Algorithm read from config: species_max_stagnation = {}"
                       .format(self.species_max_stagnation))
         logging.debug("NEAT NE Algorithm read from config: species_clustering = {}".format(self.species_clustering))
@@ -116,14 +111,129 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             raise NotImplementedError("Multidimensional input vectors not yet supported")
 
     def evolve_population(self, population, pop_size_fixed):
-        raise NotImplementedError()
+
+        # Assert that pop size is not fixed as NEAT does not operate on fixed pop sizes and handling this parameter has
+        # therefore not been implemented in NEAT
+        assert not pop_size_fixed
+
+        max_stag_dur = self.species_max_stagnation[0]
+        non_stag_improv = self.species_max_stagnation[1]
+
+        # ToDo: At the moment does the species_elitism param save the X most recently emerged species, not the X best
+        #       performing species. Possibly change that after discussion with Rezsa.
+        # Determine stagnating species to remove
+        species_count = len(self.species_assignment)
+        species_to_remove = []
+        for species_id, avg_fitness_history in self.species_avg_fitness_history.items():
+            if species_count - len(species_to_remove) <= self.species_elitism:
+                break
+
+            if len(avg_fitness_history) >= max_stag_dur:
+                avg_fitnes_over_stag_dur = sum(avg_fitness_history[-max_stag_dur:]) / max_stag_dur
+                non_stag_fitness = avg_fitness_history[-max_stag_dur] * non_stag_improv
+                if avg_fitnes_over_stag_dur < non_stag_fitness:
+                    logging.debug("Removng species {} as stagnating for {} generations..."
+                                  .format(species_id, max_stag_dur))
+                    species_to_remove.append(species_id)
+
+        # Actually remove the determined stagnating species
+        for species_id in species_to_remove:
+            for genome_index in self.species_assignment[species_id]:
+                population.delete_genome(genome_index)
+
+            del self.species_assignment[species_id]
+            del self.species_representatives[species_id]
+            del self.species_avg_fitness_history[species_id]
+
+        '''
+        if pop_size_fixed:
+            original_pop_size = population.get_pop_size()
+            assert self.species_elitism * self.species_max_size >= original_pop_size
+
+        max_stagnation_duration = self.species_max_stagnation[0]
+        non_stagnation_improve_rate = 1 + self.species_max_stagnation[1]
+
+        for species_id, species_avg_fitness_log in population.get_sorted_species_avg_fitness_log():
+            if population.get_species_count() <= self.species_elitism:
+                break
+
+            if len(species_avg_fitness_log) >= max_stagnation_duration:
+                average_avg_fitness = sum(species_avg_fitness_log[-max_stagnation_duration:]) / max_stagnation_duration
+                non_stagnation_fitness = species_avg_fitness_log[-max_stagnation_duration] * non_stagnation_improve_rate
+                if average_avg_fitness < non_stagnation_fitness:
+                    logging.debug("Removing species {} as stagnating for {} generations..."
+                                  .format(species_id, max_stagnation_duration))
+                    population.remove_species(species_id)
+
+        if pop_size_fixed:
+            genomes_to_add = int(original_pop_size / population.get_species_count()) - self.genome_elitism
+        else:
+            genomes_to_add = self.species_max_size - self.genome_elitism
+
+        species_reproduction_indices = dict()
+        species_genomes_to_add = dict()
+
+        for species_id in population.get_species_ids():
+
+            reproduction_cutoff_abs = int(self.reproduction_cutoff * population.get_species_length(species_id))
+            if reproduction_cutoff_abs < self.genome_elitism:
+                reproduction_cutoff_abs = self.genome_elitism
+
+            species_reproduction_indices[species_id] = \
+                population.get_fitness_sorted_indices_of_species_genomes(species_id)[-reproduction_cutoff_abs:]
+
+            species_genomes_to_add[species_id] = genomes_to_add
+            if pop_size_fixed:
+                if population.get_species_count() * genomes_to_add + len(species_genomes_to_add) < original_pop_size:
+                    species_genomes_to_add[species_id] += 1
+
+        new_genomes = dict()
+        generation = population.get_generation_counter()
+        mutate_weights_val = self.recombine_prob + self.mutate_weights_prob
+        add_conn_val = mutate_weights_val + self.add_conn_prob
+        for species_id in population.get_species_ids():
+            for _ in range(species_genomes_to_add[species_id] - 1):
+                genome_to_mutate = population.get_genome(species_id, choice(species_reproduction_indices[species_id]))
+                random_val = random()
+
+                if random_val < self.recombine_prob:
+                    if self.species_interbreeding:
+                        species_id_recombination = choice(population.get_species_ids())
+                    else:
+                        species_id_recombination = species_id
+
+                    genome_index_recombination = choice(species_reproduction_indices[species_id_recombination])
+                    genome_to_recombine = population.get_genome(species_id_recombination, genome_index_recombination)
+                    new_genotype = self._create_recombined_genotype(genome_to_mutate, genome_to_recombine)
+                elif random_val < mutate_weights_val:
+                    new_genotype = self._create_mutated_weights_genotype(genome_to_mutate)
+                elif random_val < add_conn_val:
+                    new_genotype = self._create_added_conn_genotype(genome_to_mutate)
+                else:
+                    new_genotype = self._create_added_node_genotype(genome_to_mutate, self.activation_default)
+
+                new_genome = self.encoding.create_genome(new_genotype, self.trainable, species_id, generation)
+                if species_id not in new_genomes:
+                    new_genomes[species_id] = [new_genome]
+                else:
+                    new_genomes[species_id].append(new_genome)
+
+        for species_id in population.get_species_ids():
+            genomes_to_delete = \
+                population.get_fitness_sorted_indices_of_species_genomes(species_id)[:-self.genome_elitism]
+            genomes_to_delete = sorted(genomes_to_delete, reverse=True)
+            for genome_index_to_delete in genomes_to_delete:
+                population.remove_genome_by_index(species_id, genome_index_to_delete)
+
+            for genome_to_add in new_genomes[species_id]:
+                population.add_genome(species_id, genome_to_add)
+
+        '''
 
     def evaluate_population(self, population, genome_eval_function):
         for i in range(population.get_pop_size()):
             genome = population.get_genome(i)
-            if genome.get_fitness() == 0:
-                scored_fitness = genome_eval_function(genome)
-                genome.set_fitness(scored_fitness)
+            genome.set_fitness(genome_eval_function(genome))
 
         # Speciate population by first clustering it and then applying fitness sharing
         self._cluster_population(population)
@@ -134,6 +244,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         if not self.species_representatives:
             self.species_id_counter += 1
             self.species_representatives[self.species_id_counter] = 0
+            self.species_avg_fitness_history[self.species_id_counter] = []
 
         self.species_assignment = dict()
         for species_id in self.species_representatives:
@@ -157,6 +268,12 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                 self.species_id_counter += 1
                 self.species_representatives[self.species_id_counter] = i
                 self.species_assignment[self.species_id_counter] = [i]
+                self.species_avg_fitness_history[self.species_id_counter] = []
+
+        # Assign best genome of each species as the new species_representative
+        for species_id, species_genome_indices in self.species_assignment.items():
+            best_genome_index = max(species_genome_indices, key=lambda x: population.get_genome(x).get_fitness())
+            self.species_representatives[species_id] = best_genome_index
 
     def _calculate_genome_distance(self, genome_1, genome_2):
         gene_ids_1 = genome_1.get_gene_ids()
@@ -164,10 +281,37 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         return len(gene_ids_1.symmetric_difference(gene_ids_2))
 
     def _apply_fitness_sharing(self, population):
-        raise NotImplementedError()
+        # Apply fitness sharing AND log species average fitness as all calculations are performed here anyway
+        for species_id, species_genome_indices in self.species_assignment.items():
+            species_size = len(species_genome_indices)
+            fitness_sum = 0
+            for genome_index in species_genome_indices:
+                genome = population.get_genome(genome_index)
+                adjusted_fitness = round(genome.get_fitness() / species_size, 3)
+                genome.set_fitness(adjusted_fitness)
+                fitness_sum += adjusted_fitness
+            species_avg_fitness = round(fitness_sum / species_size, 3)
+            self.species_avg_fitness_history[species_id].append(species_avg_fitness)
 
     def summarize_population(self, population):
-        raise NotImplementedError()
+        generation = population.get_generation_counter()
+        best_fitness = population.get_best_genome().get_fitness()
+        average_fitness = population.get_average_fitness()
+        pop_size = population.get_pop_size()
+        species_count = len(self.species_assignment)
+        logging.info("#### GENERATION: {:>4} ## BEST_FITNESS: {:>8} ## AVERAGE_FITNESS: {:>8} "
+                     "## POP_SIZE: {:>4} ## SPECIES_COUNT: {:>4} ####"
+                     .format(generation, best_fitness, average_fitness, pop_size, species_count))
+
+        for species_id, species_genome_indices in self.species_assignment.items():
+            species_best_fitness = population.get_genome(self.species_representatives[species_id]).get_fitness()
+            species_avg_fitness = self.species_avg_fitness_history[species_id][-1]
+            species_size = len(species_genome_indices)
+            logging.info("---- SPECIES_ID: {:>4} -- SPECIES_BEST_FITNESS: {:>4} "
+                         "-- SPECIES_AVG_FITNESS: {:>4} -- SPECIES_SIZE: {:>4} ----"
+                         .format(species_id, species_best_fitness, species_avg_fitness, species_size))
+            for genome_index in species_genome_indices:
+                logging.debug(population.get_genome(genome_index))
 
     '''
     def initialize_population(self, population, initial_pop_size, input_shape, num_output):

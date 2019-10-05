@@ -43,7 +43,9 @@ class Population:
         self.ne_algorithm.evaluate_population(self, genome_eval_function)
 
     def summary(self):
-        raise NotImplementedError()
+        logging.info("Summarizing population of size {} from generation {}..."
+                     .format(self.pop_size, self.generation_counter))
+        self.ne_algorithm.summarize_population(self)
 
     def check_extinction(self):
         return self.pop_size == 0

@@ -31,7 +31,7 @@ class EvolutionEngine:
 
         # Create an initial evaluation before entering the loop to check if exit conditions already met and summarize it
         self.population.evaluate(environment_name, genome_eval_function)
-        logging.info("Summary of the population after the initial evaluation:")
+        logging.info("Summarizing population after initial evaluation...")
         self.population.summary()
 
         while self._check_exit_conditions(max_generations, fitness_threshold):
