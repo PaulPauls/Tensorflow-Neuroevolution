@@ -12,6 +12,7 @@ class DirectEncodingGenome(BaseGenome):
         self.run_eagerly = run_eagerly
 
         self.fitness = 0
+        self.adj_fitness = self.fitness
         self.model = self._create_model()
 
     def __str__(self):
@@ -54,6 +55,12 @@ class DirectEncodingGenome(BaseGenome):
 
     def set_fitness(self, fitness):
         self.fitness = fitness
+
+    def get_adj_fitness(self):
+        return self.adj_fitness
+
+    def set_adj_fitness(self, adj_fitness):
+        self.adj_fitness = adj_fitness
 
     def _create_model(self):
         return DirectEncodingModel(self.genotype, self.trainable, self.dtype, self.run_eagerly)

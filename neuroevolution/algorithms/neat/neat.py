@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import tensorflow as tf
 from absl import logging
@@ -150,8 +151,8 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
         for species_id in self.species_assignment:
             # Subtract 1 from the NEAT allotted offspring formula as NEAT has genome elitism of 1
-            species_allotted_offspring[species_id] = int((self.species_avg_fitness_history[species_id][-1] * pop_size) \
-                                                         / total_species_avg_fitness) - 1
+            species_allotted_offspring[species_id] = math.ceil((self.species_avg_fitness_history[species_id][-1]
+                                                                * pop_size) / total_species_avg_fitness) - 1
 
         # Determine indices of genomes of each species that are part of the X top percent of that species as specified
         # via the 'reproducing_fraction' parameter and are therefore elligible to be parents of the next generation
@@ -194,29 +195,86 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         population.replace_population(new_genomes)
 
     def _create_recombined_genome(self, parent_genome_1, parent_genome_2):
-        # ToDo: CREATE CLASS; CURRENTLY DUMMY
-        new_genotype = deepcopy(parent_genome_1.get_genotype())
+        genotype_1 = parent_genome_1.get_genotype()
+        genotype_2 = parent_genome_2.get_genotype()
+        new_genotype = deepcopy(genotype_1)
+
+        genotype_1_gene_ids = []
+        for gene in genotype_1:
+            genotype_1_gene_ids.append(gene.gene_id)
+        for gene in genotype_2:
+            if gene.gene_id not in genotype_1_gene_ids:
+                new_genotype.append(deepcopy(gene))
+
         return self.encoding.create_genome(new_genotype, self.trainable)
 
     def _create_mutated_weights_genome(self, parent_genome):
-        # ToDo: CREATE CLASS; CURRENTLY DUMMY
         new_genotype = deepcopy(parent_genome.get_genotype())
+        for gene in new_genotype:
+            try:
+                gene.conn_weight = np.random.normal(loc=gene.conn_weight, scale=np.abs(gene.conn_weight) / 2)
+            except AttributeError:
+                gene.bias = np.random.normal(loc=gene.bias, scale=np.abs(gene.bias) / 2)
+
         return self.encoding.create_genome(new_genotype, self.trainable)
 
     def _create_added_conn_genome(self, parent_genome):
-        # ToDo: CREATE CLASS; CURRENTLY DUMMY
+        topology_levels = parent_genome.get_topology_levels()
         new_genotype = deepcopy(parent_genome.get_genotype())
+
+        existing_genotype_connections = []
+        for gene in new_genotype:
+            try:
+                existing_genotype_connections.append((gene.conn_in, gene.conn_out))
+            except AttributeError:
+                pass
+
+        highest_index_conn_in = len(topology_levels) - 1
+        possible_conn_ins = list(set.union(*topology_levels[:highest_index_conn_in]))
+        shuffle(possible_conn_ins)
+
+        new_gene_conn = None
+        for conn_in in possible_conn_ins:
+            min_index_conn_out = None
+            for layer_index in range(highest_index_conn_in):
+                if conn_in in topology_levels[layer_index]:
+                    min_index_conn_out = layer_index + 1
+            possible_conn_outs = list(set.union(*topology_levels[min_index_conn_out:]))
+            shuffle(possible_conn_outs)
+            for conn_out in possible_conn_outs:
+                if (conn_in, conn_out) not in existing_genotype_connections:
+                    new_gene_conn = self.encoding.create_gene_connection(conn_in, conn_out)
+                    new_genotype.append(new_gene_conn)
+                    break
+            if new_gene_conn is not None:
+                break
+
         return self.encoding.create_genome(new_genotype, self.trainable)
 
     def _create_added_node_genome(self, parent_genome):
-        # ToDo: CREATE CLASS; CURRENTLY DUMMY
+        topology_levels = parent_genome.get_topology_levels()
         new_genotype = deepcopy(parent_genome.get_genotype())
+
+        new_node = max(set.union(*topology_levels)) + 1
+        index_new_conn_in = randint(0, len(topology_levels) - 2)
+        index_new_conn_out = randint(index_new_conn_in + 1, len(topology_levels) - 1)
+        new_conn_in = choice(tuple(topology_levels[index_new_conn_in]))
+        new_conn_out = choice(tuple(topology_levels[index_new_conn_out]))
+
+        new_gene_node = self.encoding.create_gene_node(new_node, self.activation_default)
+        new_gene_conn_in_node = self.encoding.create_gene_connection(new_conn_in, new_node)
+        new_gene_conn_node_out = self.encoding.create_gene_connection(new_node, new_conn_out)
+        new_genotype.append(new_gene_node)
+        new_genotype.append(new_gene_conn_in_node)
+        new_genotype.append(new_gene_conn_node_out)
+
         return self.encoding.create_genome(new_genotype, self.trainable)
 
     def evaluate_population(self, population, genome_eval_function):
         for i in range(population.get_pop_size()):
             genome = population.get_genome(i)
-            genome.set_fitness(genome_eval_function(genome))
+            if genome.get_fitness() == 0:
+                genome.set_fitness(genome_eval_function(genome))
 
         # Speciate population by first clustering it and then applying fitness sharing
         self._cluster_population(population)
@@ -271,7 +329,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             for genome_index in species_genome_indices:
                 genome = population.get_genome(genome_index)
                 adjusted_fitness = round(genome.get_fitness() / species_size, 3)
-                genome.set_fitness(adjusted_fitness)
+                genome.set_adj_fitness(adjusted_fitness)
                 fitness_sum += adjusted_fitness
             species_avg_fitness = round(fitness_sum / species_size, 3)
             self.species_avg_fitness_history[species_id].append(species_avg_fitness)
@@ -295,230 +353,3 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                          .format(species_id, species_best_fitness, species_avg_fitness, species_size))
             for genome_index in species_genome_indices:
                 logging.debug(population.get_genome(genome_index))
-
-    '''
-    def initialize_population(self, population, initial_pop_size, input_shape, num_output):
-        if len(input_shape) == 1:
-            num_input = input_shape[0]
-            generation = population.get_generation_counter()
-            genotype = deque()
-
-            if self.initial_connection == 'full':
-                for _ in range(initial_pop_size):
-                    genotype.clear()
-
-                    for conn_in in range(1, num_input + 1):
-                        for conn_out in range(num_input + 1, num_input + num_output + 1):
-                            new_gene_conn = self.encoding.create_gene_connection(conn_in, conn_out)
-                            genotype.append(new_gene_conn)
-
-                    for node in range(num_input + 1, num_input + num_output + 1):
-                        new_gene_node = self.encoding.create_gene_node(node, self.activation_out)
-                        genotype.append(new_gene_node)
-
-                    new_genome = self.encoding.create_genome(genotype, self.trainable, 1, generation)
-                    population.add_genome(1, new_genome)
-
-            else:
-                raise NotImplementedError("Non-'full' initial connection not yet supported")
-        else:
-            raise NotImplementedError("Multidimensional input vectors not yet supported")
-
-    def evolve_population(self, population, pop_size_fixed):
-
-        if pop_size_fixed:
-            original_pop_size = population.get_pop_size()
-            assert self.species_elitism * self.species_max_size >= original_pop_size
-
-        max_stagnation_duration = self.species_max_stagnation[0]
-        non_stagnation_improve_rate = 1 + self.species_max_stagnation[1]
-
-        for species_id, species_avg_fitness_log in population.get_sorted_species_avg_fitness_log():
-            if population.get_species_count() <= self.species_elitism:
-                break
-
-            if len(species_avg_fitness_log) >= max_stagnation_duration:
-                average_avg_fitness = sum(species_avg_fitness_log[-max_stagnation_duration:]) / max_stagnation_duration
-                non_stagnation_fitness = species_avg_fitness_log[-max_stagnation_duration] * non_stagnation_improve_rate
-                if average_avg_fitness < non_stagnation_fitness:
-                    logging.debug("Removing species {} as stagnating for {} generations..."
-                                  .format(species_id, max_stagnation_duration))
-                    population.remove_species(species_id)
-
-        if pop_size_fixed:
-            genomes_to_add = int(original_pop_size / population.get_species_count()) - self.genome_elitism
-        else:
-            genomes_to_add = self.species_max_size - self.genome_elitism
-
-        species_reproduction_indices = dict()
-        species_genomes_to_add = dict()
-
-        for species_id in population.get_species_ids():
-
-            reproduction_cutoff_abs = int(self.reproduction_cutoff * population.get_species_length(species_id))
-            if reproduction_cutoff_abs < self.genome_elitism:
-                reproduction_cutoff_abs = self.genome_elitism
-
-            species_reproduction_indices[species_id] = \
-                population.get_fitness_sorted_indices_of_species_genomes(species_id)[-reproduction_cutoff_abs:]
-
-            species_genomes_to_add[species_id] = genomes_to_add
-            if pop_size_fixed:
-                if population.get_species_count() * genomes_to_add + len(species_genomes_to_add) < original_pop_size:
-                    species_genomes_to_add[species_id] += 1
-
-        new_genomes = dict()
-        generation = population.get_generation_counter()
-        mutate_weights_val = self.recombine_prob + self.mutate_weights_prob
-        add_conn_val = mutate_weights_val + self.add_conn_prob
-        for species_id in population.get_species_ids():
-            for _ in range(species_genomes_to_add[species_id] - 1):
-                genome_to_mutate = population.get_genome(species_id, choice(species_reproduction_indices[species_id]))
-                random_val = random()
-
-                if random_val < self.recombine_prob:
-                    if self.species_interbreeding:
-                        species_id_recombination = choice(population.get_species_ids())
-                    else:
-                        species_id_recombination = species_id
-
-                    genome_index_recombination = choice(species_reproduction_indices[species_id_recombination])
-                    genome_to_recombine = population.get_genome(species_id_recombination, genome_index_recombination)
-                    new_genotype = self._create_recombined_genotype(genome_to_mutate, genome_to_recombine)
-                elif random_val < mutate_weights_val:
-                    new_genotype = self._create_mutated_weights_genotype(genome_to_mutate)
-                elif random_val < add_conn_val:
-                    new_genotype = self._create_added_conn_genotype(genome_to_mutate)
-                else:
-                    new_genotype = self._create_added_node_genotype(genome_to_mutate, self.activation_default)
-
-                new_genome = self.encoding.create_genome(new_genotype, self.trainable, species_id, generation)
-                if species_id not in new_genomes:
-                    new_genomes[species_id] = [new_genome]
-                else:
-                    new_genomes[species_id].append(new_genome)
-
-        for species_id in population.get_species_ids():
-            genomes_to_delete = \
-                population.get_fitness_sorted_indices_of_species_genomes(species_id)[:-self.genome_elitism]
-            genomes_to_delete = sorted(genomes_to_delete, reverse=True)
-            for genome_index_to_delete in genomes_to_delete:
-                population.remove_genome_by_index(species_id, genome_index_to_delete)
-
-            for genome_to_add in new_genomes[species_id]:
-                population.add_genome(species_id, genome_to_add)
-
-    def _create_recombined_genotype(self, genome_1, genome_2):
-        genotype_1 = genome_1.get_genotype()
-        genotype_2 = genome_2.get_genotype()
-
-        genotype_1_gene_ids = []
-        for gene in genotype_1:
-            genotype_1_gene_ids.append(gene.gene_id)
-
-        new_genotype = deepcopy(genotype_1)
-        for gene in genotype_2:
-            if gene.gene_id not in genotype_1_gene_ids:
-                new_genotype.append(deepcopy(gene))
-
-        return new_genotype
-
-    def _create_mutated_weights_genotype(self, genome):
-        new_genotype = deepcopy(genome.get_genotype())
-        for gene in new_genotype:
-            try:
-                gene.conn_weight = np.random.normal(loc=gene.conn_weight, scale=np.abs(gene.conn_weight) / 2)
-            except AttributeError:
-                gene.bias = np.random.normal(loc=gene.bias, scale=np.abs(gene.bias) / 2)
-
-        return new_genotype
-
-    def _create_added_conn_genotype(self, genome):
-        topology_levels = genome.get_topology_levels()
-        new_genotype = deepcopy(genome.get_genotype())
-
-        existing_genotype_connections = []
-        for gene in new_genotype:
-            try:
-                existing_genotype_connections.append((gene.conn_in, gene.conn_out))
-            except AttributeError:
-                pass
-
-        highest_index_conn_in = len(topology_levels) - 1
-        possible_conn_ins = list(set.union(*topology_levels[:highest_index_conn_in]))
-        shuffle(possible_conn_ins)
-
-        new_gene_conn = None
-        for conn_in in possible_conn_ins:
-            min_index_conn_out = None
-            for layer_index in range(highest_index_conn_in):
-                if conn_in in topology_levels[layer_index]:
-                    min_index_conn_out = layer_index + 1
-            possible_conn_outs = list(set.union(*topology_levels[min_index_conn_out:]))
-            shuffle(possible_conn_outs)
-            for conn_out in possible_conn_outs:
-                if (conn_in, conn_out) not in existing_genotype_connections:
-                    new_gene_conn = self.encoding.create_gene_connection(conn_in, conn_out)
-                    new_genotype.append(new_gene_conn)
-                    break
-            if new_gene_conn is not None:
-                break
-
-        return new_genotype
-
-    def _create_added_node_genotype(self, genome, activation):
-        topology_levels = genome.get_topology_levels()
-        new_genotype = deepcopy(genome.get_genotype())
-
-        new_node = max(set.union(*topology_levels)) + 1
-        index_new_conn_in = randint(0, len(topology_levels) - 2)
-        index_new_conn_out = randint(index_new_conn_in + 1, len(topology_levels) - 1)
-        new_conn_in = choice(tuple(topology_levels[index_new_conn_in]))
-        new_conn_out = choice(tuple(topology_levels[index_new_conn_out]))
-
-        new_gene_node = self.encoding.create_gene_node(new_node, activation)
-        new_gene_conn_in_node = self.encoding.create_gene_connection(new_conn_in, new_node)
-        new_gene_conn_node_out = self.encoding.create_gene_connection(new_node, new_conn_out)
-        new_genotype.append(new_gene_node)
-        new_genotype.append(new_gene_conn_in_node)
-        new_genotype.append(new_gene_conn_node_out)
-
-        return new_genotype
-
-    def speciate_population(self, population):
-        
-        self._cluster_population(population)
-        self._apply_fitness_sharing_to_population(population)
-
-    def _cluster_population(self, population):
-        threshold_delta = self.species_clustering[1]
-
-        slice(1, 5, 2)
-
-        species_representative_genomes = dict()
-        for species_id in population.get_species_ids():
-            species_representative_genomes[species_id] = population.get_genome(species_id, 0)
-
-        distance_to_species_representative = dict()
-        for species_id in population.get_species_ids():
-            species_length = population.get_species_length(species_id)
-            for genome_index in range(1, species_length):
-                genome = population.get_genome(species_id, genome_index)
-                for species_id, species_repr_genome in species_representative_genomes.items():
-                    distance_to_species_representative[species_id] = \
-                        self._calculate_genome_distance(species_repr_genome, genome)
-                species_id_with_smallest_distance = min(distance_to_species_representative,
-                                                        key=distance_to_species_representative.get)
-                smallest_distance_to_species = distance_to_species_representative[species_id_with_smallest_distance]
-                if smallest_distance_to_species <= threshold_delta:
-                # ToDo: change species of genome to 'species_id_with_smallest_distance'
-                else:
-            # ToDo: Create new species with this species as its representative
-
-    def _apply_fitness_sharing_to_population(self, population):
-        raise NotImplementedError()
-
-    @staticmethod
-    def uses_speciation():
-        return True
-    '''
