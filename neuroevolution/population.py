@@ -58,6 +58,10 @@ class Population:
         del self.genomes[genome_index]
         self.pop_size -= 1
 
+    def replace_population(self, new_genomes):
+        del self.genomes
+        self.genomes = new_genomes
+
     def get_genome(self, genome_index):
         return self.genomes[genome_index]
 
