@@ -1,123 +1,71 @@
-import tempfile
-import tensorflow as tf
-from graphviz import Digraph
-
-from neuroevolution.encodings import BaseGenome
-from neuroevolution.encodings.direct import DirectEncodingModel
-
-
-class DirectEncodingGene:
-    def __init__(self, gene_id, conn_in, conn_out):
-        self.gene_id = gene_id
-        self.conn_in = conn_in
-        self.conn_out = conn_out
+from ..base_genome import BaseGenome
+from .direct_encoding_model import DirectEncodingModel
+from .direct_encoding_visualization import visualize_genome
 
 
 class DirectEncodingGenome(BaseGenome):
     """
-    Implementation of a Neuroevolution genome, whose genotype explicitely defines each node and connection in the
-    corresponding phenotype topology (= Direct-Encoding genome). The corresponding phenotype of the genome is created
-    in the constructor by using a direct-encoding model and the supplied genotype and activations. This implementation
-    also offers convenience class functions to serialize, summarize or visualize the genotype.
+    Implementation of a DirectEncoding genome as employed by NE-algorithms like NEAT. DirectEncoding genomes have each
+    connection, connection-weight, node, node-bias, etc of the corresponding Tensorflow model explicitely encoded in
+    their genotype, which is made up of DirectEncoding genes. Upon creation does the DirectEncoding genome immediately
+    create the phenotype Tensorflow model based on the genotype.
     """
 
-    def __init__(self, genome_id, genotype, activations, trainable):
+    def __init__(self, genome_id, genotype, trainable, dtype, run_eagerly):
+        """
+        Set ID and genotype of genome to the supplied parameters, set the default fitness value of the genome to 0 and
+        create the Tensorflow model phenotype using the supplied genotype, trainable, dtype and run_eagerly parameters
+        and save it as the model.
+        """
         self.genome_id = genome_id
         self.genotype = genotype
-        self.activations = activations
-        self.trainable = trainable
 
+        self.model = DirectEncodingModel(genotype, trainable, dtype, run_eagerly)
         self.fitness = 0
-        self.phenotype_model, self.topology_levels = self._create_phenotype_model()
 
-    def __call__(self, *args, **kwargs):
-        return self.phenotype_model(*args, **kwargs)
-
-    def __str__(self):
-        serialized_genotype, serialized_activations = self.serialize()
-        string_repr = "Genome-ID: {:>4}     Fitness: {:>7}     Genotype: {} --- Activations: {}".format(
-            self.genome_id, self.fitness, serialized_genotype, serialized_activations)
+    def __str__(self) -> str:
+        string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>8} || Gene Count: {:>4}" \
+            .format(self.genome_id, self.fitness, len(self.genotype))
         return string_repr
 
-    def serialize(self):
+    def visualize(self, view=True, render_file_path=None):
         """
-        Converts genotype from direct-encoding gene deque to explicitely specified genotype dict and converts
-        activation functions to the according activation strings. Returns both.
+        Display rendered genome or save rendered genome to specified path or do both
+        :param view: flag if rendered genome should be displayed
+        :param render_file_path: string of file path, specifying where the genome render should be saved
         """
-        # Convert genome into the explicit genotype and activation dicts that can also be supplied directly
-        serialized_genotype = dict()
-        for gene in self.genotype:
-            serialized_genotype[gene.gene_id] = (gene.conn_in, gene.conn_out)
+        visualize_genome(self, view, render_file_path)
 
-        # Reserialize activation functions to their according string
-        serialized_activations = dict()
-        serialized_activations['out_activation'] = tf.keras.activations.serialize(self.activations['out_activation'])
-        serialized_activations['default_activation'] = \
-            tf.keras.activations.serialize(self.activations['default_activation'])
-
-        return serialized_genotype, serialized_activations
-
-    def summary(self):
-        print(self)
-        # Possibly print the phenotype.summary() in this function as well
-
-    def visualize(self, filename=None, directory=None, view=True):
+    def get_model(self) -> DirectEncodingModel:
         """
-        Visualize genotype as a directed acyclic graph in png format. Both Input and Output layers are highlighted.
-        :param filename: filename of rendered genome graph png. If not specified, using "graph_genome_<ID>"
-        :param directory: directory to save rendered genome graph file into. If not specified, using temporary directory
-        :param view: flag if rendered genome should be shown after saving it.
-        :return: None
+        :return: Tensorflow model phenotype translation of the genome genotype
         """
-        filename = "graph_genome_{}".format(self.genome_id) if filename is None else filename
-        directory = tempfile.mkdtemp() if directory is None else directory
+        return self.model
 
-        # Create Digraph and set graph orientaion
-        dot = Digraph(name=filename)
-        dot.attr(rankdir='BT')
-
-        # Specify edges of Digraph
-        edge_list = list()
-        for gene in self.genotype:
-            edge = ('{}'.format(gene.conn_in), '{}'.format(gene.conn_out))
-            edge_list.append(edge)
-        dot.edges(edge_list)
-
-        # Highlight Input and Output Nodes
-        with dot.subgraph(name='cluster_1') as dot_in:
-            for node in self.topology_levels[0]:
-                dot_in.node('{}'.format(node))
-            dot_in.attr(label='inputs', color='blue')
-        with dot.subgraph(name='cluster_2') as dot_out:
-            for node in self.topology_levels[-1]:
-                dot_out.node('{}'.format(node))
-            dot_out.attr(label='outputs', color='grey')
-
-        # Render graph and save it in the specified directory (or temporary dir) and view it if set
-        dot.render(filename=filename, directory=directory, view=view, cleanup=True, format='png')
-
-    def get_phenotype_model(self):
-        return self.phenotype_model
-
-    def get_genotype(self):
+    def get_genotype(self) -> dict:
+        """
+        :return: genome genotype dict with the keys being the gene-ids and the values being the genes
+        """
         return self.genotype
 
-    def get_activations(self):
-        return self.activations
+    def get_topology_levels(self) -> [set]:
+        """
+        :return: list of topologically sorted sets of nodes. Each list element contains the set of nodes that have to be
+                 precomputed before the next list element set of nodes can be computed.
+        """
+        return self.model.topology_levels
 
-    def get_topology_levels(self):
-        return self.topology_levels
+    def get_gene_ids(self) -> []:
+        """
+        :return: list of gene-ids contained in the genome genotype
+        """
+        return self.genotype.keys()
 
-    def get_id(self):
+    def get_id(self) -> int:
         return self.genome_id
+
+    def get_fitness(self) -> float:
+        return self.fitness
 
     def set_fitness(self, fitness):
         self.fitness = fitness
-
-    def get_fitness(self):
-        return self.fitness
-
-    def _create_phenotype_model(self):
-        phenotype_model = DirectEncodingModel(self.genotype, self.activations, self.trainable)
-        topology_levels = phenotype_model.get_topology_dependency_levels()
-        return phenotype_model, topology_levels
