@@ -4,13 +4,14 @@
 
 **PROJECT IN BETA STAGE!**
 
-The Tensorflow-Neuroevolution project aims to provide a fast prototyping framework for neuroevolution algorithms realized with Tensorflow 2.0. It makes use of Tensorflows MultiAgent environment whenever possible to automatically deploy the Neuroevolution methods to the maximum degree of parallelization.
+The Tensorflow-Neuroevolution framework aims to provide a fast prototyping framework for neuroevolution algorithms realized with Tensorflow 2.0. The current core design focuses on understandability, maintainability and exchangeability to allow for a seamless interchanging of the three main concerns of neuroevolution - the genome encoding, the neuroevolution algorithm and the evaluation environment. The neuroevolution process is driven forward by a central evolution engine, taking care of arising housework tasks of the neuroevolution process, interacting correctly with the population (the abstract collection of all genomes) and executing user supplied additional tasks such as regular backups.
+The framework makes heavy use of Tensorflow and its parallelization/speed-up capabilities in the creation of the genome phenotypes (here: the Tensorflow models), their evaluation and their optimization/evolution, while aiming to stay compatible with the rest of the Tensorflow infrastructure as much as possible.
 
-A multitude of pre-implemented algorithms, genomes and environments are planned, though not yet realized due to the early stage in development.
+Important benchmark algorithms, encodings and environments have already been implemented and a multitude of more pre-implemented algorithms, genomes and environments are planned, though not yet realized due to the early stage in development.
 
 #### Neuroevolution Algorithms ####
 
-* [X] Neuroevolution of Augmenting Topologies (NEAT), see [here](http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf)
+* [X] Neuroevolution of Augmenting Topologies (NEAT), see additional documentation in [`documentation/algorithms_neat.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/algorithm_neat.md)
 * [ ] HyperNEAT, see [here](http://axon.cs.byu.edu/~dan/778/papers/NeuroEvolution/stanley3**.pdf)
 * [ ] ES-HyperNEAT, see [here](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.365.4332)
 * [ ] CoDeepNEAT, see [here](https://arxiv.org/abs/1703.00548)
@@ -20,14 +21,14 @@ A multitude of pre-implemented algorithms, genomes and environments are planned,
 
 #### Genome Encodings ####
 
-* [X] Direct Encoding
+* [X] Direct Encoding, see additional documentation in [`documentation/encoding_direct.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/encoding_direct.md)
 * [ ] Indirect Encoding 
 * [ ] Keras Encoding
 
 
 #### Test Environments ####
 
-* [X] XOR Problem
+* [X] XOR Problem, see additional documentation in [`documentation/environment_xor.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/environment_xor.md)
 * [ ] OpenAI Gym CartPole, see [here](http://gym.openai.com/envs/CartPole-v1/)
 * [ ] Fashion-MNIST, see [here](https://research.zalando.com/welcome/mission/research-projects/fashion-mnist/)
 * [ ] Digit-MNIST, see [here](http://yann.lecun.com/exdb/mnist/)
@@ -39,9 +40,9 @@ A multitude of pre-implemented algorithms, genomes and environments are planned,
 
 #### Example Usage ####
 
-Example usage demonstrated in folder `examples/` and `tests/`. Currently the following examples are present and functional:
+Example usage demonstrated in folder `examples/`. Currently the following examples are present and functional:
 
-* `examples/xor_neat_example/`: Applying the NEAT neuroevolution algorithm to evolve direct-encoded genomes in order to solve the XOR-problem environment
+* `examples/xor_neat_example/`: Minimal example showing the basic aspects of TFNE by applying the NEAT algorithm to evolve direct-encoded genomes in order to solve the XOR-problem environment.
 
 
 
@@ -51,7 +52,7 @@ Example usage demonstrated in folder `examples/` and `tests/`. Currently the fol
 
 Illustration of the architecture showing the entity relations between the core modules and their respective interactions in the sequence diagram:
 
-![Architecture Illustration](https://raw.githubusercontent.com/PaulPauls/Tensorflow-Neuroevolution/master/.architecture_illustration/Entity_Sequence_Diagram_TFNE-Framework.png)
+![Architecture Illustration](https://raw.githubusercontent.com/PaulPauls/Tensorflow-Neuroevolution/master/documentation/illustration_entity_sequence_diagram_tfne.png)
 
 
 
@@ -67,7 +68,34 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 
 #### ToDo Collection ####
 
-**TBD**
+* [ ] Extensively test (e.g. all possible cfg parametes) and bug fix the framework.
+
+* [ ] Differentiate between neat-original and neat-variant by creating different algorithm classes.
+    * To create neat-original: only use linear activations; fix node biases to 0; exclude nodes from the weight difference distance calculation; remove species elitism
+    * To create neat-variant: parameterize as many aspects of the current neat as possible
+
+* [ ] Reimplement serialization of population and extensive tests. Earlier implementation discarded due to architecture overhaul.
+
+* [ ] Reimplement visualization of DirectEncoding genome. Earlier implementation discarded due to architecture overhaul.
+
+* [ ] Reimplement GenomeRender- and PopulationBackup- reporting agents. Implement Speciation- reporting agent.
+
+* [ ] Reimplement CartPole environment. Earlier implementation discarded due to architecture overhaul.
+      
+* [ ] Implement generalised OpenAI environment, in which the exact OpenAI Gym is supplied via parameter.
+
+* [ ] Reimplement YANA, renaming it 'TopologyEvolvingWeightTraining' (TEWT) algorithm, by adjusting NEAT to evolve/train weights via Tensorflow backpropagation.
+
+* [ ] Reimplement Weight Training option to the XOR environment, differentiating between the two environments' eval funtions via constructor parameter. Earlier implementation discarded due to architecture overhaul.
+
+* [ ] Implement more extensive tests and extensively bug test environment. Integrate tests with checks-API.
+
+* [ ] Implement various environments: SuperMario and Sonic OpenAIRetro env, Fashion MNIST env, generalised TF dataset env, Mujoco env.
+
+* [ ] Reimplement Keras layer encoding. Earlier implementation discarded due to architecture overhaul.
+
+* [ ] Performance benchmark the framework, identify bottlenecks and add optimization of those bootlenecks to ToDo.
+
 
 
 --------------------------------------------------------------------------------
@@ -75,7 +103,12 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 #### Version History ####
 
 > 09. Okt 2019 - Version _beta_
-> * **TBD**
+> * Overhaul DirectEncoding to not only direct encode topology, but also weights in the genes
+> * Implement the NE algorithm NEAT
+> * Adjust the regular XOR environment to only evaluate, not train, the supplied genomes
+> * Overhaul the population class, saving its genomes in hashtables now and accessing them via keys, saving resources
+> * Switch the logging method to abseil-py, as recommended for TF 2.0
+> * Extensively documenting everything, extensively updating README and introducing new 'documentation' folder
 
 > 22. Aug 2019 - Version _alpha_
 > * Fix Bug where direct-encoding model uses default_activation for out_activation
@@ -99,5 +132,6 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 #### About ####
 
 Project developed by [Paul Pauls](https://github.com/PaulPauls) in collaboration with [Rezsa Farahani](https://github.com/rezsa)
+
 
 
