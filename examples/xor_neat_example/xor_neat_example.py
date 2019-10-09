@@ -6,11 +6,10 @@ import neuroevolution as ne
 
 def main():
     """
-    A simple example used in the current alpha stage of development to show of the Tensorflow-Neuroevolution framework.
-    This example uses the NEAT ne-algorithm with a direct encoded genome to solve the basic XOR environment.
-
-    :return: None
+    Basic example of the Tensorflow-Neuroevolution framework setting up all required elements of the neuroevolutionary
+    process to evolve a genome to solve the XOR environment by evolving it with the NEAT algorithm.
     """
+
     logging.set_verbosity(logging.DEBUG)
     logging.info("Using TF Version {}".format(tf.__version__))
     assert tf.__version__[0] == '2'  # Assert that TF 2.x is used
@@ -18,12 +17,9 @@ def main():
     config = ne.load_config('./xor_neat_example.cfg')
 
     environment = ne.environments.XOREnvironment()
+    ne_algorithm = ne.algorithms.NEAT(config, dtype=tf.float32, run_eagerly=False)
 
-    encoding = ne.encodings.DirectEncoding(config, dtype=tf.float32, run_eagerly=False)
-    ne_algorithm = ne.algorithms.NEAT(encoding, config)
-
-    population = ne.Population(ne_algorithm, config)
-
+    population = ne.Population(config, ne_algorithm)
     engine = ne.EvolutionEngine(population, environment)
 
     best_genome = engine.train()
@@ -32,7 +28,8 @@ def main():
         environment.replay_genome(best_genome)
         logging.info("Best Genome returned by evolution:\n{}".format(best_genome))
         logging.info("Visualizing best genome returned by evolution...")
-        best_genome.visualize()
+        # best_genome.visualize()
+        logging.warning("DirectEncodingGenome.visualize() not yet implemented")
     else:
         logging.info("Evolution of population did not return a valid genome")
 

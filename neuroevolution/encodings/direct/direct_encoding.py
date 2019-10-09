@@ -7,71 +7,73 @@ from .direct_encoding_gene import DirectEncodingConnection, DirectEncodingNode
 
 
 class DirectEncoding(BaseEncoding):
-    def __init__(self, config, dtype=tf.float32, run_eagerly=False):
+    """
+    Factory Wrapper for DirectEncoding genomes, providing unique continuous gene- and genome-ids for created genes and
+    genomes as well as genomes created with the supplied parameters for trainable, dtype and run_eagerly
+    """
+
+    def __init__(self, trainable=False, dtype=tf.float32, run_eagerly=False):
+        self.trainable = trainable
         self.dtype = dtype
         self.run_eagerly = run_eagerly
-        self.initializer_kernel = None
-        self.initializer_bias = None
-        self._read_config_parameters(config)
         self._log_class_parameters()
 
         self.gene_id_counter = 0
         self.genome_id_counter = 0
         self.gene_to_gene_id_mapping = dict()
 
-    def _read_config_parameters(self, config):
-        section_name = 'DIRECT_ENCODING' if config.has_section('DIRECT_ENCODING') else 'ENCODING'
-        self.initializer_kernel = config.get(section_name, 'initializer_kernel')
-        self.initializer_bias = config.get(section_name, 'initializer_bias')
-
-        self.initializer_kernel = tf.keras.initializers.deserialize(self.initializer_kernel)
-        self.initializer_bias = tf.keras.initializers.deserialize(self.initializer_bias)
-
     def _log_class_parameters(self):
+        logging.debug("Direct Encoding parameter: trainable = {}".format(self.trainable))
         logging.debug("Direct Encoding parameter: dtype = {}".format(self.dtype))
         logging.debug("Direct Encoding parameter: run_eagerly = {}".format(self.run_eagerly))
-        logging.debug("Direct Encoding read from config: initializer_kernel = {}".format(self.initializer_kernel))
-        logging.debug("Direct Encoding read from config: initializer_bias = {}".format(self.initializer_bias))
 
-    def create_gene_connection(self, conn_in, conn_out):
-        # Determine unique gene_id by checking if the supplied (conn_in, conn_out) pair already created a gene.
-        # If not, increment gene_id_counter and register this new unique gene_id to the supplied connection pair.
+    def create_gene_connection(self, conn_in, conn_out, conn_weight) -> (int, DirectEncodingConnection):
+        """
+        Create DirectEncoding connection gene with unique continuous gene-id based on the supplied (conn_in, conn_out)
+        tuple. Uniqueness disregards conn_weight, meaning that identical gene_ids with different conn_weights can exist.
+        :param conn_in: node (usually int) the connection is originating from
+        :param conn_out: node (usually int) the connection is ending in
+        :param conn_weight: weight (usually float or np.float) of the connection
+        :return: tuple of unique gene-id and created DirectEncoding connection gene
+        """
         gene_key = (conn_in, conn_out)
         if gene_key in self.gene_to_gene_id_mapping:
             gene_id = self.gene_to_gene_id_mapping[gene_key]
         else:
             self.gene_id_counter += 1
+            self.gene_to_gene_id_mapping[gene_key] = self.gene_id_counter
             gene_id = self.gene_id_counter
-            self.gene_to_gene_id_mapping[gene_key] = gene_id
 
-        # Create an initial connection weight by using the supplied kernel initializer (which determines the initial
-        # connection weights) to create a single random value
-        init_value = self.initializer_kernel(shape=(1,), dtype=self.dtype)
-        conn_weight = tf.Variable(initial_value=init_value, dtype=self.dtype, shape=(1,)).numpy()[0]
+        return gene_id, DirectEncodingConnection(gene_id, conn_in, conn_out, conn_weight)
 
-        return DirectEncodingConnection(gene_id, conn_in, conn_out, conn_weight)
-
-    def create_gene_node(self, node, activation):
-        # Determine unique gene_id by checking if the supplied node already created a gene.
-        # If not, increment gene_id_counter and register this new unique gene_id to the supplied node.
+    def create_gene_node(self, node, bias, activation) -> (int, DirectEncodingNode):
+        """
+        Create DirectEncoding node gene with unique continuous gene-id based on the supplied node. Uniqueness disregards
+        bias and activation, meaning that identical gene_ids with different bias and activation can exist.
+        :param node: node (usually int) the gene represents
+        :param bias: bias weight (usually float or np.float) of the node
+        :param activation: Tensorflow activation function of the node
+        :return: tuple of unique gene-id and created DirectEncoding node gene
+        """
         gene_key = (node,)
         if gene_key in self.gene_to_gene_id_mapping:
             gene_id = self.gene_to_gene_id_mapping[gene_key]
         else:
             self.gene_id_counter += 1
+            self.gene_to_gene_id_mapping[gene_key] = self.gene_id_counter
             gene_id = self.gene_id_counter
-            self.gene_to_gene_id_mapping[gene_key] = gene_id
 
-        # Create a bias value by using the supplied bias initializer to create a single random value
-        init_value = self.initializer_bias(shape=(1,), dtype=self.dtype)
-        bias = tf.Variable(initial_value=init_value, dtype=self.dtype, shape=(1,)).numpy()[0]
+        return gene_id, DirectEncodingNode(gene_id, node, bias, activation)
 
-        return DirectEncodingNode(gene_id, node, bias, activation)
-
-    def create_genome(self, genotype, trainable):
+    def create_genome(self, genotype) -> (int, DirectEncodingGenome):
+        """
+        Create DirectEncoding genome with continuous genome-id for each newly created genome
+        :param genotype: genotype dict with the keys being the gene-ids and the values being the genes
+        :return: tuple of continuous genome-id and created DirectEncoding genome
+        """
         self.genome_id_counter += 1
-        return DirectEncodingGenome(genome_id=self.genome_id_counter,
-                                    genotype=genotype,
-                                    trainable=trainable,
-                                    dtype=self.dtype,
-                                    run_eagerly=self.run_eagerly)
+        return self.genome_id_counter, DirectEncodingGenome(genome_id=self.genome_id_counter,
+                                                            genotype=genotype,
+                                                            trainable=self.trainable,
+                                                            dtype=self.dtype,
+                                                            run_eagerly=self.run_eagerly)

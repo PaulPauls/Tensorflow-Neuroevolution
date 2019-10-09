@@ -1,17 +1,13 @@
 import os
 import tensorflow as tf
 from absl import logging
-from collections import deque
 
 import neuroevolution as ne
 
 
-class DummyNEAlgorithm():
-    def uses_speciation(self):
-        return True
-
-
 def test_population():
+    raise NotImplementedError("WORK IN PROGRESS")
+    '''
     logging.set_verbosity(logging.DEBUG)
     logging.info("Using TF Version {}".format(tf.__version__))
     assert tf.__version__[0] == '2'  # Assert that TF 2.x is used
@@ -64,6 +60,7 @@ def test_population():
     serialization_path = os.path.abspath("test_serialization.json")
     population.save_population(serialization_path)
     population.load_population(encoding, serialization_path)
+    '''
 
 
 if __name__ == '__main__':
