@@ -11,7 +11,7 @@ Important benchmark algorithms, encodings and environments have already been imp
 
 #### Neuroevolution Algorithms ####
 
-* [X] Neuroevolution of Augmenting Topologies (NEAT), see additional documentation in [`documentation/algorithms_neat.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/algorithm_neat.md)
+* [X] Neuroevolution of Augmenting Topologies (NEAT), see additional documentation in [`./documentation/algorithms_neat.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/algorithm_neat.md)
 * [ ] HyperNEAT, see [here](http://axon.cs.byu.edu/~dan/778/papers/NeuroEvolution/stanley3**.pdf)
 * [ ] ES-HyperNEAT, see [here](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.365.4332)
 * [ ] CoDeepNEAT, see [here](https://arxiv.org/abs/1703.00548)
@@ -21,14 +21,14 @@ Important benchmark algorithms, encodings and environments have already been imp
 
 #### Genome Encodings ####
 
-* [X] Direct Encoding, see additional documentation in [`documentation/encoding_direct.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/encoding_direct.md)
+* [X] Direct Encoding, see additional documentation in [`./documentation/encoding_direct.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/encoding_direct.md)
 * [ ] Indirect Encoding 
 * [ ] Keras Encoding
 
 
 #### Test Environments ####
 
-* [X] XOR Problem, see additional documentation in [`documentation/environment_xor.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/environment_xor.md)
+* [X] XOR Problem, see additional documentation in [`./documentation/environment_xor.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/environment_xor.md)
 * [ ] OpenAI Gym CartPole, see [here](http://gym.openai.com/envs/CartPole-v1/)
 * [ ] Fashion-MNIST, see [here](https://research.zalando.com/welcome/mission/research-projects/fashion-mnist/)
 * [ ] Digit-MNIST, see [here](http://yann.lecun.com/exdb/mnist/)
@@ -40,9 +40,9 @@ Important benchmark algorithms, encodings and environments have already been imp
 
 #### Example Usage ####
 
-Example usage demonstrated in folder `examples/`. Currently the following examples are present and functional:
+Example usage demonstrated in folder `./examples/`. Currently the following examples are present and functional:
 
-* `examples/xor_neat_example/`: Minimal example showing the basic aspects of TFNE by applying the NEAT algorithm to evolve direct-encoded genomes in order to solve the XOR-problem environment.
+* `./examples/xor_neat_example/`: Minimal example showing the basic aspects of TFNE by applying the NEAT algorithm to evolve direct-encoded genomes in order to solve the XOR-problem environment.
 
 
 
@@ -102,7 +102,7 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 
 #### Version History ####
 
-> 09. Okt 2019 - Version _beta_
+> 09. Oct 2019 - Version _beta_
 > * Overhaul DirectEncoding to not only direct encode topology, but also weights in the genes
 > * Implement the NE algorithm NEAT
 > * Adjust the regular XOR environment to only evaluate, not train, the supplied genomes
