@@ -29,7 +29,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.distance_excess_c1 = None
         self.distance_disjoint_c2 = None
         self.distance_weight_c3 = None
-        self.activation_default = None
+        self.activation_hidden = None
         self.activation_output = None
         self.species_elitism = None
         self.species_max_stagnation = None
@@ -74,7 +74,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.species_elitism = config.getint(section_name_algorithm, 'species_elitism')
         self.species_max_stagnation = config.get(section_name_algorithm, 'species_max_stagnation')
         self.species_clustering = config.get(section_name_algorithm, 'species_clustering')
-        self.activation_default = config.get(section_name_algorithm, 'activation_default')
+        self.activation_hidden = config.get(section_name_algorithm, 'activation_hidden')
         self.activation_output = config.get(section_name_algorithm, 'activation_output')
 
         if ',' in self.species_clustering:
@@ -87,7 +87,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             species_max_stagnation_perc = float(self.species_max_stagnation[self.species_max_stagnation.find(',') + 2:])
             self.species_max_stagnation = (species_max_stagnation_duration, species_max_stagnation_perc)
 
-        self.activation_default = tf.keras.activations.deserialize(self.activation_default)
+        self.activation_hidden = tf.keras.activations.deserialize(self.activation_hidden)
         self.activation_output = tf.keras.activations.deserialize(self.activation_output)
 
     def _log_class_parameters(self):
@@ -104,7 +104,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         logging.debug("NEAT algorithm config: species_elitism = {}".format(self.species_elitism))
         logging.debug("NEAT algorithm config: species_max_stagnation = {}".format(self.species_max_stagnation))
         logging.debug("NEAT algorithm config: species_clustering = {}".format(self.species_clustering))
-        logging.debug("NEAT algorithm config: activation_default = {}".format(self.activation_default))
+        logging.debug("NEAT algorithm config: activation_hidden = {}".format(self.activation_hidden))
         logging.debug("NEAT algorithm config: activation_output = {}".format(self.activation_output))
 
     def initialize_population(self, population, initial_pop_size, input_shape, num_output):
@@ -366,7 +366,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         node = max(set.union(*parent_genome.get_topology_levels())) + 1
         gene.set_enabled(False)
 
-        gene_node_id, gene_node = self.encoding.create_gene_node(node, 0, self.activation_default)
+        gene_node_id, gene_node = self.encoding.create_gene_node(node, 0, self.activation_hidden)
         gene_conn_in_node_id, gene_conn_in_node = self.encoding.create_gene_connection(conn_in, node, 1)
         gene_conn_node_out_id, gene_conn_node_out = self.encoding.create_gene_connection(node, conn_out, conn_weight)
         new_genotype[gene_node_id] = gene_node
