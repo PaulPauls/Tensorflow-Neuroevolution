@@ -96,6 +96,9 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 
 * [ ] Performance benchmark the framework, identify bottlenecks and add optimization of those bootlenecks to ToDo.
 
+* [ ] Minor ToDos:
+    * Add documentation for direct encoding
+
 
 
 --------------------------------------------------------------------------------
