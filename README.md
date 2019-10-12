@@ -89,6 +89,8 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 
 * [ ] Reimplement YANA, renaming it 'TopologyEvolvingWeightTraining' (TEWT) algorithm, by adjusting NEAT to evolve/train weights via Tensorflow backpropagation.
 
+* [ ] Implement Version of DirectEncoding where the DirectEncodingModel is implemented without the resource-costly initialization of a TF Model and TF Layer when the trainable parameter is set to False, as the benefits of TF Model and TF Layer creation are largely absent int this case. Instead utilize simple Models and layers, which only perform the Matrix multiplication, bias addition and activation function via tensorflow or numpy.
+
 * [ ] Reimplement Weight Training option to the XOR environment, differentiating between the two environments' eval funtions via constructor parameter. Earlier implementation discarded due to architecture overhaul.
 
 * [ ] Implement more extensive tests and extensively bug test environment. Integrate tests with checks-API.
@@ -101,6 +103,7 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 
 * [ ] Minor ToDos:
     * Add documentation for direct encoding
+    * Add version_history.md file to documentation
 
 
 
