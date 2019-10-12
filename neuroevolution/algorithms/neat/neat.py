@@ -238,42 +238,33 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
     def _create_crossed_over_genome(self, parent_genome_1, parent_genome_2) -> (int, DirectEncodingGenome):
         """
-        Create a crossed over genome according to NEAT by copying the fitter genome's disjoint and excess genes and
-        choosing random genes from either parent genome for all matching genes. Return that genome.
+        Create a crossed over genome according to NEAT crossover illustration (since written specification in
+        O Stanley's PhD thesis contradictory) by joining all disjoint and excess genes from both parents and choosing
+        the parent gene randomly from either parent in case both parents possess the gene. Return that genome.
         :param parent_genome_1: DirectEncoding genome, parent genome that constitutes the basis for the mutation
         :param parent_genome_2: DirectEncoding genome, parent genome that constitutes the basis for the mutation
         :return: tuple of genome-id and its corresponding newly created DirectEncoding genome, which is a mutated
                  offspring from the supplied parent genome
         """
-        parent_1_fitness = parent_genome_1.get_fitness()
-        parent_2_fitness = parent_genome_2.get_fitness()
+        genotype_1 = parent_genome_1.get_genotype()
+        genotype_2 = parent_genome_2.get_genotype()
+        existing_genes = set(genotype_1).union(set(genotype_2))
 
-        if parent_1_fitness > parent_2_fitness:
-            fit_genotype = parent_genome_1.get_genotype()
-            other_genotype = parent_genome_2.get_genotype()
-        elif parent_1_fitness < parent_2_fitness:
-            fit_genotype = parent_genome_2.get_genotype()
-            other_genotype = parent_genome_1.get_genotype()
-        else:  # Both parents have the same fitness, choose one genome as the fitter one by random
-            if randint(0, 1):
-                fit_genotype = parent_genome_1.get_genotype()
-                other_genotype = parent_genome_2.get_genotype()
-            else:
-                fit_genotype = parent_genome_2.get_genotype()
-                other_genotype = parent_genome_1.get_genotype()
-
-        other_genotype_gene_ids = other_genotype.keys()
         new_genotype = dict()
-        for gene_id in fit_genotype:
-            # if gene_id also present in other genotype, carry over either gene from either genotype randomly
-            if gene_id in other_genotype_gene_ids:
+        for gene_id in existing_genes:
+            # If matching genes of both genotypes
+            if gene_id in genotype_1 and gene_id in genotype_2:
+                # Choose randomly from which parent the gene will be carried over
                 if randint(0, 1):
-                    new_genotype[gene_id] = deepcopy(fit_genotype[gene_id])
+                    new_genotype[gene_id] = deepcopy(genotype_1[gene_id])
                 else:
-                    new_genotype[gene_id] = deepcopy(other_genotype[gene_id])
+                    new_genotype[gene_id] = deepcopy(genotype_2[gene_id])
+            # If gene a excess or disjoint gene from genotype 1
+            elif gene_id in genotype_1:
+                new_genotype[gene_id] = deepcopy(genotype_1[gene_id])
+            # If gene a excess or disjoint gene from genotype 2
             else:
-                # If gene_id not present in other genotype, just deepcopy it from the fitter genotype
-                new_genotype[gene_id] = deepcopy(fit_genotype[gene_id])
+                new_genotype[gene_id] = deepcopy(genotype_2[gene_id])
 
         return self.encoding.create_genome(new_genotype)
 

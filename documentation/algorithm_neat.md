@@ -57,9 +57,15 @@ leeway:
 
 * NEAT does not dictate the method of gene weight initialization, just indicates
   that the initial population only differs in their weights. TFNE initializes
-  connection weights and node biases to 0 and mutates the connection weights
-  (not the node biases) once by adding values from the random normal
-  distribution with mean and std-dev set by cfg.
+  node biases to 0 and connection weights to a random value from a random normal
+  distribution with the same mean/std-dev as set by the cfg for weight mutation.
+
+* The NEAT specification is contradictory in terms of defining the crossover
+  process, differing in its approach in its written specification vs in the
+  specification illustration. The crossover process has therefore been
+  implemented as joining all disjoint and excess genes from both parents and
+  choosing to carry over genes from a random parent in case of matching
+  gene-ids.
 
 * NEAT does not dictate if a parent genome can go through multiple crossovers/
   mutations in a single evolution (e.g. mutation of weights and then addition of
@@ -91,3 +97,4 @@ Shortcomings of the current implementation of TFNE NEAT:
   only supports feed-forward networks.
 
 * TFNE NEAT has not yet implemented dynamic threshold species clustering.
+
