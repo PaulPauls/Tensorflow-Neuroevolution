@@ -22,7 +22,7 @@ Important benchmark algorithms, encodings and environments have already been imp
 #### Genome Encodings ####
 
 * [X] Direct Encoding, see additional documentation in [`./documentation/encoding_direct.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/encoding_direct.md)
-* [ ] Indirect Encoding 
+* [ ] Indirect Encoding
 * [ ] Keras Encoding
 
 
@@ -72,7 +72,10 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 
 * [ ] Differentiate between neat-original and neat-variant by creating different algorithm classes.
     * To create neat-original: only use linear activations; fix node biases to 0; exclude nodes from the weight difference distance calculation; remove species elitism
-    * To create neat-variant: parameterize as many aspects of the current neat as possible
+    * To create neat-variant:
+        * parameterize as many aspects of the current neat as possible
+        * Seperate 'gene-id' into (topology-id, weights-id) to better differentiate between genomes with the same or different topologies
+        * Introduce a parameter allowing to set the the percentage of weights to be mutated in the mutation-weights function, in order to allow a more fine-grained/incremental evolution of weights
 
 * [ ] Reimplement serialization of population and extensive tests. Earlier implementation discarded due to architecture overhaul.
 
@@ -81,7 +84,7 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 * [ ] Reimplement GenomeRender- and PopulationBackup- reporting agents. Implement Speciation- reporting agent.
 
 * [ ] Reimplement CartPole environment. Earlier implementation discarded due to architecture overhaul.
-      
+
 * [ ] Implement generalised OpenAI environment, in which the exact OpenAI Gym is supplied via parameter.
 
 * [ ] Reimplement YANA, renaming it 'TopologyEvolvingWeightTraining' (TEWT) algorithm, by adjusting NEAT to evolve/train weights via Tensorflow backpropagation.
@@ -118,10 +121,10 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 > * Minor refactoring to decrease coupling as well as clarify and optimize code
 > * Add early_stop functionality to XOR environment
 > * Add extensive inline documentaion
-> * Publish ToDo collection, Bugs and Architecture Documentation 
+> * Publish ToDo collection, Bugs and Architecture Documentation
 
 > 19. Aug 2019 - Version _alpha_
-> * Refactoring of framework to generalize APIs further. 
+> * Refactoring of framework to generalize APIs further.
 > * Implementation of Direct Encoding enabling arbitrary feedforward topologies to be encoded in explicitely defined genotypes
 > * Implementation of the XOR-problem environment
 > * Implementation of a basic NE algorithm (YANA), mostly intended for Direct Encoding applied to the XOR environment
