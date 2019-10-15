@@ -26,7 +26,7 @@ def test_direct_encoding():
     gene_list.append(encoding.create_gene_connection(4, 7, 0.5))
     gene_list.append(encoding.create_gene_connection(3, 7, 0.5))
     gene_list.append(encoding.create_gene_connection(3, 8, 0.5))
-    gene_list.append(encoding.create_gene_connection(2, 4, 0.5))
+    gene_list.append(encoding.create_gene_connection(2, 4, 0.513241234))
     gene_list.append(encoding.create_gene_connection(1, 3, 0.5))
     gene_list.append(encoding.create_gene_connection(1, 4, 0.5))
     gene_list.append(encoding.create_gene_connection(2, 5, 0.5))
@@ -54,6 +54,7 @@ def test_direct_encoding():
     model = genome.get_model()
 
     print(model.predict(x))
+    genome.visualize()
 
 
 if __name__ == '__main__':
