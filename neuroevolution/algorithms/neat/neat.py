@@ -24,6 +24,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.mutation_weights_prob = None
         self.mutation_add_conn_prob = None
         self.mutation_add_node_prob = None
+        self.mutation_weights_fraction = None
         self.mutation_weights_mean = None
         self.mutation_weights_stddev = None
         self.distance_excess_c1 = None
@@ -66,6 +67,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.mutation_weights_prob = config.getfloat(section_name_algorithm, 'mutation_weights_prob')
         self.mutation_add_conn_prob = config.getfloat(section_name_algorithm, 'mutation_add_conn_prob')
         self.mutation_add_node_prob = config.getfloat(section_name_algorithm, 'mutation_add_node_prob')
+        self.mutation_weights_fraction = config.getfloat(section_name_algorithm, 'mutation_weights_fraction')
         self.mutation_weights_mean = config.getfloat(section_name_algorithm, 'mutation_weights_mean')
         self.mutation_weights_stddev = config.getfloat(section_name_algorithm, 'mutation_weights_stddev')
         self.distance_excess_c1 = config.getfloat(section_name_algorithm, 'distance_excess_c1')
@@ -96,6 +98,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         logging.debug("NEAT algorithm config: mutation_weights_prob = {}".format(self.mutation_weights_prob))
         logging.debug("NEAT algorithm config: mutation_add_conn_prob = {}".format(self.mutation_add_conn_prob))
         logging.debug("NEAT algorithm config: mutation_add_node_prob = {}".format(self.mutation_add_node_prob))
+        logging.debug("NEAT algorithm config: mutation_weights_fraction = {}".format(self.mutation_weights_fraction))
         logging.debug("NEAT algorithm config: mutation_weights_mean = {}".format(self.mutation_weights_mean))
         logging.debug("NEAT algorithm config: mutation_weights_stddev = {}".format(self.mutation_weights_stddev))
         logging.debug("NEAT algorithm config: distance_excess_c1 = {}".format(self.distance_excess_c1))
@@ -270,20 +273,27 @@ class NEAT(BaseNeuroevolutionAlgorithm):
 
     def _create_mutated_weights_genome(self, parent_genome) -> (int, DirectEncodingGenome):
         """
-        Create a mutated weights genome according to NEAT by adding to each gene's conn_weight or bias a random value
-        from a normal distribution with cfg specified mean and stddev. Return that genome.
+        Create a mutated weights genome according to NEAT by adding to each chosen gene's conn_weight or bias a random
+        value from a normal distribution with cfg specified mean and stddev. Only x percent (as specified via cfg
+        parameter 'mutation_weights_fraction') of all gene's weights are actually mutated, to allow for a more fine-
+        grained evolution. Return that genome.
         :param parent_genome: DirectEncoding genome, parent genome that constitutes the basis for the mutation
         :return: tuple of genome-id and its corresponding newly created DirectEncoding genome, which is a mutated
                  offspring from the supplied parent genome
         """
         new_genotype = deepcopy(parent_genome.get_genotype())
-        for gene in new_genotype.values():
+        gene_ids = tuple(new_genotype)
+
+        for _ in range(int(len(new_genotype) * self.mutation_weights_fraction)):
+            # Create weight to mutate with (as identical for both conn_weight and bias)
             mutation_weight = np.random.normal(loc=self.mutation_weights_mean, scale=self.mutation_weights_stddev)
+            # Choose random gene to mutate
+            mutated_gene_id = choice(gene_ids)
             # Identify type of gene and mutate its weight by going with a pythonic 'try and fail safely' approach
             try:
-                gene.conn_weight += mutation_weight
+                new_genotype[mutated_gene_id].conn_weight += mutation_weight
             except AttributeError:
-                gene.bias += mutation_weight
+                new_genotype[mutated_gene_id].bias += mutation_weight
         return self.encoding.create_genome(new_genotype)
 
     def _create_added_conn_genome(self, parent_genome) -> (int, DirectEncodingGenome):
