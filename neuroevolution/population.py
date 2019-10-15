@@ -109,54 +109,20 @@ class Population:
         return round(fitness_sum / self.pop_size, 3)
 
     def save_population(self, save_file_path):
-        raise NotImplementedError("WORK IN PROGRESS")
-        '''
-        serialized_genomes = {species_id: [genome.serialize() for genome in species_genomes]
-                              for species_id, species_genomes in self.genomes.items()}
+        """
+        Shallow serializes and saves the population to a json file at the specified location. The serialization is
+        shallow as only genome characteristics are saved that are required to recreate them from scratch - but no
+        internal states (such as fitness, encoding gene counter, species assignment, etc) are serialized.
+        :param save_file_path: string of file path, specifying where the serialized population should be saved
+        """
         serialized_population = {
             'generation_counter': self.generation_counter,
             'pop_size': self.pop_size,
-            'species_count': self.species_count,
-            'species_avg_fitness_log': self.species_avg_fitness_log,
-            'species_best_fitness_log': self.species_best_fitness_log,
-            'genomes': serialized_genomes
+            'genomes': [genome.serialize() for genome in self.genomes.values()]
         }
         with open(save_file_path, 'w') as save_file:
             json.dump(serialized_population, save_file, indent=4)
         logging.info("Saved population to file '{}'".format(save_file_path))
-        '''
 
     def load_population(self, encoding, load_file_path):
-        raise NotImplementedError("WORK IN PROGRESS")
-        '''
-        with open(load_file_path, 'r') as load_file:
-            loaded_population = json.load(load_file)
-        self.generation_counter = loaded_population['generation_counter']
-        self.pop_size = loaded_population['pop_size']
-        self.species_count = loaded_population['species_count']
-        self.species_id_counter = max(loaded_population['genomes'])
-        self.species_avg_fitness_log = loaded_population['species_avg_fitness_log']
-        self.species_best_fitness_log = loaded_population['species_best_fitness_log']
-        assert not self.pop_size_fixed or self.pop_size == self.initial_pop_size
-
-        self.genomes = dict()
-        for species_id, species_genomes in loaded_population['genomes'].items():
-            deserialized_genome_list = encoding.deserialize_genome_list(species_genomes)
-            self.genomes[species_id] = deque(deserialized_genome_list)
-
-        # Work around limitation of json serialization that only saves integer keys as strings by converting all keys
-        # of the deserialized json back to integers.
-        for key, value in self.species_avg_fitness_log.items():
-            del self.species_avg_fitness_log[key]
-            self.species_avg_fitness_log[int(key)] = value
-        for key, value in self.species_best_fitness_log.items():
-            del self.species_best_fitness_log[key]
-            self.species_best_fitness_log[int(key)] = value
-        for key, value in self.genomes.items():
-            del self.genomes[key]
-            self.genomes[int(key)] = value
-
-        logging.info("Loaded population of encoding '{}' from file '{}'. Summary of the population:"
-                     .format(encoding.__class__.__name__, load_file_path))
-        self.summary()
-        '''
+        raise NotImplementedError()

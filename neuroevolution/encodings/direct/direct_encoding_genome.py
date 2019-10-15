@@ -36,6 +36,17 @@ class DirectEncodingGenome(BaseGenome):
         """
         visualize_genome(self.genome_id, self.genotype, self.model.topology_levels, view, render_dir_path)
 
+    def serialize(self) -> dict:
+        """
+        Shallow serializes genome and returns it as a dict. Serialization is shallow as only genome characteristics are
+        serialized that are required to recreate genome from scratch - but no internal states(fitness, dtype, etc).
+        :return: dict; dict containing the shallow serialization of the genome
+        """
+        return {
+            'genome_type': 'DirectEncodingGenome',
+            'genotype': [gene.serialize() for gene in self.genotype.values()]
+        }
+
     def get_model(self) -> DirectEncodingModel:
         """
         :return: Tensorflow model phenotype translation of the genome genotype
