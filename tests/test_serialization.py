@@ -6,9 +6,10 @@ from absl import logging
 import neuroevolution as ne
 
 
-def test_population():
+def serialize_population():
     """
-    TODO DOC
+    Test serialization of population by creating basic genomes and a basic population, which is then serialized and
+    saved to the file 'test_serialization.json'.
     """
 
     logging.set_verbosity(logging.DEBUG)
@@ -68,5 +69,19 @@ def test_population():
     population.save_population(serialization_path)
 
 
+def deserialize_population():
+    """
+    TODO DOC
+    """
+
+    logging.set_verbosity(logging.DEBUG)
+    logging.info("Using TF Version {}".format(tf.__version__))
+    assert tf.__version__[0] == '2'  # Assert that TF 2.x is used
+
+    # ToDo
+    pass
+
+
 if __name__ == '__main__':
-    test_population()
+    serialize_population()
+    deserialize_population()
