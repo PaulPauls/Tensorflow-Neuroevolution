@@ -43,7 +43,7 @@ def _create_node_coordinates(topology_levels) -> dict:
     """
     Create and return a dict associating each node (dict key) with their coordinate value (dict value) in the form
     of (layer_index, node_index) as they are organized in the supplied topology_level parameter.
-    :param topology_levels: TODO TUPLE with each element specifying the set of nodes that have to be precomputed before
+    :param topology_levels: tuple with each element specifying the set of nodes that have to be precomputed before
                             the next element's set of nodes can be computed, as they serve as input nodes to this
                             next element's set of nodes
     :return: dict associating the nodes in topology_levels (dict key) with the coordinates in the topology_levels
@@ -61,7 +61,7 @@ def _create_node_coordinates(topology_levels) -> dict:
 def _join_keys(node_dependencies) -> dict:
     """
     Recreate node_dependencies parameter dict by using frozensets as keys consisting of all keys that have the same
-    dict value. Also convert the dict value of the input parameter to TODO TUPLE. Return this converted dict.
+    dict value. Also convert the dict value of the input parameter to tuple. Return this converted dict.
     :param node_dependencies: dict associating each node (dict key) with a set of the nodes (dict value) it receives
                               input from
     :return: dict associating the frozenset of all keys with the same dict value with this dict value.
@@ -80,7 +80,8 @@ class CustomWeightAndInputLayerTrainable(tf.keras.layers.Layer):
     """
     Custom Tensorflow layer that allows for arbitrary input nodes from any layer as well as custom kernel and bias
     weight setting. The arbitrariness of the input nodes is made possible through usage of coordinates specifying the
-    layer and exact node in that layer for every input node for the CustomWeightAndInputLayer.
+    layer and exact node in that layer for every input node for the CustomWeightAndInputLayer. The layer is fully
+    compatible with the rest of the Tensorflow infrastructure and supports static-graph building, auto-gradient, etc.
     """
     initializer = tf.keras.initializers.zeros()
 
@@ -134,7 +135,7 @@ class DirectEncodingModelTrainable(tf.keras.Model):
 
     def __init__(self, genotype, dtype, run_eagerly):
         """
-        Creates the feed-forward Tensorflow model out of the supplied genotype with custom parameters
+        Creates the trainable feed-forward Tensorflow model out of the supplied genotype with custom parameters
         :param genotype: genotype dict with the keys being the gene-ids and the values being the genes
         :param dtype: Tensorflow datatype of the model
         :param run_eagerly: bool flag if model should be run eagerly (by CPU) or if static GPU graph should be build
@@ -205,6 +206,13 @@ class DirectEncodingModelTrainable(tf.keras.Model):
 
 
 class CustomWeightAndInputLayerNontrainable:
+    """
+    Custom sparsely connected layer that allows for arbitrary input nodes from any layer, multiplying the inputs with
+    the custom set kernel and bias. The arbitrariness of the input nodes is made possible through usage of coordinates
+    specifying the layer and exact node in that layer for every input node. The layer is not trainable and even though
+    it uses Tensorflow functionality is not compatible with the rest of the Tensorflow infrastructure.
+    """
+
     def __init__(self, activation, kernel, bias, input_node_coords, dtype):
         self.activation = activation
         self.kernel = kernel
@@ -213,24 +221,40 @@ class CustomWeightAndInputLayerNontrainable:
         self.dtype = dtype
 
     def __call__(self, inputs) -> tf.Tensor:
+        """
+        Layer call, whereby the size of the input nodes is determined and then accordingly multiplied with the kernel,
+        added with the bias and the activation function is applied.
+        :param inputs: array of Tensorflow or numpy tensors representing the output of each preceding layer
+        :return: Tensorflow tensor of the computed layer results
+        """
         if len(self.input_node_coords) >= 2:
-            selected_inputs = tf.concat(values=[inputs[layer_index][:, node_index:node_index + 1]
-                                                for (layer_index, node_index) in self.input_node_coords], axis=1)
-            return self.activation(tf.matmul(selected_inputs, self.kernel) + self.bias)
+            selected_inputs = np.concatenate([inputs[layer_index][:, node_index:node_index + 1]
+                                              for (layer_index, node_index) in self.input_node_coords], axis=1)
+            return self.activation(np.matmul(selected_inputs, self.kernel) + self.bias)
         else:
-            (layer_index, node_index) = self.input_node_coords[0]
+            layer_index, node_index = self.input_node_coords[0]
             selected_inputs = inputs[layer_index][:, node_index:node_index + 1]
-            return self.activation(tf.matmul(selected_inputs, self.kernel) + self.bias)
+            return self.activation(np.matmul(selected_inputs, self.kernel) + self.bias)
 
 
 class DirectEncodingModelNontrainable:
+    """
+    Neural Network model that builds a (exclusively) feed-forward topology with custom set connection weights and node
+    biases/activations from the supplied genotype in the constructor. The built model is non trainable and not
+    compatible with the rest of the Tensorflow infrastructure.
+    """
+
     def __init__(self, genotype, dtype):
-        self.dtype = dtype
+        """
+        Creates the non-trainable feed-forward model out of the supplied genotype with custom parameters
+        :param genotype: genotype dict with the keys being the gene-ids and the values being the genes
+        :param dtype: Tensorflow datatype of the model
+        """
+        self.dtype = dtype.as_numpy_dtype
 
         nodes, connections, node_dependencies = _process_genotype(genotype)
 
         self.topology_levels = tuple(toposort(node_dependencies))
-
         node_coordinates = _create_node_coordinates(self.topology_levels)
 
         self.custom_layers = [[] for _ in range(len(self.topology_levels) - 1)]
@@ -250,14 +274,14 @@ class DirectEncodingModelNontrainable:
                 input_node_coords = [node_coordinates[node] for node in joined_nodes_input]
 
                 # Create custom kernel weight matrix from connection weights supplied in genotype
-                kernel = np.empty(shape=(len(input_node_coords), len(joined_nodes)), dtype=dtype.as_numpy_dtype)
+                kernel = np.empty(shape=(len(input_node_coords), len(joined_nodes)), dtype=self.dtype)
                 for column_index in range(kernel.shape[1]):
                     for row_index in range(kernel.shape[0]):
                         weight = connections[joined_nodes[column_index]][joined_nodes_input[row_index]]
                         kernel[row_index, column_index] = weight
 
                 # Create custom bias weight matrix from bias weights supplied in genotype
-                bias = np.empty(shape=(len(joined_nodes),), dtype=dtype.as_numpy_dtype)
+                bias = np.empty(shape=(len(joined_nodes),), dtype=self.dtype)
                 for node_index in range(len(joined_nodes)):
                     weight = nodes[joined_nodes[node_index]][0]
                     bias[node_index] = weight
@@ -271,12 +295,19 @@ class DirectEncodingModelNontrainable:
                                                                        dtype=dtype)
                 self.custom_layers[layer_index].append(nodes_function)
 
-    def predict(self, inputs) -> np.ndarray:
-        inputs = [tf.cast(x=inputs, dtype=self.dtype)]
+    def predict(self, inputs) -> tf.Tensor:
+        """
+        Model call of the DirectEncoding feed-forward model with arbitrarily connected nodes. The output of each layer
+        is continually preserved, concatenated and then supplied together with the ouputs of all preceding layers to the
+        next layer.
+        :param inputs: Tensorflow or numpy array of one or multiple inputs to predict the output for
+        :return: Tensorflow tensor representing the predicted output to the input
+        """
+        inputs = [inputs.astype(self.dtype)]
         for layers in self.custom_layers:
             layer_out = None
             for nodes_function in layers:
                 out = nodes_function(inputs)
-                layer_out = out if layer_out is None else tf.concat(values=[layer_out, out], axis=1)
+                layer_out = out if layer_out is None else np.concatenate((layer_out, out), axis=1)
             inputs.append(layer_out)
         return inputs[-1]
