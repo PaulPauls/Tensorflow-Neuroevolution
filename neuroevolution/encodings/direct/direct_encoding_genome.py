@@ -1,5 +1,6 @@
+import typing
 from ..base_genome import BaseGenome
-from .direct_encoding_model import DirectEncodingModel
+from .direct_encoding_model import DirectEncodingModelTrainable, DirectEncodingModelNontrainable
 from .direct_encoding_visualization import visualize_genome
 
 
@@ -19,9 +20,12 @@ class DirectEncodingGenome(BaseGenome):
         """
         self.genome_id = genome_id
         self.genotype = genotype
-
-        self.model = DirectEncodingModel(genotype, trainable, dtype, run_eagerly)
         self.fitness = 0
+
+        if trainable:
+            self.model = DirectEncodingModelTrainable(genotype, dtype, run_eagerly)
+        else:
+            self.model = DirectEncodingModelNontrainable(genotype, dtype)
 
     def __str__(self) -> str:
         string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>8} || Gene Count: {:>4}" \
@@ -47,7 +51,7 @@ class DirectEncodingGenome(BaseGenome):
             'genotype': [gene.serialize() for gene in self.genotype.values()]
         }
 
-    def get_model(self) -> DirectEncodingModel:
+    def get_model(self) -> typing.Union[DirectEncodingModelTrainable, DirectEncodingModelNontrainable]:
         """
         :return: Tensorflow model phenotype translation of the genome genotype
         """
