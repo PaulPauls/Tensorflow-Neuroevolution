@@ -32,8 +32,7 @@ def main():
         environment.replay_genome(best_genome)
         logging.info("Best Genome returned by evolution:\n{}".format(best_genome))
         logging.info("Visualizing best genome returned by evolution...")
-        # best_genome.visualize()
-        logging.warning("DirectEncodingGenome.visualize() not yet implemented")
+        best_genome.visualize()
     else:
         logging.info("Evolution of population did not return a valid genome")
 
