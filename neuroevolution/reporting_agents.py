@@ -1,4 +1,5 @@
 import os
+import json
 from absl import logging
 
 
@@ -12,7 +13,7 @@ class GenomeRenderAgent:
 
     def __init__(self, periodicity, view, render_dir_path):
         """
-        :param periodicity: int; Interval in between generations at which the GenomeRenderAgent should be executed
+        :param periodicity: int; Interval in between generations at which the ReportingAgent should be executed
         :param view: bool; Flag if genome visualization should be displayed after creation
         :param render_dir_path: string of directory path, specifying where the genome render should be saved
         """
@@ -48,8 +49,8 @@ class PopulationBackupAgent:
 
     def __init__(self, periodicity, backup_dir_path):
         """
-        :param periodicity: int; Interval in between generations at which the GenomeRenderAgent should be executed
-        :param backup_dir_path: tring of directory path, specifying where the serialized population should be saved
+        :param periodicity: int; Interval in between generations at which the ReportingAgent should be executed
+        :param backup_dir_path: string of directory path, specifying where the serialized population should be saved
         """
         self.periodicity = periodicity
         self.backup_dir_path = os.path.abspath(backup_dir_path)
@@ -69,3 +70,41 @@ class PopulationBackupAgent:
     def log_parameters(self):
         logging.debug("Population Backup Agent parameter: periodicity = {}".format(self.periodicity))
         logging.debug("Population Backup Agent parameter: backup_dir_path = {}".format(self.backup_dir_path))
+
+
+class SpeciationReportingAgent:
+    """
+    Reporting Agent that reports on the current status of the existing species and their size in a specificed
+    periodicity and to the specified directory. The speciating reporting agent utilizes the speciating NE algorithms
+    function 'get_species_report()' to get the required information about the current species status and therefore
+    requires a NE algorithm that implements this function. Once the required information is retrieved does the
+    SpecationReportingAgent create a json file out of it. The Reporting Agent is automatically called by the evolution
+    engine.
+    """
+
+    def __init__(self, periodicity, report_dir_path):
+        """
+        :param periodicity: int; Interval in between generations at which the ReportingAgent should be executed
+        :param report_dir_path: string of directory path, specifying where the speciation report should be saved
+        """
+        self.periodicity = periodicity
+        self.report_dir_path = os.path.abspath(report_dir_path)
+        if self.report_dir_path[-1] != "/":
+            self.report_dir_path += "/"
+        if not os.path.exists(self.report_dir_path):
+            os.mkdir(self.report_dir_path)
+
+    def __call__(self, population):
+        generation = population.get_generation_counter()
+        if generation % self.periodicity == 0:
+            species_report = population.ne_algorithm.get_species_report()
+            filename = "speciation_report_gen_{}.json".format(generation)
+            report_file_path = self.report_dir_path + filename
+            logging.info("Automatically reporting on speciation from generation {} to {}..."
+                         .format(generation, report_file_path))
+            with open(report_file_path, 'w') as save_file:
+                json.dump(species_report, save_file, indent=4)
+
+    def log_parameters(self):
+        logging.debug("Speciation Reporting Agent parameter: periodicity = {}".format(self.periodicity))
+        logging.debug("Speciation Reporting Agent parameter: report_dir_path = {}".format(self.report_dir_path))

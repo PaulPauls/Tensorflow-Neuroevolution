@@ -554,3 +554,14 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                          .format(species_id, species_best_fitness, species_avg_fitness, species_size))
             for genome_id in species_genome_ids:
                 logging.debug(population.get_genome(genome_id))
+
+    def get_species_report(self) -> dict:
+        """
+        Create a species report dict listing all currently present species ids as keys and assigning them the size of
+        their species as value.
+        :return: dict, containing said species report assigning species_id to size of species
+        """
+        species_report = dict()
+        for species_id, species_genome_ids in self.species_assignment.items():
+            species_report[species_id] = len(species_genome_ids)
+        return species_report
