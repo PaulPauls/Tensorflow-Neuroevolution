@@ -2,7 +2,7 @@ import tempfile
 from graphviz import Digraph
 
 
-def visualize_genome(genome_id, genotype, topology_levels, view, render_dir_path):
+def visualize_genome(genome_id, genotype, topology_levels, view, filename, render_dir_path):
     """
     Create directed graph to visualize supplied genotype and display rendering or save the rendering to specified path
     or do both
@@ -11,8 +11,11 @@ def visualize_genome(genome_id, genotype, topology_levels, view, render_dir_path
     :param topology_levels: list of topologically sorted sets of nodes. Each list element contains the set of nodes that
                             have to be precomputed before the next list element set of nodes can be computed.
     :param view: flag if rendered genome should be displayed
+    :param filename: string of filename of the visualization render, excluding the extension
     :param render_dir_path: string of directory path, specifying where the genome render should be saved
     """
+    if filename is None:
+        filename = "graph_genome_{}".format(genome_id)
     filename = "graph_genome_{}".format(genome_id)
     if render_dir_path is None:
         render_dir_path = tempfile.mkdtemp()

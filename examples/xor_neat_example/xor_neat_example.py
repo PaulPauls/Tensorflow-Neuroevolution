@@ -22,7 +22,10 @@ def main():
     population = ne.Population(config, ne_algorithm)
     engine = ne.EvolutionEngine(population, environment)
 
-    best_genome = engine.train()
+    genome_render_agent = ne.GenomeRenderAgent(periodicity=5, view=False, render_dir_path="./genome_renders")
+    population_backup_agent = ne.PopulationBackupAgent(periodicity=50, backup_dir_path="./population_backups")
+    reporting_agents = (genome_render_agent, population_backup_agent)
+    best_genome = engine.train(reporting_agents=reporting_agents)
 
     if best_genome is not None:
         environment.replay_genome(best_genome)

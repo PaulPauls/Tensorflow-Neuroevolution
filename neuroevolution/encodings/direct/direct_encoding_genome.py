@@ -32,13 +32,14 @@ class DirectEncodingGenome(BaseGenome):
             .format(self.genome_id, self.fitness, len(self.genotype))
         return string_repr
 
-    def visualize(self, view=True, render_dir_path=None):
+    def visualize(self, view=True, filename=None, render_dir_path=None):
         """
         Display rendered genome or save rendered genome to specified path or do both
         :param view: flag if rendered genome should be displayed
+        :param filename: string of filename of the visualization render, excluding the extension
         :param render_dir_path: string of directory path, specifying where the genome render should be saved
         """
-        visualize_genome(self.genome_id, self.genotype, self.model.topology_levels, view, render_dir_path)
+        visualize_genome(self.genome_id, self.genotype, self.model.topology_levels, view, filename, render_dir_path)
 
     def serialize(self) -> dict:
         """
