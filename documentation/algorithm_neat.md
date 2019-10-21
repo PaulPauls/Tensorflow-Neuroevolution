@@ -31,6 +31,7 @@ crossover_prob          | float         | Probability a genome will be crossed o
 mutation_weights_prob   | float         | Probability a genomes weights will be mutated during the evolution. Constraint: crossover_prob + mutation_weights_prob + mutation_add_conn_prob + mutation_add_node_prob = 1
 mutation_add_conn_prob  | float         | Probability a random connection gene will be added to the genome during the evolution. Constraint: crossover_prob + mutation_weights_prob + mutation_add_conn_prob + mutation_add_node_prob = 1
 mutation_add_node_prob  | float         | Probability a random node gene will be added to the genome during the evolution. Constraint: crossover_prob + mutation_weights_prob + mutation_add_conn_prob + mutation_add_node_prob = 1
+mutation_weights_fraction | float       | Fraction of the genotype's genes whose weights are supposed to be mutated, when mutating weights. This allows to adjust for a more fine-grained or coarse-grained evolution of the gene weights.
 mutation_weights_mean   | float         | Mean of the normal standard distribution from which the values are taken that are to be added to the gene weights.
 mutation_weights_stddev | float         | Standard deviation of the normal standard distribution from which the values are taken that are to be added to the gene weights.
 distance_excess_c1      | float         | Value of coefficient c1 (weighing the importance of excess genes) used in NEAT's formula to determine the distance between two genes.

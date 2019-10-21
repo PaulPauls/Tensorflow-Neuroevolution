@@ -1,5 +1,6 @@
+import typing
 from ..base_genome import BaseGenome
-from .direct_encoding_model import DirectEncodingModel
+from .direct_encoding_model import DirectEncodingModelTrainable, DirectEncodingModelNontrainable
 from .direct_encoding_visualization import visualize_genome
 
 
@@ -19,24 +20,39 @@ class DirectEncodingGenome(BaseGenome):
         """
         self.genome_id = genome_id
         self.genotype = genotype
-
-        self.model = DirectEncodingModel(genotype, trainable, dtype, run_eagerly)
         self.fitness = 0
+
+        if trainable:
+            self.model = DirectEncodingModelTrainable(genotype, dtype, run_eagerly)
+        else:
+            self.model = DirectEncodingModelNontrainable(genotype, dtype)
 
     def __str__(self) -> str:
         string_repr = "DirectEncodingGenome || ID: {:>4} || Fitness: {:>8} || Gene Count: {:>4}" \
             .format(self.genome_id, self.fitness, len(self.genotype))
         return string_repr
 
-    def visualize(self, view=True, render_file_path=None):
+    def visualize(self, view=True, filename=None, render_dir_path=None):
         """
         Display rendered genome or save rendered genome to specified path or do both
         :param view: flag if rendered genome should be displayed
-        :param render_file_path: string of file path, specifying where the genome render should be saved
+        :param filename: string of filename of the visualization render, excluding the extension
+        :param render_dir_path: string of directory path, specifying where the genome render should be saved
         """
-        visualize_genome(self, view, render_file_path)
+        visualize_genome(self.genome_id, self.genotype, self.model.topology_levels, view, filename, render_dir_path)
 
-    def get_model(self) -> DirectEncodingModel:
+    def serialize(self) -> dict:
+        """
+        Shallow serializes genome and returns it as a dict. Serialization is shallow as only genome characteristics are
+        serialized that are required to recreate genome from scratch - but no internal states(fitness, dtype, etc).
+        :return: dict; dict containing the shallow serialization of the genome
+        """
+        return {
+            'genome_type': 'DirectEncodingGenome',
+            'genotype': [gene.serialize() for gene in self.genotype.values()]
+        }
+
+    def get_model(self) -> typing.Union[DirectEncodingModelTrainable, DirectEncodingModelNontrainable]:
         """
         :return: Tensorflow model phenotype translation of the genome genotype
         """

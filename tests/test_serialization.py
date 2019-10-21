@@ -1,67 +1,87 @@
 import os
 import tensorflow as tf
+from copy import deepcopy
 from absl import logging
 
 import neuroevolution as ne
 
 
-def test_population():
-    raise NotImplementedError("WORK IN PROGRESS")
-    '''
+def serialize_population():
+    """
+    Test serialization of population by creating basic genomes and a basic population, which is then serialized and
+    saved to the file 'test_serialization.json'.
+    """
+
     logging.set_verbosity(logging.DEBUG)
     logging.info("Using TF Version {}".format(tf.__version__))
     assert tf.__version__[0] == '2'  # Assert that TF 2.x is used
 
+    # Create the required NE faculties, among them being the population to serialize and the encoding to create genomes
+    # with which the population will be populated
     config = ne.load_config('./test_config.cfg')
+    encoding = ne.encodings.DirectEncoding(trainable=False, dtype=tf.float32, run_eagerly=False)
+    population = ne.Population(config, None)
 
-    environment = ne.environments.XOREnvironment()
-    environment_name = environment.__class__.__name__
-    genome_eval_function = environment.eval_genome_fitness
+    activation_output = tf.keras.activations.deserialize("sigmoid")
 
-    encoding = ne.encodings.DirectEncoding(config)
-    dummy_ne_algorithm = DummyNEAlgorithm()
+    # Create 2 Seperate genotypes and clone them for a total of 4 genotypes
+    gene_list_1 = list()
+    gene_list_1.append(encoding.create_gene_connection(1, 3, 0.4))
+    gene_list_1.append(encoding.create_gene_connection(2, 3, 0.6))
+    gene_list_1.append((encoding.create_gene_node(3, 0.8, activation_output)))
+    genotype_1 = dict()
+    for (gene_id, gene) in gene_list_1:
+        genotype_1[gene_id] = gene
 
-    activation_out = tf.keras.activations.deserialize("sigmoid")
+    gene_list_2 = list()
+    gene_list_2.append(encoding.create_gene_connection(1, 3, 0.2))
+    gene_list_2.append(encoding.create_gene_connection(1, 4, 0.3))
+    gene_list_2.append(encoding.create_gene_connection(2, 3, 0.4))
+    gene_list_2.append(encoding.create_gene_connection(2, 4, 0.5))
+    gene_list_2.append((encoding.create_gene_node(3, 0.6, activation_output)))
+    gene_list_2.append((encoding.create_gene_node(4, 0.7, activation_output)))
+    genotype_2 = dict()
+    for (gene_id, gene) in gene_list_2:
+        genotype_2[gene_id] = gene
 
-    genotype_1 = [
-        encoding.create_gene_connection(1, 3),
-        encoding.create_gene_connection(2, 3),
-        encoding.create_gene_node(3, activation_out)
-    ]
-    genotype_2 = [
-        encoding.create_gene_connection(1, 3),
-        encoding.create_gene_connection(1, 4),
-        encoding.create_gene_connection(2, 3),
-        encoding.create_gene_connection(2, 4),
-        encoding.create_gene_node(3, activation_out),
-        encoding.create_gene_node(4, activation_out)
-    ]
+    genotype_3 = deepcopy(genotype_1)
+    genotype_4 = deepcopy(genotype_2)
 
-    genome_1 = encoding.create_genome(genotype=genotype_1,
-                                      trainable=False,
-                                      associated_species=1,
-                                      originated_generation=1)
-    genome_2 = encoding.create_genome(genotype=genotype_2,
-                                      trainable=False,
-                                      associated_species=1,
-                                      originated_generation=1)
+    # Create genomes from genotypes and set their fitness to dummy values
+    genome_1_id, genome_1 = encoding.create_genome(genotype_1)
+    genome_1.set_fitness(12)
+    genome_2_id, genome_2 = encoding.create_genome(genotype_2)
+    genome_2.set_fitness(34)
+    genome_3_id, genome_3 = encoding.create_genome(genotype_3)
+    genome_3.set_fitness(56)
+    genome_4_id, genome_4 = encoding.create_genome(genotype_4)
+    genome_4.set_fitness(78)
 
-    population = ne.Population(dummy_ne_algorithm, config)
-
-    population.add_genome(1, genome_1)
-    population.add_genome(1, genome_2)
-    population.add_genome(1, genome_1)
-    population.add_genome(1, genome_2)
-
+    # Populate the population with created genomes
     population.generation_counter = 0
+    population.add_genome(genome_1_id, genome_1)
+    population.add_genome(genome_2_id, genome_2)
+    population.add_genome(genome_3_id, genome_3)
+    population.add_genome(genome_4_id, genome_4)
 
-    population.evaluate(environment_name, genome_eval_function)
-
+    # Save population to file 'test_serialization' in current working directory
     serialization_path = os.path.abspath("test_serialization.json")
     population.save_population(serialization_path)
-    population.load_population(encoding, serialization_path)
-    '''
+
+
+def deserialize_population():
+    """
+    TODO DOC
+    """
+
+    logging.set_verbosity(logging.DEBUG)
+    logging.info("Using TF Version {}".format(tf.__version__))
+    assert tf.__version__[0] == '2'  # Assert that TF 2.x is used
+
+    # ToDo
+    pass
 
 
 if __name__ == '__main__':
-    test_population()
+    serialize_population()
+    deserialize_population()

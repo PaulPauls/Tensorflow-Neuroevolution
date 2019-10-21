@@ -12,7 +12,7 @@ class DirectEncoding(BaseEncoding):
     genomes as well as genomes created with the supplied parameters for trainable, dtype and run_eagerly
     """
 
-    def __init__(self, trainable=False, dtype=tf.float32, run_eagerly=False):
+    def __init__(self, trainable, dtype=tf.float32, run_eagerly=False):
         self.trainable = trainable
         self.dtype = dtype
         self.run_eagerly = run_eagerly
