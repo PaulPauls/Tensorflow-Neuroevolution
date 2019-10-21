@@ -38,6 +38,14 @@ Important benchmark algorithms, encodings and environments have already been imp
 
 --------------------------------------------------------------------------------
 
+#### Installation ####
+
+Installation of the system package `graphviz` is required for visualization of the genome phenotypes
+
+
+
+--------------------------------------------------------------------------------
+
 #### Example Usage ####
 
 Example usage demonstrated in folder `./examples/`. Currently the following examples are present and functional:
@@ -77,19 +85,9 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
         * Seperate 'gene-id' into (topology-id, weights-id) to better differentiate between genomes with the same or different topologies
         * Introduce a parameter allowing to set the the percentage of weights to be mutated in the mutation-weights function, in order to allow a more fine-grained/incremental evolution of weights
 
-* [ ] Reimplement serialization of population and extensive tests. Earlier implementation discarded due to architecture overhaul.
-
-* [ ] Reimplement visualization of DirectEncoding genome. Earlier implementation discarded due to architecture overhaul.
-
-* [ ] Reimplement GenomeRender- and PopulationBackup- reporting agents. Implement Speciation- reporting agent.
-
-* [ ] Reimplement CartPole environment. Earlier implementation discarded due to architecture overhaul.
-
-* [ ] Implement generalised OpenAI environment, in which the exact OpenAI Gym is supplied via parameter.
+* [ ] Implement more OpenAI Gym environments (see [here](https://github.com/openai/gym/wiki/Leaderboard))
 
 * [ ] Reimplement YANA, renaming it 'TopologyEvolvingWeightTraining' (TEWT) algorithm, by adjusting NEAT to evolve/train weights via Tensorflow backpropagation.
-
-* [ ] Implement Version of DirectEncoding where the DirectEncodingModel is implemented without the resource-costly initialization of a TF Model and TF Layer when the trainable parameter is set to False, as the benefits of TF Model and TF Layer creation are largely absent int this case. Instead utilize simple Models and layers, which only perform the Matrix multiplication, bias addition and activation function via tensorflow or numpy.
 
 * [ ] Reimplement Weight Training option to the XOR environment, differentiating between the two environments' eval funtions via constructor parameter. Earlier implementation discarded due to architecture overhaul.
 
@@ -103,13 +101,19 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 
 * [ ] Minor ToDos:
     * Add documentation for direct encoding
-    * Add version_history.md file to documentation
 
 
 
 --------------------------------------------------------------------------------
 
 #### Version History ####
+
+> 20. Oct 2019 - Version _beta_
+> * Implement significantly sped up non-trainable DirectEncodingModel, achieving significant sped up but not being compatible with the rest of Tensorflows infrastructure
+> * Reimplement CartPole Environment
+> * Reimplement shallow serialization of population
+> * Reimplement GenomeRender, PopulationBackup and Speciation reporting agents
+> * Implement various tests and examples, testing the new functionality and environment
 
 > 09. Oct 2019 - Version _beta_
 > * Overhaul DirectEncoding to not only direct encode topology, but also weights in the genes
@@ -125,14 +129,6 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 > * Add early_stop functionality to XOR environment
 > * Add extensive inline documentaion
 > * Publish ToDo collection, Bugs and Architecture Documentation
-
-> 19. Aug 2019 - Version _alpha_
-> * Refactoring of framework to generalize APIs further.
-> * Implementation of Direct Encoding enabling arbitrary feedforward topologies to be encoded in explicitely defined genotypes
-> * Implementation of the XOR-problem environment
-> * Implementation of a basic NE algorithm (YANA), mostly intended for Direct Encoding applied to the XOR environment
-> * Implementation of the xor_example showcasing the framework
-> * Multiple minor bug fixes
 
 
 
