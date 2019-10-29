@@ -52,8 +52,10 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.species_assignment = dict()
         self.species_avg_fitness_history = dict()
 
-        # Initialize dict in which I save the internally adjusted fitness of each genome, generated in the speciation
-        # process.
+        # Initialize implementation specific dicts, keeping track of added nodes and the adjusted fitness of genomes,
+        # required for determining alloted offspring of each species.
+        self.node_counter = None
+        self.add_node_history = dict()
         self.genomes_adj_fitness = dict()
 
     def _read_config_parameters(self, config):
@@ -142,6 +144,9 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                     # activation to all nodes.
                     gene_id, gene_node = self.encoding.create_gene_node(node, 0, self.activation_output)
                     genotype[gene_id] = gene_node
+
+                # Set node counter to initialized nodes
+                self.node_counter = num_input + num_output
 
                 new_genome_id, new_genome = self.encoding.create_genome(genotype)
                 population.add_genome(new_genome_id, new_genome)
@@ -360,12 +365,18 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                 break
 
         # Extract all required information from chosen gene to build a new node in between and then disable it (Not
-        # remove it as per NEAT specification)
+        # remove it as per NEAT specification). If between the conn_in and conn_out has already been another node added
+        # in another mutation, use the same node
         conn_in = gene.conn_in
         conn_out = gene.conn_out
         conn_weight = gene.conn_weight
-        node = max(set.union(*parent_genome.get_topology_levels())) + 1
         gene.set_enabled(False)
+        if (conn_in, conn_out) in self.add_node_history:
+            node = self.add_node_history[(conn_in, conn_out)]
+        else:
+            self.node_counter += 1
+            self.add_node_history[(conn_in, conn_out)] = self.node_counter
+            node = self.node_counter
 
         gene_node_id, gene_node = self.encoding.create_gene_node(node, 0, self.activation_hidden)
         gene_conn_in_node_id, gene_conn_in_node = self.encoding.create_gene_connection(conn_in, node, 1)
