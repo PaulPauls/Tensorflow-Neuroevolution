@@ -205,7 +205,28 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             for species_genome_id in species_genome_ids:
                 adj_fitness_average += self.genomes_adj_fitness[species_genome_id]
             species_adj_fitness_average[species_id] = adj_fitness_average
-        total_adj_fitness_average = sum(species_adj_fitness_average.values())
+        total_adj_fitness_avg = sum(species_adj_fitness_average.values())
+
+        # Calculate alloted offspring for each species such that size of population stays constant and genome elitism
+        # is 1, as specified by NEAT. This is necessary as the NEAT formula for allotted offspring allows to increase
+        # the population, though the NEAT algorithm is specified on a fixed population size. To counteract this will the
+        # species with the most/least allotted offsprign add/subtract one potential genome from its allotted size.
+        allotted_offspring = dict()
+        for species_id, species_genome_ids in self.species_assignment.items():
+            species_offspring = round(species_adj_fitness_average[species_id] * pop_size / total_adj_fitness_avg) - 1
+            if species_offspring < 0:
+                species_offspring = 0
+            allotted_offspring[species_id] = species_offspring
+
+        resulting_pop_size = sum(allotted_offspring.values()) + len(self.species_assignment)
+        while resulting_pop_size > pop_size:
+            id_most_offspring = max(allotted_offspring, key=allotted_offspring.get)
+            allotted_offspring[id_most_offspring] -= 1
+            resulting_pop_size = sum(allotted_offspring.values()) + len(self.species_assignment)
+        while resulting_pop_size < pop_size:
+            id_least_offspring = min(allotted_offspring, key=allotted_offspring.get)
+            allotted_offspring[id_least_offspring] += 1
+            resulting_pop_size = sum(allotted_offspring.values()) + len(self.species_assignment)
 
         # Create new genomes through evolution
         for species_id, species_genome_ids in self.species_assignment.items():
@@ -215,11 +236,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                 reproduction_cutoff_index = 1
             parent_genome_ids = species_genome_ids[:reproduction_cutoff_index]
 
-            # Determine number of allotted offspring for the species and subtract 1 due to NEATs genome elitism of 1
-            allotted_offspring = round(species_adj_fitness_average[species_id] * pop_size /
-                                       total_adj_fitness_average) - 1
-
-            for _ in range(allotted_offspring):
+            for _ in range(allotted_offspring[species_id]):
                 parent_genome = population.get_genome(choice(parent_genome_ids))
 
                 # Create random value and choose either one of the crossovers/mutations
