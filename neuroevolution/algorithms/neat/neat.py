@@ -52,8 +52,10 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         self.species_assignment = dict()
         self.species_avg_fitness_history = dict()
 
-        # Initialize dict in which I save the internally adjusted fitness of each genome, generated in the speciation
-        # process.
+        # Initialize implementation specific dicts, keeping track of added nodes and the adjusted fitness of genomes,
+        # required for determining alloted offspring of each species.
+        self.node_counter = None
+        self.add_node_history = dict()
         self.genomes_adj_fitness = dict()
 
     def _read_config_parameters(self, config):
@@ -61,23 +63,23 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         Read the class parameters supplied via the config file
         :param config: ConfigParser Object which has processed the supplied configuration
         """
-        section_name_algorithm = 'NEAT' if config.has_section('NEAT') else 'NE_ALGORITHM'
-        self.reproducing_fraction = config.getfloat(section_name_algorithm, 'reproducing_fraction')
-        self.crossover_prob = config.getfloat(section_name_algorithm, 'crossover_prob')
-        self.mutation_weights_prob = config.getfloat(section_name_algorithm, 'mutation_weights_prob')
-        self.mutation_add_conn_prob = config.getfloat(section_name_algorithm, 'mutation_add_conn_prob')
-        self.mutation_add_node_prob = config.getfloat(section_name_algorithm, 'mutation_add_node_prob')
-        self.mutation_weights_fraction = config.getfloat(section_name_algorithm, 'mutation_weights_fraction')
-        self.mutation_weights_mean = config.getfloat(section_name_algorithm, 'mutation_weights_mean')
-        self.mutation_weights_stddev = config.getfloat(section_name_algorithm, 'mutation_weights_stddev')
-        self.distance_excess_c1 = config.getfloat(section_name_algorithm, 'distance_excess_c1')
-        self.distance_disjoint_c2 = config.getfloat(section_name_algorithm, 'distance_disjoint_c2')
-        self.distance_weight_c3 = config.getfloat(section_name_algorithm, 'distance_weight_c3')
-        self.species_elitism = config.getint(section_name_algorithm, 'species_elitism')
-        self.species_max_stagnation = config.get(section_name_algorithm, 'species_max_stagnation')
-        self.species_clustering = config.get(section_name_algorithm, 'species_clustering')
-        self.activation_hidden = config.get(section_name_algorithm, 'activation_hidden')
-        self.activation_output = config.get(section_name_algorithm, 'activation_output')
+        section_name = 'NEAT' if config.has_section('NEAT') else 'NE_ALGORITHM'
+        self.reproducing_fraction = config.getfloat(section_name, 'reproducing_fraction')
+        self.crossover_prob = config.getfloat(section_name, 'crossover_prob')
+        self.mutation_weights_prob = config.getfloat(section_name, 'mutation_weights_prob')
+        self.mutation_add_conn_prob = config.getfloat(section_name, 'mutation_add_conn_prob')
+        self.mutation_add_node_prob = config.getfloat(section_name, 'mutation_add_node_prob')
+        self.mutation_weights_fraction = config.getfloat(section_name, 'mutation_weights_fraction')
+        self.mutation_weights_mean = config.getfloat(section_name, 'mutation_weights_mean')
+        self.mutation_weights_stddev = config.getfloat(section_name, 'mutation_weights_stddev')
+        self.distance_excess_c1 = config.getfloat(section_name, 'distance_excess_c1')
+        self.distance_disjoint_c2 = config.getfloat(section_name, 'distance_disjoint_c2')
+        self.distance_weight_c3 = config.getfloat(section_name, 'distance_weight_c3')
+        self.species_elitism = config.getint(section_name, 'species_elitism')
+        self.species_max_stagnation = config.get(section_name, 'species_max_stagnation')
+        self.species_clustering = config.get(section_name, 'species_clustering')
+        self.activation_hidden = config.get(section_name, 'activation_hidden')
+        self.activation_output = config.get(section_name, 'activation_output')
 
         if ',' in self.species_clustering:
             species_clustering_alg = self.species_clustering[:self.species_clustering.find(',')]
@@ -143,6 +145,9 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                     gene_id, gene_node = self.encoding.create_gene_node(node, 0, self.activation_output)
                     genotype[gene_id] = gene_node
 
+                # Set node counter to initialized nodes
+                self.node_counter = num_input + num_output
+
                 new_genome_id, new_genome = self.encoding.create_genome(genotype)
                 population.add_genome(new_genome_id, new_genome)
                 if self.species_assignment[1] is None:
@@ -200,7 +205,28 @@ class NEAT(BaseNeuroevolutionAlgorithm):
             for species_genome_id in species_genome_ids:
                 adj_fitness_average += self.genomes_adj_fitness[species_genome_id]
             species_adj_fitness_average[species_id] = adj_fitness_average
-        total_adj_fitness_average = sum(species_adj_fitness_average.values())
+        total_adj_fitness_avg = sum(species_adj_fitness_average.values())
+
+        # Calculate alloted offspring for each species such that size of population stays constant and genome elitism
+        # is 1, as specified by NEAT. This is necessary as the NEAT formula for allotted offspring allows to increase
+        # the population, though the NEAT algorithm is specified on a fixed population size. To counteract this will the
+        # species with the most/least allotted offsprign add/subtract one potential genome from its allotted size.
+        allotted_offspring = dict()
+        for species_id, species_genome_ids in self.species_assignment.items():
+            species_offspring = round(species_adj_fitness_average[species_id] * pop_size / total_adj_fitness_avg) - 1
+            if species_offspring < 0:
+                species_offspring = 0
+            allotted_offspring[species_id] = species_offspring
+
+        resulting_pop_size = sum(allotted_offspring.values()) + len(self.species_assignment)
+        while resulting_pop_size > pop_size:
+            id_most_offspring = max(allotted_offspring, key=allotted_offspring.get)
+            allotted_offspring[id_most_offspring] -= 1
+            resulting_pop_size = sum(allotted_offspring.values()) + len(self.species_assignment)
+        while resulting_pop_size < pop_size:
+            id_least_offspring = min(allotted_offspring, key=allotted_offspring.get)
+            allotted_offspring[id_least_offspring] += 1
+            resulting_pop_size = sum(allotted_offspring.values()) + len(self.species_assignment)
 
         # Create new genomes through evolution
         for species_id, species_genome_ids in self.species_assignment.items():
@@ -210,11 +236,7 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                 reproduction_cutoff_index = 1
             parent_genome_ids = species_genome_ids[:reproduction_cutoff_index]
 
-            # Determine number of allotted offspring for the species and subtract 1 due to NEATs genome elitism of 1
-            allotted_offspring = round(species_adj_fitness_average[species_id] * pop_size /
-                                       total_adj_fitness_average) - 1
-
-            for _ in range(allotted_offspring):
+            for _ in range(allotted_offspring[species_id]):
                 parent_genome = population.get_genome(choice(parent_genome_ids))
 
                 # Create random value and choose either one of the crossovers/mutations
@@ -360,12 +382,18 @@ class NEAT(BaseNeuroevolutionAlgorithm):
                 break
 
         # Extract all required information from chosen gene to build a new node in between and then disable it (Not
-        # remove it as per NEAT specification)
+        # remove it as per NEAT specification). If between the conn_in and conn_out has already been another node added
+        # in another mutation, use the same node
         conn_in = gene.conn_in
         conn_out = gene.conn_out
         conn_weight = gene.conn_weight
-        node = max(set.union(*parent_genome.get_topology_levels())) + 1
         gene.set_enabled(False)
+        if (conn_in, conn_out) in self.add_node_history:
+            node = self.add_node_history[(conn_in, conn_out)]
+        else:
+            self.node_counter += 1
+            self.add_node_history[(conn_in, conn_out)] = self.node_counter
+            node = self.node_counter
 
         gene_node_id, gene_node = self.encoding.create_gene_node(node, 0, self.activation_hidden)
         gene_conn_in_node_id, gene_conn_in_node = self.encoding.create_gene_connection(conn_in, node, 1)
