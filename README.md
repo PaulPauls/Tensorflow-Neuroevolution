@@ -29,7 +29,7 @@ Important benchmark algorithms, encodings and environments have already been imp
 #### Test Environments ####
 
 * [X] XOR Problem, see additional documentation in [`./documentation/environment_xor.md`](https://github.com/PaulPauls/Tensorflow-Neuroevolution/blob/master/documentation/environment_xor.md)
-* [ ] OpenAI Gym CartPole, see [here](http://gym.openai.com/envs/CartPole-v1/)
+* [X] OpenAI Gym CartPole, see [here](http://gym.openai.com/envs/CartPole-v1/)
 * [ ] Fashion-MNIST, see [here](https://research.zalando.com/welcome/mission/research-projects/fashion-mnist/)
 * [ ] Digit-MNIST, see [here](http://yann.lecun.com/exdb/mnist/)
 * [ ] \[Other OpenAI Gym Environments\]
@@ -40,7 +40,7 @@ Important benchmark algorithms, encodings and environments have already been imp
 
 #### Installation ####
 
-Installation of the system package `graphviz` is required for visualization of the genome phenotypes
+Installation of the system package `graphviz` is required for visualization of the genome phenotypes.
 
 
 
@@ -76,8 +76,6 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
 
 #### ToDo Collection ####
 
-* [ ] Extensively test (e.g. all possible cfg parametes) and bug fix the framework.
-
 * [ ] Differentiate between neat-original and neat-variant by creating different algorithm classes.
     * To create neat-original: only use linear activations; fix node biases to 0; exclude nodes from the weight difference distance calculation; remove species elitism
     * To create neat-variant:
@@ -85,19 +83,19 @@ see Github _Issues_ tracker: [here](https://github.com/PaulPauls/Tensorflow-Neur
         * Seperate 'gene-id' into (topology-id, weights-id) to better differentiate between genomes with the same or different topologies
         * Introduce a parameter allowing to set the the percentage of weights to be mutated in the mutation-weights function, in order to allow a more fine-grained/incremental evolution of weights
 
-* [ ] Implement more OpenAI Gym environments (see [here](https://github.com/openai/gym/wiki/Leaderboard))
-
 * [ ] Reimplement YANA, renaming it 'TopologyEvolvingWeightTraining' (TEWT) algorithm, by adjusting NEAT to evolve/train weights via Tensorflow backpropagation.
 
 * [ ] Reimplement Weight Training option to the XOR environment, differentiating between the two environments' eval funtions via constructor parameter. Earlier implementation discarded due to architecture overhaul.
 
-* [ ] Implement more extensive tests and extensively bug test environment. Integrate tests with checks-API.
+* [ ] Implement more OpenAI Gym environments (see [here](https://github.com/openai/gym/wiki/Leaderboard))
+
+* [ ] Implement more extensive tests and integrate them with the checks-API.
 
 * [ ] Implement various environments: SuperMario and Sonic OpenAIRetro env, Fashion MNIST env, generalised TF dataset env, Mujoco env.
 
 * [ ] Reimplement Keras layer encoding. Earlier implementation discarded due to architecture overhaul.
 
-* [ ] Performance benchmark the framework, identify bottlenecks and add optimization of those bootlenecks to ToDo.
+* [ ] Performance benchmark the framework, identify and optimize bottlenecks.
 
 * [ ] Minor ToDos:
     * Add documentation for direct encoding
