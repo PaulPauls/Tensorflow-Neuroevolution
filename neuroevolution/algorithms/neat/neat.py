@@ -63,23 +63,23 @@ class NEAT(BaseNeuroevolutionAlgorithm):
         Read the class parameters supplied via the config file
         :param config: ConfigParser Object which has processed the supplied configuration
         """
-        section_name_algorithm = 'NEAT' if config.has_section('NEAT') else 'NE_ALGORITHM'
-        self.reproducing_fraction = config.getfloat(section_name_algorithm, 'reproducing_fraction')
-        self.crossover_prob = config.getfloat(section_name_algorithm, 'crossover_prob')
-        self.mutation_weights_prob = config.getfloat(section_name_algorithm, 'mutation_weights_prob')
-        self.mutation_add_conn_prob = config.getfloat(section_name_algorithm, 'mutation_add_conn_prob')
-        self.mutation_add_node_prob = config.getfloat(section_name_algorithm, 'mutation_add_node_prob')
-        self.mutation_weights_fraction = config.getfloat(section_name_algorithm, 'mutation_weights_fraction')
-        self.mutation_weights_mean = config.getfloat(section_name_algorithm, 'mutation_weights_mean')
-        self.mutation_weights_stddev = config.getfloat(section_name_algorithm, 'mutation_weights_stddev')
-        self.distance_excess_c1 = config.getfloat(section_name_algorithm, 'distance_excess_c1')
-        self.distance_disjoint_c2 = config.getfloat(section_name_algorithm, 'distance_disjoint_c2')
-        self.distance_weight_c3 = config.getfloat(section_name_algorithm, 'distance_weight_c3')
-        self.species_elitism = config.getint(section_name_algorithm, 'species_elitism')
-        self.species_max_stagnation = config.get(section_name_algorithm, 'species_max_stagnation')
-        self.species_clustering = config.get(section_name_algorithm, 'species_clustering')
-        self.activation_hidden = config.get(section_name_algorithm, 'activation_hidden')
-        self.activation_output = config.get(section_name_algorithm, 'activation_output')
+        section_name = 'NEAT' if config.has_section('NEAT') else 'NE_ALGORITHM'
+        self.reproducing_fraction = config.getfloat(section_name, 'reproducing_fraction')
+        self.crossover_prob = config.getfloat(section_name, 'crossover_prob')
+        self.mutation_weights_prob = config.getfloat(section_name, 'mutation_weights_prob')
+        self.mutation_add_conn_prob = config.getfloat(section_name, 'mutation_add_conn_prob')
+        self.mutation_add_node_prob = config.getfloat(section_name, 'mutation_add_node_prob')
+        self.mutation_weights_fraction = config.getfloat(section_name, 'mutation_weights_fraction')
+        self.mutation_weights_mean = config.getfloat(section_name, 'mutation_weights_mean')
+        self.mutation_weights_stddev = config.getfloat(section_name, 'mutation_weights_stddev')
+        self.distance_excess_c1 = config.getfloat(section_name, 'distance_excess_c1')
+        self.distance_disjoint_c2 = config.getfloat(section_name, 'distance_disjoint_c2')
+        self.distance_weight_c3 = config.getfloat(section_name, 'distance_weight_c3')
+        self.species_elitism = config.getint(section_name, 'species_elitism')
+        self.species_max_stagnation = config.get(section_name, 'species_max_stagnation')
+        self.species_clustering = config.get(section_name, 'species_clustering')
+        self.activation_hidden = config.get(section_name, 'activation_hidden')
+        self.activation_output = config.get(section_name, 'activation_output')
 
         if ',' in self.species_clustering:
             species_clustering_alg = self.species_clustering[:self.species_clustering.find(',')]
