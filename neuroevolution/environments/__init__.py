@@ -1,3 +1,0 @@
-# Import modules
-from neuroevolution.environments.other.xor_environment import XOREnvironment
-from neuroevolution.environments.openaigym.cartpole_environment import CartPoleEnvironment
