@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; TFNE 0.2 documentation</title>
+  <title>Search &mdash; Tensorflow-Neuroevolution Framework 0.21.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,10 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+    
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +31,12 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script src="_static/searchtools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/searchtools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="#" /> 
 </head>
@@ -49,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> TFNE
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Tensorflow-Neuroevolution Framework
           
 
           
@@ -72,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -79,18 +83,31 @@
               
             
             
-              <p class="caption"><span class="caption-text">Framework Overview</span></p>
+              <p class="caption"><span class="caption-text">TFNE Framework</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="framework/framework-overview.html">Framework Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-usage.html">Using TFNE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-customization.html">TFNE Architecture &amp; Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-development.html">TFNE Development</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Algorithm Overview</span></p>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="algorithms/codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-specification.html">CoDeepNEAT Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-config.html">CoDeepNEAT Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-modules.html">CoDeepNEAT Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="environments/xor-environment.html">XOR Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environments/mnist-environment.html">MNIST Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environments/cifar10-environment.html">CIFAR10 Environment</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -100,7 +117,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">TFNE</a>
+          <a href="index.html">Tensorflow-Neuroevolution Framework</a>
         
       </nav>
 
@@ -129,7 +146,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Search</li>
     
@@ -151,8 +168,7 @@
   <noscript>
   <div id="fallback" class="admonition warning">
     <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
+      Please activate JavaScript to enable the search functionality.
     </p>
   </div>
   </noscript>
@@ -172,11 +188,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Paul Pauls
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -187,7 +211,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

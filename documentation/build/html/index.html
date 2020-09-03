@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to TFNE’s documentation! &mdash; TFNE 0.2 documentation</title>
+  <title>Welcome to the documentation of the Tensorflow-Neuroevolution framework! &mdash; Tensorflow-Neuroevolution Framework 0.21.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,17 +30,14 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Framework Overview" href="framework/framework-overview.html" /> 
+    <link rel="next" title="Using TFNE" href="framework/tfne-usage.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -49,7 +51,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> TFNE
+            <a href="#" class="icon icon-home" alt="Documentation Home"> Tensorflow-Neuroevolution Framework
           
 
           
@@ -72,6 +74,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -79,18 +82,31 @@
               
             
             
-              <p class="caption"><span class="caption-text">Framework Overview</span></p>
+              <p class="caption"><span class="caption-text">TFNE Framework</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="framework/framework-overview.html">Framework Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-usage.html">Using TFNE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-customization.html">TFNE Architecture &amp; Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-development.html">TFNE Development</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Algorithm Overview</span></p>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="algorithms/codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-specification.html">CoDeepNEAT Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-config.html">CoDeepNEAT Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-modules.html">CoDeepNEAT Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="environments/xor-environment.html">XOR Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environments/mnist-environment.html">MNIST Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environments/cifar10-environment.html">CIFAR10 Environment</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -100,7 +116,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">TFNE</a>
+          <a href="#">Tensorflow-Neuroevolution Framework</a>
         
       </nav>
 
@@ -129,9 +145,9 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Welcome to TFNE’s documentation!</li>
+      <li>Welcome to the documentation of the Tensorflow-Neuroevolution framework!</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -150,43 +166,153 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-tfne-s-documentation">
-<h1>Welcome to TFNE’s documentation!<a class="headerlink" href="#welcome-to-tfne-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Here is some text</p>
+  <div class="section" id="welcome-to-the-documentation-of-the-tensorflow-neuroevolution-framework">
+<h1>Welcome to the documentation of the Tensorflow-Neuroevolution framework!<a class="headerlink" href="#welcome-to-the-documentation-of-the-tensorflow-neuroevolution-framework" title="Permalink to this headline">¶</a></h1>
+<a class="reference internal image-reference" href="_images/tfne_logo.svg"><img alt="_images/tfne_logo.svg" class="align-center" src="_images/tfne_logo.svg" width="50%" /></a>
+<p><strong>Version 0.21.0</strong></p>
+<img alt="https://img.shields.io/badge/python-v3.7%2B-informational" src="https://img.shields.io/badge/python-v3.7%2B-informational" />
+<a class="reference external image-reference" href="https://badge.fury.io/py/tfne"><img alt="https://badge.fury.io/py/tfne.svg" src="https://badge.fury.io/py/tfne.svg" /></a>
+<a class="reference external image-reference" href="https://tfne.readthedocs.io/en/latest/?badge=latest"><img alt="https://readthedocs.org/projects/tfne/badge/?version=latest" src="https://readthedocs.org/projects/tfne/badge/?version=latest" /></a>
+<a class="reference external image-reference" href="https://codecov.io/gh/PaulPauls/Tensorflow-Neuroevolution"><img alt="https://codecov.io/gh/PaulPauls/Tensorflow-Neuroevolution/branch/master/graph/badge.svg" src="https://codecov.io/gh/PaulPauls/Tensorflow-Neuroevolution/branch/master/graph/badge.svg" /></a>
+<div class="line-block">
+<div class="line">Documentation of the Tensorflow-Neuroevolution framework.</div>
+<div class="line">TFNE on Github: <a class="reference external" href="https://github.com/PaulPauls/Tensorflow-Neuroevolution">https://github.com/PaulPauls/Tensorflow-Neuroevolution</a></div>
+<div class="line">TFNE on PyPI: <a class="reference external" href="https://pypi.org/project/tfne/">https://pypi.org/project/tfne/</a></div>
+<div class="line">Copyright: Paul Pauls</div>
 </div>
-<div class="section" id="see-here-for-pages-about-the-framework">
-<h1>See here for pages about the framework!<a class="headerlink" href="#see-here-for-pages-about-the-framework" title="Permalink to this headline">¶</a></h1>
+<hr class="docutils" />
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Framework Overview</span></p>
+<p class="caption"><span class="caption-text">TFNE Framework</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="framework/framework-overview.html">Framework Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="framework/framework-overview.html#test-quick-start-video">Test Quick Start Video</a></li>
-<li class="toctree-l2"><a class="reference internal" href="framework/framework-overview.html#test-quick-start">Test Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-usage.html">Using TFNE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="framework/tfne-usage.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework/tfne-usage.html#neuroevolution">Neuroevolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework/tfne-usage.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework/tfne-usage.html#serialization-deserialization">Serialization &amp; Deserialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework/tfne-usage.html#projects-using-tfne">Projects Using TFNE</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-customization.html">TFNE Architecture &amp; Customization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="framework/tfne-customization.html#framework-architecture">Framework Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="framework/tfne-customization.html#customizing-tfne">Customizing TFNE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-customization.html#baseneuroevolutionalgorithm-see-here">BaseNeuroevolutionAlgorithm (see here)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-customization.html#basegenome-see-here">BaseGenome (see here)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-customization.html#baseenvironment-see-here">BaseEnvironment (see here)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="framework/tfne-development.html">TFNE Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="framework/tfne-development.html#version-history">Version History</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#v0-21-0-26th-aug-2020">v0.21.0 (26th Aug, 2020)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#v0-2-5th-june-2020">v0.2 (5th June, 2020)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#v0-1-23rd-march-2020">v0.1 (23rd March, 2020)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="framework/tfne-development.html#future-todos">Future ToDos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#general">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#code-improvements">Code Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#neat">NEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#deepneat">DeepNEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#codeepneat">CoDeepNEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#subgraphneat">SubGraphNEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#subgraphdeepneat">SubGraphDeepNEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="framework/tfne-development.html#research-ideas">Research Ideas</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="see-here-for-pages-about-the-algorithms">
-<h1>See here for pages about the algorithms!<a class="headerlink" href="#see-here-for-pages-about-the-algorithms" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Algorithm Overview</span></p>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="algorithms/codeepneat-overview.html">CoDeepNEAT Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="algorithms/codeepneat-overview.html#test-quick-start-video">Test Quick Start Video</a></li>
-<li class="toctree-l2"><a class="reference internal" href="algorithms/codeepneat-overview.html#test-quick-start">Test Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-overview.html">CoDeepNEAT Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-overview.html#codeepneat-publication">CoDeepNEAT Publication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-overview.html#id1">CoDeepNEAT Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-overview.html#projects-involving-codeepneat">Projects involving CoDeepNEAT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-specification.html">CoDeepNEAT Specification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-specification.html#codeepneat-encoding">CoDeepNEAT Encoding</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codeepneat/codeepneat-specification.html#codeepneat-blueprint">CoDeepNEAT Blueprint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeepneat/codeepneat-specification.html#codeepneat-module">CoDeepNEAT Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeepneat/codeepneat-specification.html#codeepneat-genome">CoDeepNEAT Genome</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-specification.html#codeepneat-algorithm">CoDeepNEAT Algorithm</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codeepneat/codeepneat-specification.html#initialization">Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeepneat/codeepneat-specification.html#evaluation">Evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeepneat/codeepneat-specification.html#evolution">Evolution</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-config.html">CoDeepNEAT Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-config.html#example-codeepneat-configuration">Example CoDeepNEAT Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-config.html#population-config-parameters">[POPULATION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-config.html#genome-config-parameters">[GENOME] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-config.html#module-speciation-config-parameters">[MODULE_SPECIATION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-config.html#module-evolution-config-parameters">[MODULE_EVOLUTION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-config.html#bp-speciation-config-parameters">[BP_SPECIATION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-config.html#bp-evolution-config-parameters">[BP_EVOLUTION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-config.html#module-module-config-parameters">[MODULE_&lt;MODULE&gt;] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-config.html#optimizer-optimizer-config-parameters">[OPTIMIZER_&lt;OPTIMIZER&gt;] Config Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat/codeepneat-modules.html">CoDeepNEAT Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-modules.html#dense-dropout-module">Dense-Dropout Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codeepneat/codeepneat-modules.html#module-densedropout-config-parameters">[MODULE_DENSEDROPOUT] Config Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-modules.html#conv2d-maxpool2d-dropout-module">Conv2D-MaxPool2D-Dropout Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codeepneat/codeepneat-modules.html#module-conv2dmaxpool2ddropout-config-parameters">[MODULE_CONV2DMAXPOOL2DDROPOUT] Config Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="codeepneat/codeepneat-modules.html#defining-your-own-modules">Defining Your Own Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="codeepneat/codeepneat-modules.html#codeepneat-abstract-module-interface">CoDeepNEAT Abstract Module Interface</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="environments/xor-environment.html">XOR Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="environments/xor-environment.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/xor-environment.html#specifications">Specifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/xor-environment.html#evaluation-config-parameters">[EVALUATION] Config Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="environments/xor-environment.html#weight-training-evaluation"><cite>Weight-Training Evaluation</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="environments/xor-environment.html#non-weight-training-evaluation"><cite>Non-Weight-Training Evaluation</cite></a></li>
 </ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="environments/mnist-environment.html">MNIST Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="environments/mnist-environment.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/mnist-environment.html#specifications">Specifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/mnist-environment.html#evaluation-config-parameters">[EVALUATION] Config Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="environments/mnist-environment.html#weight-training-evaluation"><cite>Weight-Training Evaluation</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="environments/mnist-environment.html#non-weight-training-evaluation"><cite>Non-Weight-Training Evaluation</cite></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="environments/cifar10-environment.html">CIFAR10 Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="environments/cifar10-environment.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/cifar10-environment.html#specifications">Specifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environments/cifar10-environment.html#evaluation-config-parameters">[EVALUATION] Config Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="environments/cifar10-environment.html#weight-training-evaluation"><cite>Weight-Training Evaluation</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="environments/cifar10-environment.html#non-weight-training-evaluation"><cite>Non-Weight-Training Evaluation</cite></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 
 
@@ -197,7 +323,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="framework/framework-overview.html" class="btn btn-neutral float-right" title="Framework Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="framework/tfne-usage.html" class="btn btn-neutral float-right" title="Using TFNE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -207,11 +333,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Paul Pauls
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -222,7 +356,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

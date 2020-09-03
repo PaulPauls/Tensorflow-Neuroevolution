@@ -1,0 +1,2 @@
+# Import modules
+from tfne.visualizer.codeepneat.tfnev_codeepneat_mainwindow import TFNEVCoDeepNEATMainWindow

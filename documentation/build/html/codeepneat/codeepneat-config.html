@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CoDeepNEAT Configuration &mdash; Tensorflow-Neuroevolution Framework 0.21.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CoDeepNEAT Modules" href="codeepneat-modules.html" />
+    <link rel="prev" title="CoDeepNEAT Specification" href="codeepneat-specification.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Tensorflow-Neuroevolution Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">TFNE Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-usage.html">Using TFNE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-customization.html">TFNE Architecture &amp; Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-development.html">TFNE Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat-specification.html">CoDeepNEAT Specification</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CoDeepNEAT Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-codeepneat-configuration">Example CoDeepNEAT Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#population-config-parameters">[POPULATION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#genome-config-parameters">[GENOME] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-speciation-config-parameters">[MODULE_SPECIATION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-evolution-config-parameters">[MODULE_EVOLUTION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bp-speciation-config-parameters">[BP_SPECIATION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bp-evolution-config-parameters">[BP_EVOLUTION] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-module-config-parameters">[MODULE_&lt;MODULE&gt;] Config Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optimizer-optimizer-config-parameters">[OPTIMIZER_&lt;OPTIMIZER&gt;] Config Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat-modules.html">CoDeepNEAT Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environments/xor-environment.html">XOR Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/mnist-environment.html">MNIST Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/cifar10-environment.html">CIFAR10 Environment</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Tensorflow-Neuroevolution Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>CoDeepNEAT Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/codeepneat/codeepneat-config.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="codeepneat-configuration">
+<h1>CoDeepNEAT Configuration<a class="headerlink" href="#codeepneat-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="example-codeepneat-configuration">
+<h2>Example CoDeepNEAT Configuration<a class="headerlink" href="#example-codeepneat-configuration" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example configuration includes an [EVALUATION] section not specific to the CoDeepNEAT algorithm’s configuration, though which has been included for the purpose of providing a full, functional config file.</p>
+</div>
+<div class="highlight-cfg notranslate"><div class="highlight"><pre><span></span><span class="k">[EVALUATION]</span>
+<span class="na">epochs</span>        <span class="o">=</span> <span class="s">8</span>
+<span class="na">batch_size</span>    <span class="o">=</span> <span class="s">None</span>
+<span class="na">preprocessing</span> <span class="o">=</span> <span class="s">None</span>
+
+<span class="k">[POPULATION]</span>
+<span class="na">bp_pop_size</span>    <span class="o">=</span> <span class="s">25</span>
+<span class="na">mod_pop_size</span>   <span class="o">=</span> <span class="s">45</span>
+<span class="na">genomes_per_bp</span> <span class="o">=</span> <span class="s">4</span>
+
+<span class="k">[GENOME]</span>
+<span class="na">dtype</span>                <span class="o">=</span> <span class="s">&#39;float32&#39;</span>
+<span class="na">available_modules</span>    <span class="o">=</span> <span class="s">[&#39;Conv2DMaxPool2DDropout&#39;]</span>
+<span class="na">available_optimizers</span> <span class="o">=</span> <span class="s">[&#39;SGD&#39;, &#39;Adam&#39;]</span>
+<span class="na">output_layers</span>        <span class="o">=</span> <span class="s">[{&#39;class_name&#39;: &#39;Flatten&#39;, &#39;config&#39;: {}},</span>
+<span class="s">                        {&#39;class_name&#39;: &#39;Dense&#39;, &#39;config&#39;: {&#39;units&#39;: 10, &#39;activation&#39;: &#39;softmax&#39;}}]</span>
+
+<span class="k">[MODULE_SPECIATION]</span>
+<span class="na">mod_spec_type</span>            <span class="o">=</span> <span class="s">&#39;param-distance-dynamic&#39;</span>
+<span class="na">mod_spec_species_count</span>   <span class="o">=</span> <span class="s">4</span>
+<span class="na">mod_spec_distance</span>        <span class="o">=</span> <span class="s">0.3</span>
+<span class="na">mod_spec_mod_elitism</span>     <span class="o">=</span> <span class="s">2</span>
+<span class="na">mod_spec_min_offspring</span>   <span class="o">=</span> <span class="s">1</span>
+<span class="na">mod_spec_reprod_thres</span>    <span class="o">=</span> <span class="s">0.5</span>
+<span class="na">mod_spec_max_stagnation</span>  <span class="o">=</span> <span class="s">15</span>
+<span class="na">mod_spec_species_elitism</span> <span class="o">=</span> <span class="s">2</span>
+<span class="na">mod_spec_rebase_repr</span>     <span class="o">=</span> <span class="s">True</span>
+<span class="na">mod_spec_reinit_extinct</span>  <span class="o">=</span> <span class="s">False</span>
+
+<span class="k">[MODULE_EVOLUTION]</span>
+<span class="na">mod_max_mutation</span>   <span class="o">=</span> <span class="s">0.3</span>
+<span class="na">mod_mutation_prob</span>  <span class="o">=</span> <span class="s">0.8</span>
+<span class="na">mod_crossover_prob</span> <span class="o">=</span> <span class="s">0.2</span>
+
+<span class="k">[BP_SPECIATION]</span>
+<span class="na">bp_spec_type</span>            <span class="o">=</span> <span class="s">&#39;gene-overlap-dynamic&#39;</span>
+<span class="na">bp_spec_species_count</span>   <span class="o">=</span> <span class="s">3</span>
+<span class="na">bp_spec_distance</span>        <span class="o">=</span> <span class="s">0.3</span>
+<span class="na">bp_spec_bp_elitism</span>      <span class="o">=</span> <span class="s">2</span>
+<span class="na">bp_spec_min_offspring</span>   <span class="o">=</span> <span class="s">1</span>
+<span class="na">bp_spec_reprod_thres</span>    <span class="o">=</span> <span class="s">0.5</span>
+<span class="na">bp_spec_max_stagnation</span>  <span class="o">=</span> <span class="s">15</span>
+<span class="na">bp_spec_species_elitism</span> <span class="o">=</span> <span class="s">2</span>
+<span class="na">bp_spec_rebase_repr</span>     <span class="o">=</span> <span class="s">True</span>
+<span class="na">bp_spec_reinit_extinct</span>  <span class="o">=</span> <span class="s">True</span>
+
+<span class="k">[BP_EVOLUTION]</span>
+<span class="na">bp_max_mutation</span>            <span class="o">=</span> <span class="s">0.3</span>
+<span class="na">bp_mutation_add_conn_prob</span>  <span class="o">=</span> <span class="s">0.2</span>
+<span class="na">bp_mutation_add_node_prob</span>  <span class="o">=</span> <span class="s">0.2</span>
+<span class="na">bp_mutation_rem_conn_prob</span>  <span class="o">=</span> <span class="s">0.05</span>
+<span class="na">bp_mutation_rem_node_prob</span>  <span class="o">=</span> <span class="s">0.05</span>
+<span class="na">bp_mutation_node_spec_prob</span> <span class="o">=</span> <span class="s">0.3</span>
+<span class="na">bp_mutation_optimizer_prob</span> <span class="o">=</span> <span class="s">0.1</span>
+<span class="na">bp_crossover_prob</span>          <span class="o">=</span> <span class="s">0.1</span>
+
+<span class="k">[MODULE_CONV2DMAXPOOL2DDROPOUT]</span>
+<span class="na">merge_method</span>  <span class="o">=</span> <span class="s">[{&#39;class_name&#39;: &#39;Concatenate&#39;, &#39;config&#39;: {&#39;axis&#39;: -1}},</span>
+<span class="s">                 {&#39;class_name&#39;: &#39;Add&#39;, &#39;config&#39;: {}}]</span>
+<span class="na">filters</span>       <span class="o">=</span> <span class="s">{&#39;min&#39;: 32, &#39;max&#39;: 256, &#39;step&#39;: 32, &#39;stddev&#39;: 32}</span>
+<span class="na">kernel_size</span>   <span class="o">=</span> <span class="s">[1, 2, 3]</span>
+<span class="na">strides</span>       <span class="o">=</span> <span class="s">[1]</span>
+<span class="na">padding</span>       <span class="o">=</span> <span class="s">[&#39;valid&#39;, &#39;same&#39;]</span>
+<span class="na">activation</span>    <span class="o">=</span> <span class="s">[&#39;linear&#39;, &#39;elu&#39;, &#39;relu&#39;]</span>
+<span class="na">kernel_init</span>   <span class="o">=</span> <span class="s">[&#39;glorot_uniform&#39;]</span>
+<span class="na">bias_init</span>     <span class="o">=</span> <span class="s">[&#39;zeros&#39;]</span>
+<span class="na">max_pool_flag</span> <span class="o">=</span> <span class="s">0.5</span>
+<span class="na">max_pool_size</span> <span class="o">=</span> <span class="s">[2]</span>
+<span class="na">dropout_flag</span>  <span class="o">=</span> <span class="s">0.5</span>
+<span class="na">dropout_rate</span>  <span class="o">=</span> <span class="s">{&#39;min&#39;: 0.1, &#39;max&#39;: 0.7, &#39;step&#39;: 0.1, &#39;stddev&#39;: 0.2}</span>
+
+<span class="k">[OPTIMIZER_SGD]</span>
+<span class="na">learning_rate</span> <span class="o">=</span> <span class="s">{&#39;min&#39;: 0.0001, &#39;max&#39;: 0.1, &#39;step&#39;: 0.0001, &#39;stddev&#39;: 0.02}</span>
+<span class="na">momentum</span>      <span class="o">=</span> <span class="s">{&#39;min&#39;: 0.68, &#39;max&#39;: 0.99, &#39;step&#39;: 0.01, &#39;stddev&#39;: 0.05}</span>
+<span class="na">nesterov</span>      <span class="o">=</span> <span class="s">[True, False]</span>
+
+<span class="k">[OPTIMIZER_ADAM]</span>
+<span class="na">learning_rate</span> <span class="o">=</span> <span class="s">{&#39;min&#39;: 0.0001, &#39;max&#39;: 0.1, &#39;step&#39;: 0.0001, &#39;stddev&#39;: 0.02}</span>
+<span class="na">beta_1</span>        <span class="o">=</span> <span class="s">{&#39;min&#39;: 0.6, &#39;max&#39;: 1.5, &#39;step&#39;: 0.05, &#39;stddev&#39;: 0.2}</span>
+<span class="na">beta_2</span>        <span class="o">=</span> <span class="s">{&#39;min&#39;: 0.8, &#39;max&#39;: 1.2, &#39;step&#39;: 0.001, &#39;stddev&#39;: 0.1}</span>
+<span class="na">epsilon</span>       <span class="o">=</span> <span class="s">{&#39;min&#39;: 1e-8, &#39;max&#39;: 1e-6, &#39;step&#39;: 1e-8, &#39;stddev&#39;: 1e-7}</span>
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="population-config-parameters">
+<h2>[POPULATION] Config Parameters<a class="headerlink" href="#population-config-parameters" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_pop_size</span></code></dt><dd><p><strong>Value Range</strong>: int &gt; 0</p>
+<p><strong>Description</strong>: Size of the Blueprint population throughout the evolution. The population size is constant.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_pop_size</span></code></dt><dd><p><strong>Value Range</strong>: int &gt; 0</p>
+<p><strong>Description</strong>: Size of the Module population throughout the evolution. The population size is constant.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">genomes_per_bp</span></code></dt><dd><p><strong>Value Range</strong>: int &gt; 0</p>
+<p><strong>Description</strong>: Specifies the amount of genomes that are created from blueprints and modules for the evaluation phase of each generation. Each blueprint is accordingly often used as the base topology to create genomes.</p>
+</dd>
+</dl>
+</div>
+<hr class="docutils" />
+<div class="section" id="genome-config-parameters">
+<h2>[GENOME] Config Parameters<a class="headerlink" href="#genome-config-parameters" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">dtype</span></code></dt><dd><p><strong>Value Range</strong>: valid Tensorflow datatype</p>
+<p><strong>Description</strong>: Datatype of the genome phenotype, being a Tensorflow model.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">available_modules</span></code></dt><dd><p><strong>Value Range</strong>: list of strings of valid TFNE CoDeepNEAT modules</p>
+<p><strong>Description</strong>: Specifies the module types that will be created during the CoDeepNEAT evolution. The association of module string name to module implementation is in a simple association file within the CoDeepNEAT encoding. This association file registers the names of all pre-implemented CoDeepNEAT modules and can easily be extended to register custom-created modules.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">available_optimizers</span></code></dt><dd><p><strong>Value Range</strong>: list of strings of valid Tensorflow Optimizers</p>
+<p><strong>Description</strong>: Specifies the possibly used optimizers that are associated with CoDeepNEAT blueprints. Valid values are string representations of all Tensorflow Optimizers, as TFNE uses Tensorflow deserialization of the optimizers.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">output_layers</span></code></dt><dd><p><strong>Value Range</strong>: list of dictionaries that represent deserializable Tensorflow layers</p>
+<p><strong>Description</strong>: Specifies the layers and their configuration that will be appended to the evolved CoDeepNEAT genome in order to control the output despite fitness oriented evolution of the phenotype. The output layers will be appended to the genome in the same order in which they are listed.</p>
+</dd>
+</dl>
+</div>
+<hr class="docutils" />
+<div class="section" id="module-speciation-config-parameters">
+<h2>[MODULE_SPECIATION] Config Parameters<a class="headerlink" href="#module-speciation-config-parameters" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_type</span></code></dt><dd><p><strong>Value Range</strong>: ‘basic’ | ‘param-distance-fixed’ | ‘param-distance-dynamic’</p>
+<p><strong>Description</strong>: Sets speciation method for modules. Can be set to either a basic speciation; a speciation based on the parameter distance of the modules with fixed parameter distance; or a speciation based on the parameter distance of the modules but with dynamically changing parameter distance. For details of these speciation methods, check the CoDeepNEAT specification.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_species_count</span></code></dt><dd><p><strong>Value Range</strong>: int &gt; 0</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘param-distance-dynamic’ speciation]</strong> Specifies the desired species count the dynamic parameter distance speciation scheme should aim for when adjusting the species distance. The species count considers the total amount of species and is not considered per module type.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_distance</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘param-distance-fixed’ or ‘param-distance-dynamic’ speciation]</strong> Specifies minimum distance of 2 modules such that they are classified into 2 different species.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_mod_elitism</span></code></dt><dd><p><strong>Value Range</strong>: int &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the amount of best modules in each species that will be carried over unchanged into the next generation after the evolution. The module elitism has to be at least 1 in order to carry over at least one species representative upon which newly evolved modules are judged if they belong into the same species.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_min_offspring</span></code></dt><dd><p><strong>Value Range</strong>: int &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the minimum amount of newly generated offspring for each species, in case the average fitness of the species becomes so relatively low that it isn’t assigned offspring otherwise.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_reprod_thres</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the minimum relative fitness threshold of a module compared with other modules in its species in order for the module to be considered a possible parent for reproduction. E.g. if the value 0.4 is chosen then for a module to be considered an eligible parent for the species its fitness has be higher than the bottom 40 percent of the species (or in other words: it has to belong to the top 60% of modules in the species).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_max_stagnation</span></code></dt><dd><p><strong>Value Range</strong>: int &gt; 0</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘param-distance-fixed’ or ‘param-distance-dynamic’ speciation]</strong> Specifies the maximum number of generations a species does not improve its average fitness before it will be considered stagnating and therefore will go extinct. This stagnation is defined as not producing in either of the last x generations an average fitness better than the fitness x generations ago.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_species_elitism</span></code></dt><dd><p><strong>Value Range</strong>: int &gt;= 0</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘param-distance-fixed’ or ‘param-distance-dynamic’ speciation]</strong> Specifies the minimum amount of species that are to survive, regardless of the consideration that they are stagnating or not. The minimum amount of surviving species are the best of the current generation.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_rebase_repr</span></code></dt><dd><p><strong>Value Range</strong>: bool</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘param-distance-fixed’ or ‘param-distance-dynamic’ speciation]</strong> Specifies if after each evolution the species representatives should be rebased to the best module of the species that also holds the minimal distance to all other species representatives as specified in via <code class="docutils literal notranslate"><span class="pre">mod_spec_species_distance</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_spec_reinit_extinct</span></code></dt><dd><p><strong>Value Range</strong>: bool</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘param-distance-fixed’ or ‘param-distance-dynamic’ speciation]</strong> Specifies if the population size occupied by a species should be reinitialized to new modules upon species extinction or if the population size occupied by the extinct species should be divided among the remaining species.</p>
+</dd>
+</dl>
+</div>
+<hr class="docutils" />
+<div class="section" id="module-evolution-config-parameters">
+<h2>[MODULE_EVOLUTION] Config Parameters<a class="headerlink" href="#module-evolution-config-parameters" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_max_mutation</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the maximum percentage to which a module is mutated during evolution from one generation to the next.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_mutation_prob</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the probability that a new module is evolved through mutation of an eligible parent module. Evolution probabilities of modules must add up to 1.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mod_crossover_prob</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the probability that a new module is evolved through crossover of two eligible parent modules. Evolution probabilities of modules must add up to 1.</p>
+</dd>
+</dl>
+</div>
+<hr class="docutils" />
+<div class="section" id="bp-speciation-config-parameters">
+<h2>[BP_SPECIATION] Config Parameters<a class="headerlink" href="#bp-speciation-config-parameters" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_type</span></code></dt><dd><p><strong>Value Range</strong>: ‘basic’ | ‘gene-overlap-fixed’ | ‘gene-overlap-dynamic’</p>
+<p><strong>Description</strong>: Sets speciation method for blueprints. Can be set to either a basic speciation; a speciation based on the gene overlap of the blueprints with fixed overlap distance; or a speciation based on the gene overlap of the blueprints but with dynamically changing overlap distance. For details of these speciation methods, check the CoDeepNEAT specification.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_species_count</span></code></dt><dd><p><strong>Value Range</strong>: int &gt; 0</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘gene-overlap-dynamic’ speciation]</strong> Specifies the desired species count the dynamic gene overlap distance speciation scheme should aim for when adjusting the species.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_distance</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘gene-overlap-fixed’ or ‘gene-overlap-dynamic’ speciation]</strong> Specifies the minimum distance of 2 blueprints such that they are classified into 2 different species.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_bp_elitism</span></code></dt><dd><p><strong>Value Range</strong>: int &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the amount of best blueprints in each species that will be carried over unchanged into the next generation after the evolution. The blueprint elitism has to be at least 1 in order to carry over at least one species representative upon which newly evolved modules are judged if they belong into the same species.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_min_offspring</span></code></dt><dd><p><strong>Value Range</strong>: int &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the minimum amount of newly generated offspring for each species, in case the average fitness of the species becomes so relatively low that it isn’t assigned offspring otherwise.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_reprod_thres</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the minimum relative fitness threshold of a blueprint compared with other blueprints in its species in order for the blueprint to be considered a possible parent for reproduction. E.g. if the value 0.4 is choosen then for a blueprint to be considered an eligible parent for the species its fitness has to be higher than the bottom 40 percent of the species (or in other words: it has to belong to the top 60% of blueprints in the species).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_max_stagnation</span></code></dt><dd><p><strong>Value Range</strong>: int &gt; 0</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘gene-overlap-fixed’ or ‘gene-overlap-dynamic’ speciation]</strong> Specifies the maximum number of generations a species does not improve its average fitness before it will be considered stagnating and therefore will go extinct. This stagnation is defined as not producing in either of the last x generations an average fitness better than the fitness x generations ago.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_species_elitism</span></code></dt><dd><p><strong>Value Range</strong>: int &gt;= 0</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘gene-overlap-fixed’ or ‘gene-overlap-dynamic’ speciation]</strong> Specifies the minimum amount of species that are to survive, regardless of the consideration that they are stagnating or not. The minimum amount of surviving species are the best of the current generation.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_rebase_repr</span></code></dt><dd><p><strong>Value Range</strong>: bool</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘gene-overlap-fixed’ or ‘gene-overlap-dynamic’ speciation]</strong> Specifies if after each evolution the species representatives should be rebased to the best blueprint of the species that also holds the minimal distance to all other species representatives as specified via <code class="docutils literal notranslate"><span class="pre">bp_spec_species_distance</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_spec_reinit_extinct</span></code></dt><dd><p><strong>Value Range</strong>: bool</p>
+<p><strong>Description</strong>: <strong>[Only applicable when using ‘gene-overlap-fixed’ or ‘gene-overlap-dynamic’ speciation]</strong> Specifies if the population size occupied by a species should be reinitialized to new blueprints upon species extinction or if the population size occupied by the extinct species should be divided among the remaining species.</p>
+</dd>
+</dl>
+</div>
+<hr class="docutils" />
+<div class="section" id="bp-evolution-config-parameters">
+<h2>[BP_EVOLUTION] Config Parameters<a class="headerlink" href="#bp-evolution-config-parameters" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_max_mutation</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the maximum percentage to which a blueprint is mutated during evolution from one generation to the next.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_mutation_add_conn_prob</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the probability that a new blueprint is evolved by adding a connection to an eligible parent blueprint. Evolution probabilities of blueprints must add up to 1.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_mutation_add_node_prob</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the probability that a new blueprint is evolved by adding a node to an eligible parent blueprint. Evolution probabilities of blueprints must add up to 1.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_mutation_rem_conn_prob</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the probability that a new blueprint is evolved by removing a connection from an eligible parent blueprint. Evolution probabilities of blueprints must add up to 1.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_mutation_rem_node_prob</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the probability that a new blueprint is evolved by removing a node from an eligible parent blueprint. Evolution probabilities of blueprints must add up to 1.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_mutation_node_spec_prob</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt; 0</p>
+<p><strong>Description</strong>: Specifies the probability that a new blueprint is evolved by mutating the species of the blueprint nodes from an eligible parent blueprint. Evolution probabilities of blueprints must add up to 1.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_mutation_optimizer_prob</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the probability that a new blueprint is evolved by mutating the config options of the blueprint associated optimizer of an eligible parent blueprint. Evolution probabilities of blueprints must add up to 1.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bp_crossover_prob</span></code></dt><dd><p><strong>Value Range</strong>: 1.0 &gt;= float &gt;= 0</p>
+<p><strong>Description</strong>: Specifies the probability that a new blueprint is evolved by crossing over 2 eligible parent blueprints. Evolution probabilities of blueprints must add up to 1.</p>
+</dd>
+</dl>
+</div>
+<hr class="docutils" />
+<div class="section" id="module-module-config-parameters">
+<h2>[MODULE_&lt;MODULE&gt;] Config Parameters<a class="headerlink" href="#module-module-config-parameters" title="Permalink to this headline">¶</a></h2>
+<p>[MODULE_&lt;MODULE&gt;] config parameters specify the configuration options for a module type that has been listed to be available in the GENOME/available_modules configuration parameter. The specific module has to be written in all capital letters.</p>
+<p>See the TFNE documentation <a class="reference external" href="./codeepneat-modules.html">section on pre-implemented modules</a> for a list of possible configuration parameters for the respective module class.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="optimizer-optimizer-config-parameters">
+<h2>[OPTIMIZER_&lt;OPTIMIZER&gt;] Config Parameters<a class="headerlink" href="#optimizer-optimizer-config-parameters" title="Permalink to this headline">¶</a></h2>
+<p>TFNE supports all deserializable Tensorflow optimizers. For a list of those optimizers, see the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers">official Tensorflow API</a>. The possible values the optimizers can adapt can be configured in 3 ways:</p>
+<p>If the optimizer parameter should have a fixed value, specify that fixed value in the configuration.</p>
+<p>If the optimizer parameter is continuous and the optimal value is to be determined by evolution, specify the minimum (<code class="docutils literal notranslate"><span class="pre">min</span></code>) and maximum (<code class="docutils literal notranslate"><span class="pre">max</span></code>) value of the optimizer as well as the possible step (<code class="docutils literal notranslate"><span class="pre">step</span></code>) between different values in a python dict style. Also specify the standard deviation (<code class="docutils literal notranslate"><span class="pre">stddev</span></code>) that should be applied when mutating the parameter and a new value is chosen for the parameter from a normal distribution.</p>
+<p>If the optimizer parameter is discrete and the optimal value is to be determined by evolution, specify all possible values of the parameter in a python list style.</p>
+<p>The following code showcases each style of specifying a parameter value or value range for the Stochastic Gradient Descent optimizer:</p>
+<div class="highlight-cfg notranslate"><div class="highlight"><pre><span></span><span class="k">[OPTIMIZER_SGD]</span>
+<span class="na">learning_rate</span> <span class="o">=</span> <span class="s">{&#39;min&#39;: 0.0001, &#39;max&#39;: 0.1, &#39;step&#39;: 0.0001, &#39;stddev&#39;: 0.02}</span>
+<span class="na">momentum</span>      <span class="o">=</span> <span class="s">0.7</span>
+<span class="na">nesterov</span>      <span class="o">=</span> <span class="s">[True, False]</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="codeepneat-modules.html" class="btn btn-neutral float-right" title="CoDeepNEAT Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="codeepneat-specification.html" class="btn btn-neutral float-left" title="CoDeepNEAT Specification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Pauls
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

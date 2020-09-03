@@ -1,0 +1,490 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFNE Architecture &amp; Customization &mdash; Tensorflow-Neuroevolution Framework 0.21.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="TFNE Visualizer" href="tfne-visualizer.html" />
+    <link rel="prev" title="Using TFNE" href="tfne-usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Tensorflow-Neuroevolution Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">TFNE Framework</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tfne-usage.html">Using TFNE</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">TFNE Architecture &amp; Customization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#framework-architecture">Framework Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#customizing-tfne">Customizing TFNE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#baseneuroevolutionalgorithm-see-here">BaseNeuroevolutionAlgorithm (see here)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basegenome-see-here">BaseGenome (see here)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#baseenvironment-see-here">BaseEnvironment (see here)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tfne-development.html">TFNE Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-specification.html">CoDeepNEAT Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-config.html">CoDeepNEAT Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-modules.html">CoDeepNEAT Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environments/xor-environment.html">XOR Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/mnist-environment.html">MNIST Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/cifar10-environment.html">CIFAR10 Environment</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Tensorflow-Neuroevolution Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>TFNE Architecture &amp; Customization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/framework/tfne-customization.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tfne-architecture-customization">
+<h1>TFNE Architecture &amp; Customization<a class="headerlink" href="#tfne-architecture-customization" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="framework-architecture">
+<h2>Framework Architecture<a class="headerlink" href="#framework-architecture" title="Permalink to this headline">¶</a></h2>
+<p>The following illustration shows the architecture of the TFNE framework beginning from v0.21.0 onwards. The architecture is shown via an entity-sequence diagram and omits many minor functions in order to emphasize the core evolutionary loop employed by TFNE as well as the most relevant functions of each aspect.</p>
+<div class="figure align-center" id="id3">
+<img alt="../_images/tfne_v0.21_entity_sequence_diagram.svg" src="../_images/tfne_v0.21_entity_sequence_diagram.svg" /><p class="caption"><span class="caption-text">Entity-Sequence Diagram Illustrating the Architecture of TFNE</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="customizing-tfne">
+<h2>Customizing TFNE<a class="headerlink" href="#customizing-tfne" title="Permalink to this headline">¶</a></h2>
+<p>One design goal of TFNE is to be modular and provide a basic prototyping platform for the implementation of similar experimental NE algorithms. TFNE therefore supports custom algorithms, encodings and environments and provides clear abstract interfaces that summarize the requirements for their implementations. While the abstract base classes extensively describe the requirements of the function that they are overwritten with, please also consider the architecture of the TFNE framework as listed above to get a top level view of the module usage in the evolutionary process.</p>
+<p>The following 5 abstract base classes are currently present in TFNE and the 3 most important are listed in full:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tfne</span>
+
+<span class="c1"># Abstract Base classes in TFNE</span>
+<span class="n">tfne</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">BaseNeuroevolutionAlgorithm</span><span class="p">()</span>
+<span class="n">tfne</span><span class="o">.</span><span class="n">populations</span><span class="o">.</span><span class="n">BasePopulation</span><span class="p">()</span>
+<span class="n">tfne</span><span class="o">.</span><span class="n">encodings</span><span class="o">.</span><span class="n">BaseEncoding</span><span class="p">()</span>
+<span class="n">tfne</span><span class="o">.</span><span class="n">encodings</span><span class="o">.</span><span class="n">BaseGenome</span><span class="p">()</span>
+<span class="n">tfne</span><span class="o">.</span><span class="n">environments</span><span class="o">.</span><span class="n">BaseEnvironment</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="baseneuroevolutionalgorithm-see-here">
+<h3>BaseNeuroevolutionAlgorithm (see <a class="reference external" href="https://github.com/PaulPauls/Tensorflow-Neuroevolution/tree/master/tfne/algorithms/base_algorithm.py">here</a>)<a class="headerlink" href="#baseneuroevolutionalgorithm-see-here" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BaseNeuroevolutionAlgorithm</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for TFNE compatible algorithms, which encapsulate the functionality of initialization, evaluation,</span>
+<span class="sd">    evolution and serialization.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">initialize_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the population according to the specified NE algorithm. Adhere to potential constraints set by the</span>
+<span class="sd">        environment.</span>
+<span class="sd">        @param environment: one instance or multiple instances of the evaluation environment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseNeuroevolutionAlgorithm does not implement &quot;</span>
+                                  <span class="s2">&quot;&#39;initialize_population()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">evaluate_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate all members of the population on the supplied evaluation environment by passing each member to the</span>
+<span class="sd">        environment and assigning the resulting fitness back to the member. Return the generation counter and the best</span>
+<span class="sd">        achieved fitness.</span>
+<span class="sd">        @param environment: one instance or multiple instances of the evaluation environment</span>
+<span class="sd">        @return: tuple of generation counter and best fitness achieved by best member</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseNeuroevolutionAlgorithm does not implement &#39;evaluate_population()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">summarize_population</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print summary of the algorithm&#39;s population to stdout to inform about progress</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseNeuroevolutionAlgorithm does not implement &#39;summarize_evaluation()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">evolve_population</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evolve all members of the population according to the NE algorithms specifications. Return a bool flag</span>
+<span class="sd">        indicating if the population went extinct during the evolution</span>
+<span class="sd">        @return: bool flag, indicating ig population went extinct during evolution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseNeuroevolutionAlgorithm does not implement &#39;evolve_population()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the state of the algorithm and the current evolutionary process by serializing all aspects to json</span>
+<span class="sd">        compatible dicts and saving it as file to the supplied save dir path.</span>
+<span class="sd">        @param save_dir_path: string of directory path to which the state should be saved</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseNeuroevolutionAlgorithm does not implement &#39;save_state()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_best_genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseGenome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: best genome so far determined by the evolutionary process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseNeuroevolutionAlgorithm does not implement &#39;get_best_genome()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_eval_instance_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: int, specifying how many evaluation threads the NE algorithm uses</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseNeuroevolutionAlgorithm does not implement &quot;</span>
+                                  <span class="s2">&quot;&#39;get_eval_instance_count()&#39;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="basegenome-see-here">
+<h3>BaseGenome (see <a class="reference external" href="https://github.com/PaulPauls/Tensorflow-Neuroevolution/tree/master/tfne/encodings/base_genome.py">here</a>)<a class="headerlink" href="#basegenome-see-here" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BaseGenome</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for TFNE compatible genomes, which encapsulates all necessary functionality used by the algorithm,</span>
+<span class="sd">    evaluation environment, visualizer, etc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call genome to start inference based on the internal model. Return the results of the inference.</span>
+<span class="sd">        @param inputs: genome model inputs</span>
+<span class="sd">        @return: results of the genome model inference</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;__call__()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: string representation of the genome</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;__str__()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">visualize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="p">,</span> <span class="n">save_dir_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visualize the genome. If &#39;show&#39; flag is set to true, display the genome after rendering. If &#39;save_dir_path&#39; is</span>
+<span class="sd">        supplied, save the rendered genome as file to that directory. Return the saved file path as string.</span>
+<span class="sd">        @param show: bool flag, indicating whether the rendered genome should be displayed or not</span>
+<span class="sd">        @param save_dir_path: string of the save directory path the rendered genome should be saved to.</span>
+<span class="sd">        @param kwargs: Optional additional arguments relevant for rendering of the specific genome implementation.</span>
+<span class="sd">        @return: string of the file path to which the rendered genome has been saved to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;visualize()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: serialized constructor variables of the genome as json compatible dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;serialize()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">save_genotype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir_path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save genotype of genome to &#39;save_dir_path&#39; directory. Return file path to which the genotype has been saved to</span>
+<span class="sd">        as string.</span>
+<span class="sd">        @param save_dir_path: string of the save directory path the genotype should be saved to</span>
+<span class="sd">        @return: string of the file path to which the genotype has been saved to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;save_genotype()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">save_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save TF model of genome to specified file path.</span>
+<span class="sd">        @param file_path: string of the file path the TF model should be saved to</span>
+<span class="sd">        @param kwargs: Optional additional arguments relevant for TF model.save()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;save_model()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_fitness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitness</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set genome fitness value to supplied parameter</span>
+<span class="sd">        @param fitness: float of genome fitness</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;set_fitness()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_genotype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: One or multiple variables representing the genome genotype</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;get_genotype()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: TF model represented by genome genotype</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;get_model()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return either None or TF optimizer depending on if the genome encoding associates an optimizer with the genome</span>
+<span class="sd">        @return: None | TF optimizer associated with genome</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;get_optimizer()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: int of genome ID</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;get_id()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_fitness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: float of genome fitness</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseGenome does not implement &#39;get_fitness()&#39;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="baseenvironment-see-here">
+<h3>BaseEnvironment (see <a class="reference external" href="https://github.com/PaulPauls/Tensorflow-Neuroevolution/tree/master/tfne/environments/base_environment.py">here</a>)<a class="headerlink" href="#baseenvironment-see-here" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BaseEnvironment</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for TFNE compatible environments, which are supposed to encapsulate a problem and provide the necessary</span>
+<span class="sd">    information and functions that the TFNE pre-implemented algorithms require.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">eval_genome_fitness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genome</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluates the genome&#39;s fitness in either the weight-training or non-weight-training variant. Returns the</span>
+<span class="sd">        determined genome fitness.</span>
+<span class="sd">        @param genome: TFNE compatible genome that is to be evaluated</span>
+<span class="sd">        @return: genome calculated fitness</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseEnvironment does not implement &#39;eval_genome_fitness()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">replay_genome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genome</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replay genome on environment by calculating its fitness and printing it.</span>
+<span class="sd">        @param genome: TFNE compatible genome that is to be evaluated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseEnvironment does not implement &#39;replay_genome()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">duplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEnvironment</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: New instance of the environment with identical parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseEnvironment does not implement &#39;duplicate()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_input_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: Environment input shape that is required from the applied TF models</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseEnvironment does not implement &#39;get_input_shape()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_output_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: Environment output shape that is required from the applied TF models</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of BaseEnvironment does not implement &#39;get_output_shape()&#39;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tfne-visualizer.html" class="btn btn-neutral float-right" title="TFNE Visualizer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tfne-usage.html" class="btn btn-neutral float-left" title="Using TFNE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Pauls
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

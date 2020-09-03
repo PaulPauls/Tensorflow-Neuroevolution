@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MNIST Environment &mdash; Tensorflow-Neuroevolution Framework 0.21.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CIFAR10 Environment" href="cifar10-environment.html" />
+    <link rel="prev" title="XOR Environment" href="xor-environment.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Tensorflow-Neuroevolution Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">TFNE Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-usage.html">Using TFNE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-customization.html">TFNE Architecture &amp; Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-development.html">TFNE Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-specification.html">CoDeepNEAT Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-config.html">CoDeepNEAT Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-modules.html">CoDeepNEAT Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="xor-environment.html">XOR Environment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MNIST Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#specifications">Specifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#evaluation-config-parameters">[EVALUATION] Config Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#weight-training-evaluation"><cite>Weight-Training Evaluation</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#non-weight-training-evaluation"><cite>Non-Weight-Training Evaluation</cite></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cifar10-environment.html">CIFAR10 Environment</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Tensorflow-Neuroevolution Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>MNIST Environment</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/environments/mnist-environment.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mnist-environment">
+<h1>MNIST Environment<a class="headerlink" href="#mnist-environment" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>“The MNIST database (Modified National Institute of Standards and Technology database) is a large database of handwritten digits that is commonly used for training various image processing systems. The database is also widely used for training and testing in the field of machine learning. It was created by “re-mixing” the samples from NIST’s original datasets. The creators felt that since NIST’s training dataset was taken from American Census Bureau employees, while the testing dataset was taken from American high school students, it was not well-suited for machine learning experiments. Furthermore, the black and white images from NIST were normalized to fit into a 28x28 pixel bounding box and anti-aliased, which introduced grayscale levels.”</p>
+<blockquote>
+<div><p>– <em>from</em> <a class="reference external" href="https://en.wikipedia.org/wiki/MNIST_database"><em>Wikipedia</em></a></p>
+</div></blockquote>
+</div>
+<hr class="docutils" />
+<div class="section" id="specifications">
+<h2>Specifications<a class="headerlink" href="#specifications" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 71%" />
+<col style="width: 29%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Supports Weight-Training Eval</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-even"><td><p>Supports Non-Weight-Training Eval</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-odd"><td><p>Input Shape</p></td>
+<td><p>(28, 28, 1)</p></td>
+</tr>
+<tr class="row-even"><td><p>required Output Shape</p></td>
+<td><p>(10,)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The fitness is calculated through the keras accuracy metric, calculating the percentage of how many of the test images are classified correctly.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="evaluation-config-parameters">
+<h2>[EVALUATION] Config Parameters<a class="headerlink" href="#evaluation-config-parameters" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="weight-training-evaluation">
+<h3><cite>Weight-Training Evaluation</cite><a class="headerlink" href="#weight-training-evaluation" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">epochs</span></code></dt><dd><p><strong>Value Range</strong>: int &gt; 0</p>
+<p><strong>Description</strong>: Specifies the amount of epochs a genome phenotype is to be trained on the environment before evaluating its fitness.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">batch_size</span></code></dt><dd><p><strong>Value Range</strong>: int &gt; 0 | None</p>
+<p><strong>Description</strong>: Supplied batch_size value for the model.fit function. batch_size is the number of training examples used for a single iteration of backpropagating the gradient of the loss function.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="non-weight-training-evaluation">
+<h3><cite>Non-Weight-Training Evaluation</cite><a class="headerlink" href="#non-weight-training-evaluation" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><strong>None</strong></p>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cifar10-environment.html" class="btn btn-neutral float-right" title="CIFAR10 Environment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="xor-environment.html" class="btn btn-neutral float-left" title="XOR Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Pauls
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

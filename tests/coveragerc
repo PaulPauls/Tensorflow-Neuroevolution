@@ -1,0 +1,7 @@
+[run]
+source =
+    ../tfne/
+
+omit =
+    ../tfne/visualizer/*
+

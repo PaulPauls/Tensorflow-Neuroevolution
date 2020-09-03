@@ -3,29 +3,30 @@ from absl import app, flags, logging
 import tfne
 
 flags.DEFINE_string('logging_level',
-                    default=None, help='TODO')
+                    default=None, help='Integer parameter specifying the verbosity of the absl logging library')
 flags.DEFINE_string('config_file',
-                    default=None, help='TODO')
+                    default=None, help='String parameter specifying the file path to the configuration file used for '
+                                       'the TFNE evolutionary process')
 flags.DEFINE_string('backup_dir',
-                    default=None, help='TODO')
-flags.DEFINE_integer('num_cpus',
-                     default=None, help='TODO')
-flags.DEFINE_integer('num_gpus',
-                     default=None, help='TODO')
+                    default=None, help='String parameter specifying the directory path to where the TFNE state backups '
+                                       'should be saved to')
 flags.DEFINE_integer('max_generations',
-                     default=None, help='TODO')
+                     default=None, help='Integer parameter specifying the intended maximum number of generations the '
+                                        'population should be evolved')
 flags.DEFINE_float('max_fitness',
-                   default=None, help='TODO')
+                   default=None, help='Float parameter specifying the fitness of the best genome at which point the '
+                                      'evolutionary process should preemptively end')
 
 
 def codeepneat_cifar10_example(_):
-    """"""
+    """
+    This Example evolves a CoDeepNEAT population on the CIFAR10 dataset for 72 generations. Subsequently the best
+    genome is trained for a final 200 epochs and its genotype and Tensorflow model are backed up.
+    """
     # Set standard configuration specific to TFNE but not the neuroevolution process
     logging_level = logging.INFO
     config_file_path = './codeepneat_cifar10_example_config.cfg'
-    backup_dir_path = './population_backups/'
-    num_cpus = None
-    num_gpus = None
+    backup_dir_path = './tfne_state_backups/'
     max_generations = 72
     max_fitness = None
 
@@ -36,10 +37,6 @@ def codeepneat_cifar10_example(_):
         config_file_path = flags.FLAGS.config_file
     if flags.FLAGS.backup_dir is not None:
         backup_dir_path = flags.FLAGS.backup_dir
-    if flags.FLAGS.num_cpus is not None:
-        num_cpus = flags.FLAGS.num_cpus
-    if flags.FLAGS.num_gpus is not None:
-        num_gpus = flags.FLAGS.num_gpus
     if flags.FLAGS.max_generations is not None:
         max_generations = flags.FLAGS.max_generations
     if flags.FLAGS.max_fitness is not None:
@@ -49,26 +46,31 @@ def codeepneat_cifar10_example(_):
     logging.set_verbosity(logging_level)
     config = tfne.parse_configuration(config_file_path)
 
-    # Set (not initialize) the environment and initialize the specific NE algorithm
-    environment = tfne.environments.CIFAR10Environment
-    ne_algorithm = tfne.CoDeepNEAT(config, environment)
+    # Initialize the environment and the specific NE algorithm
+    environment = tfne.environments.CIFAR10Environment(weight_training=True, config=config, verbosity=logging_level)
+    ne_algorithm = tfne.algorithms.CoDeepNEAT(config)
 
-    # Initialize evolution engine and supply config as well as initialized NE elements
+    # Initialize evolution engine and supply config as well as initialized NE algorithm and evaluation environment.
     engine = tfne.EvolutionEngine(ne_algorithm=ne_algorithm,
+                                  environment=environment,
                                   backup_dir_path=backup_dir_path,
-                                  num_cpus=num_cpus,
-                                  num_gpus=num_gpus,
                                   max_generations=max_generations,
                                   max_fitness=max_fitness)
 
     # Start training process, returning the best genome when training ends
     best_genome = engine.train()
-
-    # Show string representation of best genome, visualize it and then save it
-    print("Best Genome returned by evolution:\n")
+    print("Best genome returned by evolution:\n")
     print(best_genome)
-    best_genome.save_genotype(save_dir_path='./')
-    best_genome.save_model(save_dir_path='./')
+
+    # Increase epoch count in environment for a final training of the best genome. Train the genome and then replay it.
+    print("Training best genome for 200 epochs...\n")
+    environment.epochs = 200
+    environment.eval_genome_fitness(best_genome)
+    environment.replay_genome(best_genome)
+
+    # Serialize and save genotype and Tensorflow model to demonstrate serialization
+    best_genome.save_genotype(save_dir_path='./best_genome_genotype/')
+    best_genome.save_model(file_path='./best_genome_model/')
 
 
 if __name__ == '__main__':

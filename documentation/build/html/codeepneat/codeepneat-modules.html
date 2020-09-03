@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CoDeepNEAT Modules &mdash; Tensorflow-Neuroevolution Framework 0.21.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="XOR Environment" href="../environments/xor-environment.html" />
+    <link rel="prev" title="CoDeepNEAT Configuration" href="codeepneat-config.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Tensorflow-Neuroevolution Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">TFNE Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-usage.html">Using TFNE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-customization.html">TFNE Architecture &amp; Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-development.html">TFNE Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat-specification.html">CoDeepNEAT Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat-config.html">CoDeepNEAT Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CoDeepNEAT Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dense-dropout-module">Dense-Dropout Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-densedropout-config-parameters">[MODULE_DENSEDROPOUT] Config Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#conv2d-maxpool2d-dropout-module">Conv2D-MaxPool2D-Dropout Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-conv2dmaxpool2ddropout-config-parameters">[MODULE_CONV2DMAXPOOL2DDROPOUT] Config Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-your-own-modules">Defining Your Own Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#codeepneat-abstract-module-interface">CoDeepNEAT Abstract Module Interface</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environments/xor-environment.html">XOR Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/mnist-environment.html">MNIST Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/cifar10-environment.html">CIFAR10 Environment</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Tensorflow-Neuroevolution Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>CoDeepNEAT Modules</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/codeepneat/codeepneat-modules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="codeepneat-modules">
+<h1>CoDeepNEAT Modules<a class="headerlink" href="#codeepneat-modules" title="Permalink to this headline">¶</a></h1>
+<p>This section of the CoDeepNEAT documentation covers pre-implemented module classes that are available in TFNE. An important part of CoDeepNEAT is its extendability by defining one’s own module classes and evolve them. See the last paragraph of this section below to learn how to add your own modules to TFNE and what to consider by inheriting from the TFNE abstract module interface.</p>
+<hr class="docutils" />
+<div class="section" id="dense-dropout-module">
+<h2>Dense-Dropout Module<a class="headerlink" href="#dense-dropout-module" title="Permalink to this headline">¶</a></h2>
+<p>This is a very simple module. The represented deep neural network consists of a guaranteed dense layer followed by an optional dropout layer. This module has 7 parameters that can be set by the configuration. Of these 7 parameters, 5 are providing parameters for the encoded deep neural network layer and 2 parameters are relevant for the TFNE CoDeepNEAT evolution. Explicitly:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">merge_method</span></code> - list of TF deserializable strings specifying a valid merge layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dropout_flag</span></code> - float [0; 1.0] specifying the probability of the optional dropout layer in the final module DNN</p></li>
+</ul>
+</div></blockquote>
+<p>The full list of all parameters can be seen in the paragraph below. Please consult the excellent TF API for the documentation of the parameters concerning the layers.</p>
+<p>Downsampling mismatched input, mutating the parameters, module crossover and parameter distance calculation are implemented as follows for this module:</p>
+<p><strong>Downsampling</strong> - Downsampling not yet implemented for this module.</p>
+<p><strong>Mutation</strong> - Continuous parameters are mutated by drawing a random value from a normal distribution with the parent parameter value as the <em>mean</em> and the <em>stddev</em> set via the configuration. Categorical parameters supplied via a list of preselected values are mutated by choosing a new value randomly.</p>
+<p><strong>Crossover</strong> - Modules are crossed over by averaging out their continuous parameters and choosing the value of the fitter module for categorical parameters.</p>
+<p><strong>Parameter Distance</strong> - First determining the congruence between 2 module parameter sets and then subtract the actual congruence from the perfect congruence of 1.0. The congruence of continuous parameters is calculated by their relative distance. The congruence of categorical parameters is either 1.0 in case they are the same or it’s 1 divided by the amount of possible values for that specific parameter.</p>
+<div class="section" id="module-densedropout-config-parameters">
+<h3>[MODULE_DENSEDROPOUT] Config Parameters<a class="headerlink" href="#module-densedropout-config-parameters" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cfg notranslate"><div class="highlight"><pre><span></span><span class="k">[MODULE_DENSEDROPOUT]</span>
+<span class="na">merge_method</span> <span class="o">=</span> <span class="s">...</span>
+<span class="na">units</span>        <span class="o">=</span> <span class="s">...</span>
+<span class="na">activation</span>   <span class="o">=</span> <span class="s">...</span>
+<span class="na">kernel_init</span>  <span class="o">=</span> <span class="s">...</span>
+<span class="na">bias_init</span>    <span class="o">=</span> <span class="s">...</span>
+<span class="na">dropout_flag</span> <span class="o">=</span> <span class="s">...</span>
+<span class="na">dropout_rate</span> <span class="o">=</span> <span class="s">...</span>
+</pre></div>
+</div>
+<p>All layer parameters can be configured in 3 different ways:</p>
+<p>If the layer parameter should have a fixed value, specify that fixed value in the configuration.</p>
+<p>If the layer parameter is continuous and the optimal value is to be determined by evolution, specify the minimum (<code class="docutils literal notranslate"><span class="pre">min</span></code>) and maximum (<code class="docutils literal notranslate"><span class="pre">max</span></code>) value of the layer parameter as well as the possible step (<code class="docutils literal notranslate"><span class="pre">step</span></code>) between different values in a python dict style. Also specify the standard deviation (<code class="docutils literal notranslate"><span class="pre">stddev</span></code>) that should be applied when mutating the parameter and a new value is chosen for the parameter from a normal distribution.</p>
+<p>If the layer parameter is discrete or should only be chosen from a preselected list and the optimal value is to be determined by evolution, specify all possible values of the parameter in a python list style.</p>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="conv2d-maxpool2d-dropout-module">
+<h2>Conv2D-MaxPool2D-Dropout Module<a class="headerlink" href="#conv2d-maxpool2d-dropout-module" title="Permalink to this headline">¶</a></h2>
+<p>The deep neural network represented by this module consists of a guaranteed Conv2D layer, followed by an optional MaxPooling2D layer, followed by an optional Dropout layer. This module has 12 parameters that can be set by the configuration. Of these 12 parameters, 9 are providing parameters for the encoded deep neural network layer and 3 parameters are relevant for the TFNE CoDeepNEAT evolution. Explicitly:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">merge_method</span></code> - list of TF deserializable strings specifying a valid merge layer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_pool_flag</span></code> - float [0; 1.0] specifying the probability of the optional Max Pooling layer in the final module DNN</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dropout_flag</span></code> - float [0; 1.0] specifying the probability of the optional dropout layer in the final module DNN</p></li>
+</ul>
+</div></blockquote>
+<p>The full list of all parameters can be seen in the paragraph below. Please consult the excellent TF API for the documentation of the parameters concerning the layers.</p>
+<p>Downsampling mismatched input, mutating the parameters, module crossover and parameter distance calculation are implemented as follows for this module:</p>
+<p><strong>Downsampling</strong> - Mismatched input is downsampled by inserting an additional Conv2D layer between the mismatched input and the module DNN. This Conv2D layer converts the input to the largest possible input shape to preserve as much information as possible.</p>
+<p><strong>Mutation</strong> - Continuous parameters are mutated by drawing a random value from a normal distribution with the parent parameter value as the <em>mean</em> and the <em>stddev</em> set via the configuration. Categorical parameters supplied via a list of preselected values are mutated by choosing a new value randomly.</p>
+<p><strong>Crossover</strong> - Modules are crossed over by averaging out their continuous parameters and choosing the value of the fitter module for categorical parameters.</p>
+<p><strong>Parameter Distance</strong> - First determining the congruence between 2 module parameter sets and then subtract the actual congruence from the perfect congruence of 1.0. The congruence of continuous parameters is calculated by their relative distance. The congruence of categorical parameters is either 1.0 in case they are the same or it’s 1 divided by the amount of possible values for that specific parameter.</p>
+<div class="section" id="module-conv2dmaxpool2ddropout-config-parameters">
+<h3>[MODULE_CONV2DMAXPOOL2DDROPOUT] Config Parameters<a class="headerlink" href="#module-conv2dmaxpool2ddropout-config-parameters" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cfg notranslate"><div class="highlight"><pre><span></span><span class="k">[MODULE_CONV2DMAXPOOL2DDROPOUT]</span>
+<span class="na">merge_method</span>  <span class="o">=</span> <span class="s">...</span>
+<span class="na">filters</span>       <span class="o">=</span> <span class="s">...</span>
+<span class="na">kernel_size</span>   <span class="o">=</span> <span class="s">...</span>
+<span class="na">strides</span>       <span class="o">=</span> <span class="s">...</span>
+<span class="na">padding</span>       <span class="o">=</span> <span class="s">...</span>
+<span class="na">activation</span>    <span class="o">=</span> <span class="s">...</span>
+<span class="na">kernel_init</span>   <span class="o">=</span> <span class="s">...</span>
+<span class="na">bias_init</span>     <span class="o">=</span> <span class="s">...</span>
+<span class="na">max_pool_flag</span> <span class="o">=</span> <span class="s">...</span>
+<span class="na">max_pool_size</span> <span class="o">=</span> <span class="s">...</span>
+<span class="na">dropout_flag</span>  <span class="o">=</span> <span class="s">...</span>
+<span class="na">dropout_rate</span>  <span class="o">=</span> <span class="s">...</span>
+</pre></div>
+</div>
+<p>All layer parameters can be configured in 3 different ways:</p>
+<p>If the layer parameter should have a fixed value, specify that fixed value in the configuration.</p>
+<p>If the layer parameter is continuous and the optimal value is to be determined by evolution, specify the minimum (<code class="docutils literal notranslate"><span class="pre">min</span></code>) and maximum (<code class="docutils literal notranslate"><span class="pre">max</span></code>) value of the layer parameter as well as the possible step (<code class="docutils literal notranslate"><span class="pre">step</span></code>) between different values in a python dict style. Also specify the standard deviation (<code class="docutils literal notranslate"><span class="pre">stddev</span></code>) that should be applied when mutating the parameter and a new value is chosen for the parameter from a normal distribution.</p>
+<p>If the layer parameter is discrete or should only be chosen from a preselected list and the optimal value is to be determined by evolution, specify all possible values of the parameter in a python list style.</p>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="defining-your-own-modules">
+<h2>Defining Your Own Modules<a class="headerlink" href="#defining-your-own-modules" title="Permalink to this headline">¶</a></h2>
+<p>Defining your own TFNE CoDeepNEAT modules is simple as all required functionality is dictated by the abstract module interface seen below. The required functionality and output of each method is documented in its respective docstrings. This abstract module interface can be included by inheriting from <code class="docutils literal notranslate"><span class="pre">tfne.encodings.codeepneat.modules.CoDeepNEATModuleBase</span></code>.</p>
+<p>To make the newly created TFNE compatible module usable by TFNE you have to include an association between the module string name and the module class implementation in the file <code class="docutils literal notranslate"><span class="pre">tfne/encodings/codeepneat/modules/codeepneat_module_association.py</span></code>. We are working on making this process simpler in a future release.</p>
+<div class="section" id="codeepneat-abstract-module-interface">
+<h3>CoDeepNEAT Abstract Module Interface<a class="headerlink" href="#codeepneat-abstract-module-interface" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CoDeepNEATModuleBase</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class and interface for TFNE CoDeepNEAT compatible modules, ensuring that modules provide layer creation,</span>
+<span class="sd">    downsampling, mutation and crossover functionality. This base class also provides common functionality required</span>
+<span class="sd">    by all modules like parameter saving and simple setter/getter methods.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_params</span><span class="p">,</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">parent_mutation</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Base class of all TFNE CoDeepNEAT modules, saving common parameters.</span>
+<span class="sd">        @param config_params: dict of the module parameter range supplied via config</span>
+<span class="sd">        @param module_id: int of unique module ID</span>
+<span class="sd">        @param parent_mutation: dict summarizing the mutation of the parent module</span>
+<span class="sd">        @param dtype: string of deserializable TF dtype</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_params</span> <span class="o">=</span> <span class="n">config_params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">module_id</span> <span class="o">=</span> <span class="n">module_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_mutation</span> <span class="o">=</span> <span class="n">parent_mutation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: string representation of the module</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of CoDeepNEATModuleBase does not implement &#39;__str__()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">create_module_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Layer</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instantiate all TF layers represented by the module and return as iterable tuple</span>
+<span class="sd">        @return: iterable tuple of instantiated TF layers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of CoDeepNEATModuleBase does not implement &#39;create_module_layers()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">create_downsampling_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">,</span> <span class="n">out_shape</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Layer</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create layer associated with this module that downsamples the non compatible input shape to the input shape of</span>
+<span class="sd">        the current module, which is the output shape of the downsampling layer.</span>
+<span class="sd">        @param in_shape: int tuple of incompatible input shape</span>
+<span class="sd">        @param out_shape: int tuple of the intended output shape of the downsampling layer</span>
+<span class="sd">        @return: instantiated TF keras layer that can downsample incompatible input shape to a compatible input shape</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of CoDeepNEATModuleBase does not implement &#39;create_downsampling_layer()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">create_mutation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                        <span class="n">offspring_id</span><span class="p">,</span>
+                        <span class="n">max_degree_of_mutation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CoDeepNEATModuleBase</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a mutated module and return it</span>
+<span class="sd">        @param offspring_id: int of unique module ID of the offspring</span>
+<span class="sd">        @param max_degree_of_mutation: float between 0 and 1 specifying the maximum degree of mutation</span>
+<span class="sd">        @return: instantiated TFNE CoDeepNEAT module with mutated parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of CoDeepNEATModuleBase does not implement &#39;create_mutation()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">create_crossover</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">offspring_id</span><span class="p">,</span>
+                         <span class="n">less_fit_module</span><span class="p">,</span>
+                         <span class="n">max_degree_of_mutation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CoDeepNEATModuleBase</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a crossed over module and return it</span>
+<span class="sd">        @param offspring_id: int of unique module ID of the offspring</span>
+<span class="sd">        @param less_fit_module: second module of same type with less fitness</span>
+<span class="sd">        @param max_degree_of_mutation: float between 0 and 1 specifying the maximum degree of mutation</span>
+<span class="sd">        @return: instantiated TFNE CoDeepNEAT module with crossed over parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of CoDeepNEATModuleBase does not implement &#39;create_crossover()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: serialized constructor variables of the module as json compatible dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of CoDeepNEATModuleBase does not implement &#39;serialize()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the distance between 2 TFNE CoDeepNEAT modules with high values indicating difference, low values</span>
+<span class="sd">        indicating similarity</span>
+<span class="sd">        @param other_module: second TFNE CoDeepNEAT module to which the distance has to be calculated</span>
+<span class="sd">        @return: float between 0 and 1. High values indicating difference, low values indicating similarity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of CoDeepNEATModuleBase does not implement &#39;get_distance()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_module_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: string representation of module type as used in CoDeepNEAT config</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass of CoDeepNEATModuleBase does not implement &#39;get_module_name()&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_fitness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitness</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="n">fitness</span>
+
+    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_id</span>
+
+    <span class="k">def</span> <span class="nf">get_fitness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span>
+
+    <span class="k">def</span> <span class="nf">get_merge_method</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_method</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../environments/xor-environment.html" class="btn btn-neutral float-right" title="XOR Environment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="codeepneat-config.html" class="btn btn-neutral float-left" title="CoDeepNEAT Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Pauls
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

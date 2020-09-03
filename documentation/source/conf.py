@@ -21,12 +21,12 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 master_doc = 'index'
-project = 'TFNE'
+project = 'Tensorflow-Neuroevolution Framework'
 copyright = '2020, Paul Pauls'
 author = 'Paul Pauls'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2'
+release = '0.21.0'
 
 
 # -- General configuration ---------------------------------------------------

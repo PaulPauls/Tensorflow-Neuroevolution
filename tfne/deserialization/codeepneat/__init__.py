@@ -1,0 +1,4 @@
+# Import functions
+from tfne.deserialization.codeepneat.codeepneat_deserialization import deserialize_codeepneat_genome
+from tfne.deserialization.codeepneat.codeepneat_deserialization import deserialize_codeepneat_encoding
+from tfne.deserialization.codeepneat.codeepneat_deserialization import deserialize_codeepneat_population

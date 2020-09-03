@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CoDeepNEAT Overview &mdash; Tensorflow-Neuroevolution Framework 0.21.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CoDeepNEAT Specification" href="codeepneat-specification.html" />
+    <link rel="prev" title="TFNE Development" href="../framework/tfne-development.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Tensorflow-Neuroevolution Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">TFNE Framework</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-usage.html">Using TFNE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-customization.html">TFNE Architecture &amp; Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../framework/tfne-development.html">TFNE Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CoDeepNEAT Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#codeepneat-publication">CoDeepNEAT Publication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">CoDeepNEAT Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#projects-involving-codeepneat">Projects involving CoDeepNEAT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat-specification.html">CoDeepNEAT Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat-config.html">CoDeepNEAT Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeepneat-modules.html">CoDeepNEAT Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environments/xor-environment.html">XOR Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/mnist-environment.html">MNIST Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/cifar10-environment.html">CIFAR10 Environment</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Tensorflow-Neuroevolution Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>CoDeepNEAT Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/codeepneat/codeepneat-overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="codeepneat-overview">
+<h1>CoDeepNEAT Overview<a class="headerlink" href="#codeepneat-overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="codeepneat-publication">
+<h2>CoDeepNEAT Publication<a class="headerlink" href="#codeepneat-publication" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 95%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Title</p></td>
+<td><p>Evolving Deep Neural Networks</p></td>
+</tr>
+<tr class="row-even"><td><p>Authors</p></td>
+<td><p>Risto Miikkulainen and Jason Liang and Elliot Meyerson and Aditya Rawal and Dan Fink <br /> and Olivier Francon and Bala Raju and Hormoz Shahrzad and Arshak Navruzyan <br /> and Nigel Duffy and Babak Hodjat</p></td>
+</tr>
+<tr class="row-odd"><td><p>Booktitle</p></td>
+<td><p>Artificial Intelligence in the Age of Neural Networks and Brain Computing</p></td>
+</tr>
+<tr class="row-even"><td><p>Editor</p></td>
+<td><p>Robert Kozma and Cesare Alippi and Yoonsuck Choe and Francesco Carlo Morabito</p></td>
+</tr>
+<tr class="row-odd"><td><p>Publisher</p></td>
+<td><p>Amsterdam: Elsevier</p></td>
+</tr>
+<tr class="row-even"><td><p>Year</p></td>
+<td><p>2018</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p><a class="reference external" href="https://doi.org/10.1016/B978-0-12-815480-9.00015-3">Link to Journal Publication</a></p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/1703.00548">Link to paper in arxiv repository</a></p></li>
+<li><p><a class="reference external" href="http://nn.cs.utexas.edu/?miikkulainen:chapter18">Link to paper in repository of University of Texas, Austin</a></p></li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="id1">
+<h2>CoDeepNEAT Overview<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>The Coevolution Deep NeuroEvolution of Augmemting Topologies (CoDeepNEAT) method was first introduced in 2018 by a Team of researchers at the University of Texas, Austin and Sentient Technologies. CoDeepNEAT is a layer evolving algorithm that aims to exploit repetitive structure in the problem domain. It does so by splitting the genome into two elements that can be combined to form a genome, though which each have their own population that is evolved separately according to the methods of neuroevolution. The two elements that make up a genome are termed the blueprint and the modules. A module is a small deep neural network of predefined complexity and configuration that is intended to represent one instance of the repetitive structure of the problem domain. Those modules are concatenated in an overarching graph, that is the blueprint. This blueprint graph is very similar to the genome graph employed by DeepNEAT though instead of nodes representing layers do the nodes of the blueprint graph represent modules, whereas a single module is often repeated multiple times in a blueprint graph. This neuroevolution method therefore aims to evolve neural network with repetitive topologies to effectively exploit repetitive structure in the problem domain. In its original publication the algorithm has very successfully been applied to image recognition, language modeling and image captioning tasks, even producing new state of the art results if given sufficient time to evolve.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="projects-involving-codeepneat">
+<h2>Projects involving CoDeepNEAT<a class="headerlink" href="#projects-involving-codeepneat" title="Permalink to this headline">¶</a></h2>
+<p><strong>Cognizant LEAF framework</strong> - The evolutionary AI framework offered by cognizant. The framework is based on CoDeepNEAT according to the paper introducing LEAF to the public. Cognizant also offers an array of additional resources about evolutionary algorithms and their benefits for business and research.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://arxiv.org/abs/1902.06827"><strong>LEAF Paper</strong></a></p></li>
+<li><p><a class="reference external" href="https://www.cognizant.com/aicom/documents/cognizant-sentient-leaf-offering-overview.pdf"><strong>Evolutionary AI: Go Beyond Prediction with LEAF</strong></a></p></li>
+<li><p><a class="reference external" href="https://www.cognizant.com/ai/blog/informing-business-decision"><strong>How Evolutionary AI will inform future business decisions</strong></a></p></li>
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=lfVvl3E1itc"><strong>Evolutionary AI: The Next Big Thing After Deep Learning</strong></a></p></li>
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=GtkZ-_zgoEg"><strong>Evolutionary Computation Enables Truly Creative AI</strong></a></p></li>
+</ul>
+<p><strong>[More Projects to be Added in the Future]</strong></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="codeepneat-specification.html" class="btn btn-neutral float-right" title="CoDeepNEAT Specification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../framework/tfne-development.html" class="btn btn-neutral float-left" title="TFNE Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Pauls
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

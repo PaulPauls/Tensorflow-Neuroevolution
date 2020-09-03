@@ -1,0 +1,332 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFNE Development &mdash; Tensorflow-Neuroevolution Framework 0.21.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CoDeepNEAT Overview" href="../codeepneat/codeepneat-overview.html" />
+    <link rel="prev" title="TFNE Visualizer" href="tfne-visualizer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Tensorflow-Neuroevolution Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">TFNE Framework</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tfne-usage.html">Using TFNE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tfne-customization.html">TFNE Architecture &amp; Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">TFNE Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-history">Version History</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#v0-21-0-26th-aug-2020">v0.21.0 (26th Aug, 2020)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#v0-2-5th-june-2020">v0.2 (5th June, 2020)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#v0-1-23rd-march-2020">v0.1 (23rd March, 2020)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#future-todos">Future ToDos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-improvements">Code Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neat">NEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deepneat">DeepNEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#codeepneat">CoDeepNEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#subgraphneat">SubGraphNEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#subgraphdeepneat">SubGraphDeepNEAT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#research-ideas">Research Ideas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-specification.html">CoDeepNEAT Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-config.html">CoDeepNEAT Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-modules.html">CoDeepNEAT Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environments/xor-environment.html">XOR Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/mnist-environment.html">MNIST Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/cifar10-environment.html">CIFAR10 Environment</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Tensorflow-Neuroevolution Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>TFNE Development</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/framework/tfne-development.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tfne-development">
+<h1>TFNE Development<a class="headerlink" href="#tfne-development" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-history">
+<h2>Version History<a class="headerlink" href="#version-history" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v0-21-0-26th-aug-2020">
+<h3>v0.21.0 (26th Aug, 2020)<a class="headerlink" href="#v0-21-0-26th-aug-2020" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Bug fix and performance optimize beta version of CoDeepNEAT, releasing CoDeepNEAT fully with all intended speciation methods</p></li>
+<li><p>Implement TFNE Visualizer with capability to process CoDeepNEAT population backups</p></li>
+<li><p>Create ReadTheDocs documentation for TFNE</p></li>
+<li><p>Implement extensive unit tests and coverage reporting</p></li>
+<li><p>Make TFNE available via PyPI</p></li>
+</ul>
+</div>
+<div class="section" id="v0-2-5th-june-2020">
+<h3>v0.2 (5th June, 2020)<a class="headerlink" href="#v0-2-5th-june-2020" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Extensively rework framework architecture to enable higher modularity, performance and maintainability</p></li>
+<li><p>Release beta version of CoDeepNEAT, including basic speciation</p></li>
+<li><p>Implement MNIST and CIFAR10 environments with corresponding examples</p></li>
+<li><p>Implement full periodic state backup and deserialization</p></li>
+</ul>
+</div>
+<div class="section" id="v0-1-23rd-march-2020">
+<h3>v0.1 (23rd March, 2020)<a class="headerlink" href="#v0-1-23rd-march-2020" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Initial release providing prototyping framework for neuroevolution with TF 2.x</p></li>
+<li><p>Implement NEAT algorithm with direct encoding and fully TF translateable phenotype</p></li>
+<li><p>Implement OpenAI gym test environments and provide examples in combination with NEAT</p></li>
+<li><p>Implement configurable reporting agents that backup the population and visualize genomes each generation</p></li>
+</ul>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="future-todos">
+<h2>Future ToDos<a class="headerlink" href="#future-todos" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="general">
+<h3>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Implement custom tf.keras.preprocessing functions as used for example in CDN paper, using tf.image API/functions. Integrate those preprocessing options into the TFNE environments.</p></li>
+<li><p>Implement a test-wise multi-objective evolution environment [e.g. decreasing fitness based on age; decreasing fitness based on genome complexity]</p></li>
+</ul>
+</div>
+<div class="section" id="code-improvements">
+<h3>Code Improvements<a class="headerlink" href="#code-improvements" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Implement bidirection connections for the phenotype graphs of all NEAT-like algorithms, as they currently only support feedforward graphs.</p></li>
+<li><p>Replace numpy with Google JAX backend and test if it improves performance. Especially relevant for vanilla NEAT, which utilizes numpy extensively.</p></li>
+<li><p>Attempt to accelerate TFNE and its algorithms (particularly vanilla NEAT)using tf.function</p></li>
+</ul>
+</div>
+<div class="section" id="neat">
+<h3>NEAT<a class="headerlink" href="#neat" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Completely rework NEAT implementation. Accelerate implementation by parallelizing it. Test possible acceleration by using Google JAX.</p></li>
+<li><p>Implement flag to either disable bias, to allow bias being a separate node or to integrate bias into nodes</p></li>
+</ul>
+</div>
+<div class="section" id="deepneat">
+<h3>DeepNEAT<a class="headerlink" href="#deepneat" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Implement DeepNEAT. Consider layers: Attention, AveragePoolingX, BatchNormalization, BiDirectional, ConvX, Dense, Dropout, Embedding, Flatten, GRU, GlobalAvgPoolX, GlobalMaxPoolX, LSTM, MaxPoolingX, SimpleRNN</p></li>
+</ul>
+</div>
+<div class="section" id="codeepneat">
+<h3>CoDeepNEAT<a class="headerlink" href="#codeepneat" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>CoDeepNEAT: Create function to register new modules created outside of code structure. This way it is easier to add new modules if you use TFNE exclusively as a library.</p></li>
+</ul>
+</div>
+<div class="section" id="subgraphneat">
+<h3>SubGraphNEAT<a class="headerlink" href="#subgraphneat" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="subgraphdeepneat">
+<h3>SubGraphDeepNEAT<a class="headerlink" href="#subgraphdeepneat" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="research-ideas">
+<h3>Research Ideas<a class="headerlink" href="#research-ideas" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Find way to determine if 2 genomes represent identical phenotypes or identical functions but have different genotypes and are therefore classified as different species, therefore decreasing effective pop size.</p></li>
+<li><p>Implement Lamarckian Evolution for weight-training based NE algorithms (DeepNEAT, CoDeepNEAT, etc)</p></li>
+<li><p>Use a gram matrix to cluster member vectors and direct evolution</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../codeepneat/codeepneat-overview.html" class="btn btn-neutral float-right" title="CoDeepNEAT Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tfne-visualizer.html" class="btn btn-neutral float-left" title="TFNE Visualizer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Pauls
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

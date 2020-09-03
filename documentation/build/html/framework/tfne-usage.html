@@ -1,0 +1,332 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Using TFNE &mdash; Tensorflow-Neuroevolution Framework 0.21.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="TFNE Architecture &amp; Customization" href="tfne-customization.html" />
+    <link rel="prev" title="Welcome to the documentation of the Tensorflow-Neuroevolution framework!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Tensorflow-Neuroevolution Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">TFNE Framework</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using TFNE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#neuroevolution">Neuroevolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#serialization-deserialization">Serialization &amp; Deserialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#projects-using-tfne">Projects Using TFNE</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tfne-customization.html">TFNE Architecture &amp; Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tfne-visualizer.html">TFNE Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tfne-development.html">TFNE Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">CoDeepNEAT</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-overview.html">CoDeepNEAT Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-specification.html">CoDeepNEAT Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-config.html">CoDeepNEAT Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codeepneat/codeepneat-modules.html">CoDeepNEAT Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">TFNE Evaluation Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environments/xor-environment.html">XOR Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/mnist-environment.html">MNIST Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/cifar10-environment.html">CIFAR10 Environment</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Tensorflow-Neuroevolution Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Using TFNE</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/framework/tfne-usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-tfne">
+<h1>Using TFNE<a class="headerlink" href="#using-tfne" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>TFNE, being still in the beta development phase, changes often. To get the most current working release from the PyPI repository, use the following command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install tfne
+</pre></div>
+</div>
+<p>To enable the rendering of genome graphs in code as well as in the TFNE Visualizer, make sure that the <code class="docutils literal notranslate"><span class="pre">graphviz</span></code> library is installed on the system (<a class="reference external" href="https://www.graphviz.org/download/">Graphviz Installation</a>). For Ubuntu the following command will install graphviz from the package manager:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo apt install graphviz
+</pre></div>
+</div>
+<p>Import the TFNE library into your code by using the same name (<code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">tfne</span></code>). The TFNE Visualizer will be available as an executable script after installation under the name <code class="docutils literal notranslate"><span class="pre">tfne_visualizer</span></code>.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="neuroevolution">
+<h2>Neuroevolution<a class="headerlink" href="#neuroevolution" title="Permalink to this headline">¶</a></h2>
+<p>TFNE allows for the creation and improvement of artificial neural networks through a population-based optimization process called <em>neuroevolution</em>. In neuroevolution artificial neural networks are represented as genomes, encoding the properties such as topology, hyperparameters, layer configuration, node values, etc. The encoding of the genomes - the <em>genotypes</em> - can arbitrarily be mutated and combined. This allows for the emergence of new genomes that may represent novel ways to solve the optimization problem or the emergence of genomes with combined beneficial properties of two preceding genomes. The quality of the emerging genome is determined by calculating a <em>fitness</em> value that represents the degree to which the artificial neural network that is represented through the genome solves the problem environment. This allows for a relative comparison between genomes.</p>
+<p>The optimization process itself can be guided through various means in order to produce the fittest genome. Speciation for example is a popular way of guiding the evolution by clustering genomes based on aspects such as topological similarity of the neural network or similarity in the problem-solving approach. This clustering allows the identification of generally beneficial or detrimental features and allows the optimization process to be guided by focusing its evolutionary development on clusters with beneficial features.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<p>The usage of TFNE is demonstrated in the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory of the Github repository (<a class="reference external" href="https://github.com/PaulPauls/Tensorflow-Neuroevolution/tree/dev_tfne_v0.2/examples">see here</a>). The examples employ multiple neuroevolution algorithms, problem environments and approaches to the problem and will be steadily extended in future TFNE releases. The basic approach to solving a problem in TFNE is as follows:</p>
+<p>The first step is to decide on which NE algorithm to use and to create a complete configuration for all sections and options of the chosen algorithm. This configuration file needs to be in a format readable by python’s ConfigParser class and is named <code class="docutils literal notranslate"><span class="pre">config-file.cfg</span></code> in the example below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tfne</span>
+
+<span class="c1"># Optional in case the ConfigParser object is created manually</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">tfne</span><span class="o">.</span><span class="n">parse_configuration</span><span class="p">(</span><span class="s1">&#39;./config-file.cfg&#39;</span><span class="p">)</span>
+
+<span class="n">ne_algorithm</span> <span class="o">=</span> <span class="n">tfne</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">CoDeepNEAT</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The next step is the instantiation of the problem environment the chosen neuroevolution algorithm should be applied to. Depending on if the TF model represented through the NE algorithm’s genomes should first be trained before assigning the genome a fitness value, set the <code class="docutils literal notranslate"><span class="pre">weight_training</span></code> parameter of the chosen problem environment. Some problem environments do not allow for weight-training evaluation while some NE algorithms do not allow for non-weight-training evaluation. Here we are using the CIFAR10 problem environment.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">environment</span> <span class="o">=</span> <span class="n">tfne</span><span class="o">.</span><span class="n">environments</span><span class="o">.</span><span class="n">CIFAR10nvironment</span><span class="p">(</span><span class="n">weight_training</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                  <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                                                  <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Alternative, though identical, creation of the environment specifying parameters explicitly</span>
+<span class="c1"># instead of through the config</span>
+<span class="n">environment_alt</span> <span class="o">=</span> <span class="n">tfne</span><span class="o">.</span><span class="n">environments</span><span class="o">.</span><span class="n">CIFAR10nvironment</span><span class="p">(</span><span class="n">weight_training</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                      <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                                      <span class="n">epochs</span><span class="o">=</span><span class="mi">8</span>
+                                                      <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The instantiated NE algorithm and evaluation environment are then handed over to the driving force of the evolutionary process - the <code class="docutils literal notranslate"><span class="pre">EvolutionEngine</span></code>. The EvolutionEngine class prepares the start of the evolution and furthermore takes on the parameters for <code class="docutils literal notranslate"><span class="pre">backup_dir_path</span></code>, <code class="docutils literal notranslate"><span class="pre">max_generations</span></code> and <code class="docutils literal notranslate"><span class="pre">max_fitness</span></code>. The <code class="docutils literal notranslate"><span class="pre">backup_dir_path</span></code> parameter specifies the directory as string to which the evolution state backups should be saved to in order to postanalyze or visualize the evolution later. The parameters <code class="docutils literal notranslate"><span class="pre">max_gnerations</span></code> and <code class="docutils literal notranslate"><span class="pre">max_fitness</span></code> specify abort conditions for evolution.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">engine</span> <span class="o">=</span> <span class="n">tfne</span><span class="o">.</span><span class="n">EvolutionEngine</span><span class="p">(</span><span class="n">ne_algorithm</span><span class="o">=</span><span class="n">ne_algorithm</span><span class="p">,</span>
+                              <span class="n">environment</span><span class="o">=</span><span class="n">environment</span><span class="p">,</span>
+                              <span class="n">backup_dir_path</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span>
+                              <span class="n">max_generations</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+                              <span class="n">max_fitness</span><span class="o">=</span><span class="mf">100.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The evolutionary process however is not started until calling the <code class="docutils literal notranslate"><span class="pre">train()</span></code> function of the set up evolutionary engine. This function returns the best genome - and therefore TF model - as judged by the evaluation environment the evolutionary process could produce.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">best_genome</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Best genome returned by evolution:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">best_genome</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These few and simple lines summarize the basic usage of TFNE. However, the underlying NE algorithms and environments can be extensively configured resulting in significantly different evolutionary processes. The extent to which the NE algorithms and environments can be configured and how exactly they operate is presented in their respective sections of this documentation.</p>
+<p>TFNE however also serves as a prototyping platform for custom neuroevolution algorithms, populations, encodings and environments. The <a class="reference external" href="./tfne-customization.html">TFNE Architecture &amp; Customization</a> section elaborates on this functionality.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="serialization-deserialization">
+<h2>Serialization &amp; Deserialization<a class="headerlink" href="#serialization-deserialization" title="Permalink to this headline">¶</a></h2>
+<p>All pre-implemented NE algorithms in the TFNE framework serialize and save the state of the evolution in each generation as json files. These backups serve as the input for the <a class="reference external" href="./tfne-visualizer.html">TFNE Visualizer</a> or they can serve as initial states for the NE algorithms in case the evolution should be continued from a certain generation onward with a different algorithm configuration (though necessarily the same evaluation environment).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tfne</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">tfne</span><span class="o">.</span><span class="n">parse_configuration</span><span class="p">(</span><span class="s1">&#39;./config-file.cfg&#39;</span><span class="p">)</span>
+
+<span class="c1"># Supply path to a backup serving as the initial state</span>
+<span class="n">ne_algorithm</span> <span class="o">=</span> <span class="n">tfne</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">CoDeepNEAT</span><span class="p">(</span><span class="n">config</span><span class="p">,</span>
+                                          <span class="n">initial_state_file_path</span><span class="o">=</span><span class="s1">&#39;./tfne_state_backup_gen_15.json&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Serialization and deserialization is also possible for single genomes, e.g. in case the best genome of the evolution should be saved and deserialized later.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train and save best genome</span>
+<span class="n">best_genome</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="n">best_genome_file_path</span> <span class="o">=</span> <span class="n">best_genome</span><span class="o">.</span><span class="n">save_genotype</span><span class="p">(</span><span class="n">save_dir_path</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
+
+<span class="c1"># Load the serialized best genome and get the encoded TF model</span>
+<span class="n">loaded_genome</span> <span class="o">=</span> <span class="n">tfne</span><span class="o">.</span><span class="n">deserialization</span><span class="o">.</span><span class="n">load_genome</span><span class="p">(</span><span class="n">best_genome_file_path</span><span class="p">)</span>
+<span class="n">tf_model</span> <span class="o">=</span> <span class="n">loaded_genome</span><span class="o">.</span><span class="n">get_model</span><span class="p">()</span>
+
+<span class="c1"># Alternatively, it is also possible to save the TF model directly</span>
+<span class="n">best_genome</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;./best_genome_model/&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="projects-using-tfne">
+<h2>Projects Using TFNE<a class="headerlink" href="#projects-using-tfne" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>TBD</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tfne-customization.html" class="btn btn-neutral float-right" title="TFNE Architecture &amp; Customization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to the documentation of the Tensorflow-Neuroevolution framework!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Paul Pauls
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
