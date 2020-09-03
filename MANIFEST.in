@@ -1,0 +1,10 @@
+# Include README and the required illustrations
+include README.md
+include documentation/source/illustrations/tfne_logo.svg
+include documentation/source/illustrations/tfne_v0.21_entity_sequence_diagram.svg
+include documentation/source/illustrations/tfnev_demonstration.gif
+
+# Include TFNEV icons
+include tfne/visualizer/tfnev_welcomewindow_logo.svg
+include tfne/visualizer/codeepneat/*.svg
+

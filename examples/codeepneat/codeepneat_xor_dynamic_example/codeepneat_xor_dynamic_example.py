@@ -2,8 +2,8 @@ from absl import app, flags, logging
 
 import tfne
 
-flags.DEFINE_string('logging_level',
-                    default=None, help='Integer parameter specifying the verbosity of the absl logging library')
+flags.DEFINE_integer('logging_level',
+                     default=None, help='Integer parameter specifying the verbosity of the absl logging library')
 flags.DEFINE_string('config_file',
                     default=None, help='String parameter specifying the file path to the configuration file used for '
                                        'the TFNE evolutionary process')

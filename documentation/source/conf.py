@@ -26,7 +26,7 @@ copyright = '2020, Paul Pauls'
 author = 'Paul Pauls'
 
 # The full version, including alpha/beta/rc tags
-release = '0.21.0'
+release = '0.21.1'
 
 
 # -- General configuration ---------------------------------------------------

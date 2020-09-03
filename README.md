@@ -4,7 +4,7 @@
   <img src="./documentation/source/illustrations/tfne_logo.svg" width="40%" alt="TFNE Logo"/>
 </p>
 
-**Version 0.21.0**
+**Version 0.21.1**
 
 ![Python version req](https://img.shields.io/badge/python-v3.7%2B-informational)
 [![PyPI version](https://badge.fury.io/py/tfne.svg)](https://badge.fury.io/py/tfne)

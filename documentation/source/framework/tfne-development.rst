@@ -4,8 +4,14 @@ TFNE Development
 Version History
 ---------------
 
-v0.21.0 (26th Aug, 2020)
-""""""""""""""""""""""""
+v0.21.1 (3rd Sep, 2020)
+"""""""""""""""""""""""
+
+* Fix bug of missing TFNEV icons in PyPI package
+* Fix bug of logging level in examples being interpreted as string instead of int
+
+v0.21.0 (3rd Sep, 2020)
+"""""""""""""""""""""""
 
 * Bug fix and performance optimize beta version of CoDeepNEAT, releasing CoDeepNEAT fully with all intended speciation methods
 * Implement TFNE Visualizer with capability to process CoDeepNEAT population backups
