@@ -77,7 +77,7 @@ pyrsistent==0.16.0
 pytest==6.0.1
 python-dateutil==2.8.1
 pytz==2020.1
-PyYAML==5.3.1
+PyYAML==5.4
 ray==0.8.7
 readme-renderer==26.0
 redis==3.4.1
