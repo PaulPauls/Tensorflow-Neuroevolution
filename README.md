@@ -63,7 +63,7 @@ The next step is the instantiation of the problem environment the genomes of the
 
     config = tfne.parse_configuration('./config-file.cfg')
     ne_algorithm = tfne.algorithms.CoDeepNEAT(config)
-    environment = tfne.environments.CIFAR10nvironment(weight_training=True,
+    environment = tfne.environments.CIFAR10Environment(weight_training=True,
                                                      config=config,
                                                      verbosity=0)
 ```
