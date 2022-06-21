@@ -49,7 +49,7 @@ matplotlib==3.3.1
 more-itertools==8.4.0
 msgpack==1.0.0
 multidict==4.7.6
-numpy==1.18.5
+numpy==1.22.0
 nvidia-ml-py3==7.352.0
 oauthlib==3.1.0
 opencensus==0.7.10
