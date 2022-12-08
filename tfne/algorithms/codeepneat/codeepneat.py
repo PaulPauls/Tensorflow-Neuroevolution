@@ -101,7 +101,7 @@ class CoDeepNEAT(BaseNeuroevolutionAlgorithm,
 
         # Set internal variables of the population to the initialization of a new population
         self.pop.generation_counter = 0
-        self.pop.best_fitness = 0
+        self.pop.best_fitness = None
 
         #### Initialize Module Population ####
         # Initialize module population with a basic speciation scheme, even when another speciation type is supplied
