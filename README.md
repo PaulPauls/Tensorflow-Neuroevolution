@@ -1,5 +1,9 @@
 ## The Tensorflow-Neuroevolution Framework ##
 
+> **This research project, originally developed in 2019 for Tensorflow 2.0's novel dynamic eager execution, is now archived.**
+> 
+> **Given the rapid advancements in machine learning I suggest using Google Jax instead of Tensorflow for dynamically changing computational graphs used in evolutionary algorithms. I can particularly recommend the EvoJax framework (https://github.com/google/evojax), for those keen on evolutionary algorithms and neuroevolution.**
+
 <p align="center">
   <img src="./documentation/source/illustrations/tfne_logo.svg" width="40%" alt="TFNE Logo"/>
 </p>
